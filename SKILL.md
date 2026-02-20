@@ -25,3 +25,16 @@ This file documents the layout, visual design, and feature implementations for t
   - Gemini chat interface for asking questions about payors and payees.
 - **Action Mechanism**: 
   - Buttons near the transaction detail to clearly mark as `Cleared` or `Fraudulent`.
+
+## 4. UI Component Anatomy
+- **Header**: Simple title left, theme toggle (Sun/Moon from Lucide) right.
+- **KPI Row**: 4 cards displaying `Title`, `Value` (3xl font), and a `Trend` badge (green/red background with +/- %).
+- **Main Layout**: Uses Flex gap-4. Table takes up full width initially, truncates to 2/3 width when a transaction is selected. The Investigation Panel takes up the right 1/3 width.
+- **Transaction Table**:
+  - Toolbar above table: Filter, Date, and Category buttons styled as pill badges.
+  - Risk Score Column: A visual progress bar spanning 0-100%, color coded (Green < 0.4, Amber < 0.8, Red > 0.8), paired with the decimal value.
+  - Active Row: When clicked, the row highlights brightly (e.g., `bg-blue-50` light / `bg-blue-900/40` dark) to stand out from hover states.
+- **Investigation Panel**:
+  - Information blocks: Risk Level, Amount, Transaction details, Customer details. Each rendered inside bordered soft-background blocks to group data visually.
+  - Action Buttons: `Clear Transaction` (default outline/ghost style), `Mark as Fraud` (solid red background `bg-rose-500` for emphasis).
+  - Gemini Chat Log: AI chat UI anchored at bottom of the panel with sticky input field. Model responses have gray bubble backgrounds, User responses have blue tinted backgrounds aligned right.
