@@ -1,0 +1,8 @@
+npm error Missing script: "dev"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /Users/schomer/.npm/_logs/2026-02-20T01_47_46_416Z-debug-0.log
+*** gpkg: This tool is configured to use Corp Airlock for package installs: http://go/corp-airlock
+*** gpkg: If Corp Airlock is breaking your workflow please report at: http://go/corp-airlock-feedback
+*** gpkg: Exceptions are available: http://go/corp-airlock#request-exception
