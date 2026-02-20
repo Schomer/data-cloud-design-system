@@ -4,3 +4,11 @@ INFO:     Started reloader process [19596] using StatReload
 INFO:     Started server process [19599]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'scripts/train_bqml.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [19599]
+INFO:     Started server process [22852]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
