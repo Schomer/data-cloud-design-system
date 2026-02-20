@@ -1,0 +1,27 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "account_age_days",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "cntry",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "risk_score_initial",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payor_name",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payor_id",
+    "type": "STRING"
+  }
+]

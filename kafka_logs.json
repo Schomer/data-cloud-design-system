@@ -1,0 +1,47 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "amount",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "currency",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payee_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payment_method",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payor_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "status",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "event_ts",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "transaction_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ingestion_ts",
+    "type": "TIMESTAMP"
+  }
+]

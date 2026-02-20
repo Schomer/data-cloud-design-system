@@ -1,0 +1,22 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "payee_category",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payee_country",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payee_name",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "payee_id",
+    "type": "STRING"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "transaction_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "amount",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "merchant_category",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "hour",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "day_of_week",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "customer_age",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "account_age_days",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "is_fraud",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "signature_path",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ingestion_ts",
+    "type": "TIMESTAMP"
+  }
+]
