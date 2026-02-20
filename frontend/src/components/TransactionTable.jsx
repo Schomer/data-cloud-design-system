@@ -40,7 +40,7 @@ export default function TransactionTable({ transactions, selectedTx, onSelect })
             </div>
 
             {/* Table Content */}
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto max-h-[780px]">
                 <table className="w-full text-left border-collapse">
                     <thead className="sticky top-0 bg-white dark:bg-[#1a1a1a] z-10 border-b border-slate-200 dark:border-slate-800">
                         <tr className="text-xs font-medium text-slate-500 dark:text-slate-400">

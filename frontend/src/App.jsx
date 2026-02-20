@@ -5,7 +5,7 @@ import KPICards from './components/KPICards';
 import TransactionTable from './components/TransactionTable';
 import InvestigationPanel from './components/InvestigationPanel';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = '/api';
 
 function App() {
     const [transactions, setTransactions] = useState([]);

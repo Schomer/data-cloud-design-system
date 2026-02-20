@@ -1,6 +1,8 @@
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from google.cloud import bigquery
 from google.cloud import geminidataanalytics_v1beta as gemini
@@ -125,3 +127,11 @@ def chat(request: ChatRequestModel):
         return {"response": full_response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Serve the static React build
+app.mount("/", StaticFiles(directory="dist", html=True), name="frontend")
+
+@app.exception_handler(404)
+async def custom_404_handler(request, __):
+    # Catch-all for React Router/SPA paths
+    return FileResponse("dist/index.html")

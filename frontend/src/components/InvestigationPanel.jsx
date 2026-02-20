@@ -3,7 +3,7 @@ import axios from 'axios';
 import { X, Send } from 'lucide-react';
 import { format } from 'date-fns';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = '/api';
 
 export default function InvestigationPanel({ transaction, onClose, onUpdateStatus }) {
     const [chatInput, setChatInput] = useState('');
@@ -27,10 +27,12 @@ export default function InvestigationPanel({ transaction, onClose, onUpdateStatu
         setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
         setIsTyping(true);
 
+        const apiMessage = `[System: The following is the data for the transaction the user is currently looking at. Use it to answer their question: ${JSON.stringify({ transaction_id: transaction.transaction_id, amount: transaction.amount, payee_name: transaction.payee_name, payor_name: transaction.payor_name, payor_account_age_days: transaction.payor_account_age_days, payor_risk_score: transaction.payor_risk_score, predicted_is_fraud: transaction.predicted_is_fraud, investigation_status: transaction.investigation_status })}]\n\nUser Question: ${userMsg}`;
+
         try {
             // Send history so model remembers context
             const res = await axios.post(`${API_BASE}/chat`, {
-                message: userMsg,
+                message: apiMessage,
                 transaction_id: transaction.transaction_id,
                 history: messages
             });
@@ -148,8 +150,8 @@ export default function InvestigationPanel({ transaction, onClose, onUpdateStatu
                     <div className="space-y-4 mb-4">
                         {messages.map((m, i) => (
                             <div key={i} className={`p-3 rounded-lg text-sm ${m.role === 'user'
-                                    ? 'bg-[#2563eb]/10 text-[#2563eb] dark:text-[#60a5fa] ml-6'
-                                    : 'bg-slate-50 dark:bg-[#262626] text-slate-700 dark:text-slate-300 mr-6'
+                                ? 'bg-[#2563eb]/10 text-[#2563eb] dark:text-[#60a5fa] ml-6'
+                                : 'bg-slate-50 dark:bg-[#262626] text-slate-700 dark:text-slate-300 mr-6'
                                 }`}>
                                 {m.content}
                             </div>
