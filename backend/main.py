@@ -87,7 +87,7 @@ def update_status(transaction_id: str, update: StatusUpdate):
 @app.post("/api/chat")
 def chat(request: ChatRequestModel):
     inline_context = {
-        "system_instruction": "You are a fraud analyst assistant. You help the user investigate transactions. Keep your answers concise and text-only. Do not generate charts. Do not suggest actions unless asked.",
+        "system_instruction": "You are a fraud analyst assistant. You have access to a BigQuery table with thousands of historical transactions. You can answer questions about the specific transaction the user is looking at, OR you can write SQL to query the entire table for aggregate metrics, trends, or other users. Keep your answers concise and text-only. Do not generate charts. Do not suggest actions unless asked.",
         "datasource_references": {
             "bq": {
                 "table_references": [{
@@ -100,7 +100,7 @@ def chat(request: ChatRequestModel):
         "options": {"chart": {}}
     }
     
-    prompt = f"[Context: Investigating transaction {request.transaction_id}]\nUser: {request.message}"
+    prompt = request.message
 
     client_history = []
     for msg in request.history:

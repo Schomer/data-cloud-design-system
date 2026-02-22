@@ -1,40 +1,35 @@
 ---
-name: fraud-investigation-app-ui
-description: Detailed guidelines for layout, visuals, and feature implementation of the Fraud Investigation React + Tailwind App.
+name: jtc-design-system-app architecture
+description: Detailed guidelines for layout, visuals, typography, and feature implementation of high-quality standard dashboard applications.
 ---
 
-# Fraud Investigation App UI Skill
+# JTC Design System Dashboard UI Skill
 
-This file documents the layout, visual design, and feature implementations for the Fraud Investigation app, so these patterns can be reused in future applications.
+This file documents the layout, visual design, state management, and interaction patterns required to reconstruct the JTC Design System dashboards. It provides constraints for future applications.
 
 ## 1. Overall Architecture
 - **Framework**: React + Vite
-- **Styling**: Tailwind CSS
-- **Backend/API integration**: Python FastAPI serving BigQuery data and Gemini data analytics chat.
+- **Styling**: Tailwind CSS (Leverage standard Tailwind token palette directly for colors, e.g., text-slate-500 or border-slate-800, rather than CSS custom variables)
+- **State Management**: Use React Context (`createContext`) for application-wide theme values like a Sortable Chart Color list. React local state (`useState`) for isolated components.
+- **Backend/API Integration Framework**: Python FastAPI endpoint structure integration for any necessary services, including the Gemini Data Analytics Chat endpoint wrapper.
+- **Core Dependencies**: `lucide-react` (icons), `date-fns` (formatting), `@dnd-kit/core` (drag interactions), `echarts-for-react` (visualizations).
 
 ## 2. Layout & Visuals
-- Use a **dark mode** color palette by default using Tailwind's `bg-slate-900`, `text-slate-200`.
-- The dashboard will consist of an intuitive table for flagged transactions.
-- Selecting a transaction slides out a detail panel on the right (Gemini deep investigation).
+- Use a **dark mode default** switching paradigm. Define dark interfaces with `bg-[#121212]`, lighter overlay containers with `bg-[#1a1a1a]`. Soft borders using `border-slate-800`.
+- Use a global sidebar wrapper mapped tightly against the viewport for navigation, reserving the remaining large canvas view area for dynamic section rendering. Limit the max-width of inner canvas wrappers using Tailwind max-w modifiers for ultrawide readability.
 
-## 3. Core Features
-- **Transaction List**: 
-  - Displays `transaction_id`, `amount`, `payor_name`, `payee_name`, `timestamp`.
-  - Ordered by arrival time (`event_ts`).
-- **Deep Investigation**: 
-  - Gemini chat interface for asking questions about payors and payees.
-- **Action Mechanism**: 
-  - Buttons near the transaction detail to clearly mark as `Cleared` or `Fraudulent`.
+## 3. Core Features & Complex Interactions
+- **Sortable / Reorderable Data Lists**: Utilize `@dnd-kit/core` with Sensors for pointer/keyboard, rendering arrays within a `SortableContext`. 
+  - Standard use-case: An interactive Chart Color Swatch toolbar enabling dynamic ordering of underlying EChart color configs. Default 10 variable set array for charts: `['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1']`.
+- **Data Tables with Pagination**: Functional paginated tables capped logically (e.g. 30 item chunks). Include pagination controls at the bottom employing strict **Icon-Only UI patterns** from Lucide for actions (`ChevronsLeft`, `ChevronLeft`, `ChevronRight`, `ChevronsRight`). Must have explicit disabled states dynamically driven by bounds.
+- **Deep AI Agent Subpanels**: Secondary panels implementing context-aware Gemini Data Analytics Chat components, formatted linearly to mimic conversation structure.
 
 ## 4. UI Component Anatomy
-- **Header**: Simple title left, theme toggle (Sun/Moon from Lucide) right.
-- **KPI Row**: 4 cards displaying `Title`, `Value` (3xl font), and a `Trend` badge (green/red background with +/- %).
-- **Main Layout**: Uses Flex gap-4. Table takes up full width initially, truncates to 2/3 width when a transaction is selected. The Investigation Panel takes up the right 1/3 width.
-- **Transaction Table**:
-  - Toolbar above table: Filter, Date, and Category buttons styled as pill badges.
-  - Risk Score Column: A visual progress bar spanning 0-100%, color coded (Green < 0.4, Amber < 0.8, Red > 0.8), paired with the decimal value.
-  - Active Row: When clicked, the row highlights brightly (e.g., `bg-blue-50` light / `bg-blue-900/40` dark) to stand out from hover states.
-- **Investigation Panel**:
-  - Information blocks: Risk Level, Amount, Transaction details, Customer details. Each rendered inside bordered soft-background blocks to group data visually.
-  - Action Buttons: `Clear Transaction` (default outline/ghost style), `Mark as Fraud` (solid red background `bg-rose-500` for emphasis).
-  - Gemini Chat Log: AI chat UI anchored at bottom of the panel with sticky input field. Model responses have gray bubble backgrounds, User responses have blue tinted backgrounds aligned right.
+- **KPI Cards Row**: Responsive grid elements showcasing primary metrics. Features rounded-md trend badges (`bg-emerald-100` success / `bg-rose-100` regression overlays natively configured with Lucide arrows). Include standard pulse loading animation variations.
+- **Data Table Layouts**:
+  - Filtering toolbars rendered logically above the core UI with grouped dropdown primitives displaying active categories locally.
+  - Active Row indicators. Highlight the exact user focus dynamically in high contrast bounding boxes.
+- **Data Chart / EChart Blocks**:
+  - Housed in standalone `display: flex; flex-col` cards with descriptive headers and padded internal regions. 
+  - Use SVG rendering preference for `echarts-for-react`.
+  - Establish a standardized **1 chart per row** grid boundary constraint for large visibility inside specific content groupings (i.e. Time & Trends grids configured as `col-span-1` width across a vertical responsive axis or `md:grid-cols-2`). Avoid crowding.
