@@ -38,37 +38,49 @@ export default function TypographyGallery({ isDarkMode }) {
                     <div className="flex items-end gap-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">H1</div>
                         <EditableWrapper type="typography" variant="h1" className="flex-1">
-                            <h1 className="m-0 leading-none" style={getInlineStyle('h1')}>Display Headline</h1>
+                            <h1 className="m-0 leading-none" style={getInlineStyle('h1')}>
+                                {typoSpec?.h1?.content || "Display Headline"}
+                            </h1>
                         </EditableWrapper>
                     </div>
                     <div className="flex items-end gap-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">H2</div>
                         <EditableWrapper type="typography" variant="h2" className="flex-1">
-                            <h2 className="m-0 leading-none" style={getInlineStyle('h2')}>Page Title</h2>
+                            <h2 className="m-0 leading-none" style={getInlineStyle('h2')}>
+                                {typoSpec?.h2?.content || "Page Title"}
+                            </h2>
                         </EditableWrapper>
                     </div>
                     <div className="flex items-end gap-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">H3</div>
                         <EditableWrapper type="typography" variant="h3" className="flex-1">
-                            <h3 className="m-0 leading-none" style={getInlineStyle('h3')}>Section Header</h3>
+                            <h3 className="m-0 leading-none" style={getInlineStyle('h3')}>
+                                {typoSpec?.h3?.content || "Section Header"}
+                            </h3>
                         </EditableWrapper>
                     </div>
                     <div className="flex items-end gap-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">H4</div>
                         <EditableWrapper type="typography" variant="h4" className="flex-1">
-                            <h4 className="m-0 leading-none" style={getInlineStyle('h4')}>Card Title</h4>
+                            <h4 className="m-0 leading-none" style={getInlineStyle('h4')}>
+                                {typoSpec?.h4?.content || "Card Title"}
+                            </h4>
                         </EditableWrapper>
                     </div>
                     <div className="flex items-end gap-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">H5</div>
                         <EditableWrapper type="typography" variant="h5" className="flex-1">
-                            <h5 className="m-0 leading-none" style={getInlineStyle('h5')}>Subsection</h5>
+                            <h5 className="m-0 leading-none" style={getInlineStyle('h5')}>
+                                {typoSpec?.h5?.content || "Subsection"}
+                            </h5>
                         </EditableWrapper>
                     </div>
                     <div className="flex items-end gap-6">
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">H6</div>
                         <EditableWrapper type="typography" variant="h6" className="flex-1">
-                            <h6 className="m-0 leading-none" style={getInlineStyle('h6')}>Subtitle</h6>
+                            <h6 className="m-0 leading-none" style={getInlineStyle('h6')}>
+                                {typoSpec?.h6?.content || "Subtitle"}
+                            </h6>
                         </EditableWrapper>
                     </div>
                 </div>
@@ -84,7 +96,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-16 text-xs font-mono text-slate-400 pt-1 shrink-0">Base</div>
                         <EditableWrapper type="typography" variant="bodyBase" className="flex-1">
                             <p className="m-0 leading-relaxed max-w-2xl" style={getInlineStyle('bodyBase')}>
-                                The quick brown fox jumps over the lazy dog. This base text size is used for primary article content, long descriptions, or modal body text. It offers the best readability for long-form reading.
+                                {typoSpec?.bodyBase?.content || "Body text content..."}
                             </p>
                         </EditableWrapper>
                     </div>
@@ -92,7 +104,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-16 text-xs font-mono text-slate-400 pt-1 shrink-0">Small</div>
                         <EditableWrapper type="typography" variant="bodySmall" className="flex-1">
                             <p className="m-0 leading-relaxed max-w-2xl" style={getInlineStyle('bodySmall')}>
-                                The quick brown fox jumps over the lazy dog. Small text is commonly used for data table rows, secondary descriptions, or UI element labels where space is tighter.
+                                {typoSpec?.bodySmall?.content || "Small body text..."}
                             </p>
                         </EditableWrapper>
                     </div>
@@ -100,7 +112,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-16 text-xs font-mono text-slate-400 pt-0.5 shrink-0">xs</div>
                         <EditableWrapper type="typography" variant="bodyXs" className="flex-1">
                             <p className="m-0 leading-normal max-w-2xl" style={getInlineStyle('bodyXs')}>
-                                The quick brown fox jumps over the lazy dog. Extra small text is reserved for metadata, timestamps, chart axis labels, and subtle helper text below inputs.
+                                {typoSpec?.bodyXs?.content || "Extra small text..."}
                             </p>
                         </EditableWrapper>
                     </div>
@@ -117,7 +129,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">Mono</div>
                         <EditableWrapper type="typography" variant="mono" className="inline-block">
                             <div className="px-2 py-1 rounded inline-block" style={getInlineStyle('mono')}>
-                                UUID-8472-A9F3-XYZ
+                                {typoSpec?.mono?.content || "MONO-123"}
                             </div>
                         </EditableWrapper>
                     </div>
@@ -125,7 +137,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">Metric</div>
                         <EditableWrapper type="typography" variant="metric" className="inline-block">
                             <div className="tracking-tighter" style={getInlineStyle('metric')}>
-                                $24.5M
+                                {typoSpec?.metric?.content || "$0.00"}
                             </div>
                         </EditableWrapper>
                     </div>
@@ -133,7 +145,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-16 text-xs font-mono text-slate-400 shrink-0">Muted</div>
                         <EditableWrapper type="typography" variant="muted" className="inline-block">
                             <div style={getInlineStyle('muted')}>
-                                No data available for the selected period.
+                                {typoSpec?.muted?.content || "Muted text..."}
                             </div>
                         </EditableWrapper>
                     </div>
@@ -150,7 +162,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-24 text-xs font-mono text-slate-400 shrink-0">KPI Title</div>
                         <EditableWrapper type="typography" variant="kpiTitle" className="inline-block">
                             <div style={getInlineStyle('kpiTitle')}>
-                                Total Revenue
+                                {typoSpec?.kpiTitle?.content || "KPI Title"}
                             </div>
                         </EditableWrapper>
                     </div>
@@ -158,7 +170,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="w-24 text-xs font-mono text-slate-400 shrink-0">KPI Value</div>
                         <EditableWrapper type="typography" variant="kpiValue" className="inline-block">
                             <div style={getInlineStyle('kpiValue')}>
-                                $124.5k
+                                {typoSpec?.kpiValue?.content || "0"}
                             </div>
                         </EditableWrapper>
                     </div>
@@ -167,7 +179,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="px-4 py-2 bg-blue-600 rounded-md">
                             <EditableWrapper type="typography" variant="buttonText" className="inline-block">
                                 <div style={getInlineStyle('buttonText')}>
-                                    Primary Action
+                                    {typoSpec?.buttonText?.content || "Action"}
                                 </div>
                             </EditableWrapper>
                         </div>
@@ -178,7 +190,7 @@ export default function TypographyGallery({ isDarkMode }) {
                             <div className="w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600"></div>
                             <EditableWrapper type="typography" variant="navText" className="inline-block">
                                 <div style={getInlineStyle('navText')}>
-                                    Dashboard Home
+                                    {typoSpec?.navText?.content || "Nav Item"}
                                 </div>
                             </EditableWrapper>
                         </div>
@@ -188,7 +200,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="px-2.5 py-1.5 bg-slate-800 dark:bg-slate-700 rounded shadow-md">
                             <EditableWrapper type="typography" variant="tooltipText" className="inline-block">
                                 <div className={`text-white dark:text-slate-100`} style={{ ...getInlineStyle('tooltipText'), color: 'inherit' }}>
-                                    Last updated 2 hours ago
+                                    {typoSpec?.tooltipText?.content || "Tooltip text..."}
                                 </div>
                             </EditableWrapper>
                         </div>
@@ -198,7 +210,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 w-full border-b border-slate-200 dark:border-slate-700">
                             <EditableWrapper type="typography" variant="tableHeader" className="inline-block">
                                 <div style={getInlineStyle('tableHeader')}>
-                                    Transaction Type
+                                    {typoSpec?.tableHeader?.content || "Column"}
                                 </div>
                             </EditableWrapper>
                         </div>
@@ -208,7 +220,7 @@ export default function TypographyGallery({ isDarkMode }) {
                         <div className="px-4 py-2 w-full">
                             <EditableWrapper type="typography" variant="tableRow" className="inline-block">
                                 <div style={getInlineStyle('tableRow')}>
-                                    Payment sent to vendor
+                                    {typoSpec?.tableRow?.content || "Table data..."}
                                 </div>
                             </EditableWrapper>
                         </div>
