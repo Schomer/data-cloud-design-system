@@ -69,30 +69,30 @@ export default function ControlsGallery() {
                     <div className="flex flex-wrap items-center gap-4">
                         <EditableWrapper type="button" variant="primary">
                             <button
-                                className={`bg-[var(--bg)] hover:bg-[var(--hover-bg)] text-[var(--text)] text-sm transition-colors shadow-sm rounded-[var(--btn-radius)] font-[var(--btn-font-weight)]`}
+                                className={`bg-[var(--bg)] hover:bg-[var(--hover-bg)] text-[var(--test)] text-sm transition-colors shadow-sm rounded-[var(--btn-radius)] font-[var(--btn-font-weight)]`}
                                 style={{ ...buttonStyleVars, padding: `${btnSpec.paddingY}px ${btnSpec.paddingX}px` }}>
-                                {btnSpec.primaryLabel || "Primary Action"}
+                                {btnSpec.primaryLabel}
                             </button>
                         </EditableWrapper>
                         <EditableWrapper type="button" variant="secondary">
                             <button
                                 className={`bg-[var(--sec-bg)] dark:bg-[var(--sec-dark-bg)] hover:bg-[var(--sec-hover)] dark:hover:bg-[var(--sec-dark-hover)] text-[var(--sec-text)] dark:text-[var(--sec-dark-text)] text-sm border border-[var(--sec-border)] dark:border-[var(--sec-dark-border)] transition-colors shadow-sm rounded-[var(--btn-radius)] font-[var(--btn-font-weight)]`}
                                 style={{ ...buttonStyleVars, padding: `${btnSpec.paddingY}px ${btnSpec.paddingX}px` }}>
-                                {btnSpec.secondaryLabel || "Secondary"}
+                                {btnSpec.secondaryLabel}
                             </button>
                         </EditableWrapper>
                         <EditableWrapper type="button" variant="destructive">
                             <button
                                 className={`bg-[var(--dest-bg)] hover:bg-[var(--dest-hover)] text-[var(--dest-text)] text-sm transition-colors shadow-sm rounded-[var(--btn-radius)] font-[var(--btn-font-weight)]`}
                                 style={{ ...buttonStyleVars, padding: `${btnSpec.paddingY}px ${btnSpec.paddingX}px` }}>
-                                {btnSpec.destructiveLabel || "Destructive"}
+                                {btnSpec.destructiveLabel}
                             </button>
                         </EditableWrapper>
                         <EditableWrapper type="button" variant="ghost">
                             <button
                                 className={`text-[var(--ghost-text)] dark:text-[var(--ghost-dark-text)] hover:bg-[var(--ghost-hover)] dark:hover:bg-[var(--ghost-dark-hover)] text-sm transition-colors bg-transparent border border-transparent shadow-none rounded-[var(--btn-radius)] font-[var(--btn-font-weight)]`}
                                 style={{ ...buttonStyleVars, padding: `${btnSpec.paddingY}px ${btnSpec.paddingX}px` }}>
-                                {btnSpec.ghostLabel || "Ghost Button"}
+                                {btnSpec.ghostLabel}
                             </button>
                         </EditableWrapper>
                     </div>
