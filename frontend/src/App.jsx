@@ -212,7 +212,7 @@ function App() {
                                 </>
                             )}
 
-                            {activeSection === 'Typography' && <TypographyGallery />}
+                            {activeSection === 'Typography' && <TypographyGallery isDarkMode={darkMode} />}
                             {activeSection === 'Inputs & Controls' && <ControlsGallery />}
                             {activeSection === 'Navigation & Overlays' && <NavigationGallery />}
                             {activeSection === 'Feedback & Status' && <FeedbackGallery />}
@@ -229,7 +229,7 @@ function App() {
                     </div>
 
                     {/* Editor Sidebar */}
-                    <EditorSidebar />
+                    <EditorSidebar isDarkMode={darkMode} />
                 </div>
             </ChartColorProvider>
         </EditorProvider>
