@@ -57,6 +57,10 @@ export default function EditorSidebar({
                             <input type="text" value={currentSpec.primaryText} onChange={e => updateGlobalSpec('button', 'primaryText', e.target.value)} className="flex-1 bg-slate-50 dark:bg-[#121212] px-3 font-mono text-sm border-l border-slate-200 dark:border-slate-700 uppercase" />
                         </div>
                     </div>
+                    <div>
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Label Content</label>
+                        <input type="text" value={currentSpec.primaryLabel} onChange={e => updateGlobalSpec('button', 'primaryLabel', e.target.value)} className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-slate-700 rounded-md py-1.5 px-3 text-sm" />
+                    </div>
                 </div>}
 
                 {(!selectedVariant || selectedVariant === 'secondary') && <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
@@ -146,6 +150,10 @@ export default function EditorSidebar({
                         )}
 
                     </div>
+                    <div className="pt-2">
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Label Content</label>
+                        <input type="text" value={currentSpec.secondaryLabel} onChange={e => updateGlobalSpec('button', 'secondaryLabel', e.target.value)} className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-slate-700 rounded-md py-1.5 px-3 text-sm" />
+                    </div>
                 </div>}
 
                 {(!selectedVariant || selectedVariant === 'destructive') && <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
@@ -172,6 +180,10 @@ export default function EditorSidebar({
                             <input type="color" value={currentSpec.destructiveText} onInput={e => updateGlobalSpec('button', 'destructiveText', e.target.value)} className="w-10 h-full p-0 border-0 bg-transparent cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none" />
                             <input type="text" value={currentSpec.destructiveText} onChange={e => updateGlobalSpec('button', 'destructiveText', e.target.value)} className="flex-1 bg-slate-50 dark:bg-[#121212] px-3 font-mono text-sm border-l border-slate-200 dark:border-slate-700 uppercase" />
                         </div>
+                    </div>
+                    <div className="pt-2">
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Label Content</label>
+                        <input type="text" value={currentSpec.destructiveLabel} onChange={e => updateGlobalSpec('button', 'destructiveLabel', e.target.value)} className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-slate-700 rounded-md py-1.5 px-3 text-sm" />
                     </div>
                 </div>}
 
@@ -220,6 +232,10 @@ export default function EditorSidebar({
                             </div>
                         )}
 
+                    </div>
+                    <div className="pt-2">
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Label Content</label>
+                        <input type="text" value={currentSpec.ghostLabel} onChange={e => updateGlobalSpec('button', 'ghostLabel', e.target.value)} className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-slate-700 rounded-md py-1.5 px-3 text-sm" />
                     </div>
                 </div>}
 
@@ -393,6 +409,10 @@ export default function EditorSidebar({
                             </div>
                         </div>
                     )}
+                    <div>
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Default Title Content</label>
+                        <input type="text" value={currentSpec.defaultTitle} onChange={e => updateGlobalSpec('card', 'defaultTitle', e.target.value)} className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-slate-700 rounded-md py-1.5 px-3 text-sm" />
+                    </div>
 
                 </div>
 
@@ -796,11 +816,21 @@ export default function EditorSidebar({
                                 <div>
                                     <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Dark Text Color</label>
                                     <div className="flex border border-slate-200 dark:border-slate-700 rounded-md overflow-hidden h-9">
-                                        <input type="color" value={currentSpec[selectedVariant].darkColor} onInput={e => updateGlobalSpec('typography', selectedVariant, 'darkColor', e.target.value)} className="w-10 h-full p-0 border-0 bg-transparent cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none" />
                                         <input type="text" value={currentSpec[selectedVariant].darkColor} onChange={e => updateGlobalSpec('typography', selectedVariant, 'darkColor', e.target.value)} className="flex-1 bg-slate-50 dark:bg-[#121212] px-3 font-mono text-sm border-l border-slate-200 dark:border-slate-700 uppercase" />
                                     </div>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Text Content Editing */}
+                        <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                            <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Text Content</label>
+                            <textarea
+                                value={currentSpec[selectedVariant].content}
+                                onChange={e => updateGlobalSpec('typography', selectedVariant, 'content', e.target.value)}
+                                rows={3}
+                                className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-100 resize-none font-normal"
+                            />
                         </div>
 
                         {/* Background Color for Mono */}
