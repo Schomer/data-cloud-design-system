@@ -39,6 +39,23 @@ This plan outlines the steps to enable global synchronization of component text 
 #### [MODIFY] [TypographyGallery.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/components/TypographyGallery.jsx)
 - Loop through typography variants and use `globalSpecs.typography[variant].content` for the display text.
 
+### Phase 4: Centralized UI Components & Cross-Page Sync
+#### [NEW] [Typography.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/components/Typography.jsx)
+- Create a standard component that consumes `typoSpec` and renders headings/body text with global styles.
+
+#### [NEW] [Button.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/components/Button.jsx)
+- Create a standard button component that consumes `btnSpec` and supports variants (primary, secondary, ghost, destructive).
+
+#### [MODIFY] [App.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/App.jsx)
+- Use `Typography` component for all layout headers.
+- Update sidebar navigation to potentially use global text styles (optional but recommended).
+
+#### [MODIFY] [UpdateSkillsButton.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/components/UpdateSkillsButton.jsx)
+- Replace hardcoded emerald button with the new `Button` component (primary).
+
+#### [MODIFY] [DetailPanel.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/components/DetailPanel.jsx) and [DataTable.jsx](file:///Users/schomer/Desktop/JTC_Design_System/frontend/src/components/DataTable.jsx)
+- Replace static headers and internal buttons with the centralized components.
+
 ---
 
 ## Verification Plan
