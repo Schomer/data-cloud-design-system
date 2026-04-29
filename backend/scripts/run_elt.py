@@ -3,7 +3,7 @@ from google.cloud import bigquery
 client = bigquery.Client()
 
 # Dataset for analytics output
-DATASET_ID = "fin_clearing_fraud_analytics"
+DATASET_ID = "finance_data_analytics"
 
 def create_dataset():
     dataset = bigquery.Dataset(f"{client.project}.{DATASET_ID}")

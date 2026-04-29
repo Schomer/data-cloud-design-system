@@ -1,0 +1,31 @@
+
+> frontend@1.0.0 build
+> vite build
+
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 51 modules transformed.
+✗ Build failed in 937ms
+error during build:
+[vite:esbuild] Transform failed with 1 error:
+/Users/schomer/Desktop/Data Cloud Design System/frontend/src/components/UpdateSkillsButton.jsx:12:12: ERROR: The symbol "chartColors" has already been declared
+file: /Users/schomer/Desktop/Data Cloud Design System/frontend/src/components/UpdateSkillsButton.jsx:12:12
+
+The symbol "chartColors" has already been declared
+10 |      const [chartColors, setChartColors] = useState({});
+11 |      useEffect(() => { axios.get(`/api/chart_colors?theme_id=${activeThemeId}`).then(res => setChartColors(res.data))....
+12 |      const { chartColors } = useChartColors();
+   |              ^
+13 |      const [loading, setLoading] = useState(false);
+14 |  
+
+    at failureErrorWithLog (/Users/schomer/Desktop/Data Cloud Design System/frontend/node_modules/esbuild/lib/main.js:1467:15)
+    at /Users/schomer/Desktop/Data Cloud Design System/frontend/node_modules/esbuild/lib/main.js:736:50
+    at responseCallbacks.<computed> (/Users/schomer/Desktop/Data Cloud Design System/frontend/node_modules/esbuild/lib/main.js:603:9)
+    at handleIncomingPacket (/Users/schomer/Desktop/Data Cloud Design System/frontend/node_modules/esbuild/lib/main.js:658:12)
+    at Socket.readFromStdout (/Users/schomer/Desktop/Data Cloud Design System/frontend/node_modules/esbuild/lib/main.js:581:7)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)

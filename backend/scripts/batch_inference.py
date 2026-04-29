@@ -1,10 +1,10 @@
 from google.cloud import bigquery
 
 client = bigquery.Client()
-DATASET_ID = "fin_clearing_fraud_analytics"
+DATASET_ID = "finance_data_analytics"
 
 def batch_inference():
-    # Use the model to predict fraud on the enriched_transactions table.
+    # Use the model to predict anomalies on the enriched_transactions table.
     # Output to `flagged_transactions` Table.
     
     query = f"""
@@ -12,7 +12,7 @@ def batch_inference():
     SELECT
       *
     FROM
-      ML.PREDICT(MODEL `{client.project}.{DATASET_ID}.fraud_model`,
+      ML.PREDICT(MODEL `{client.project}.{DATASET_ID}.anomaly_model`,
         (
           SELECT
             transaction_id,
@@ -35,10 +35,10 @@ def batch_inference():
             `{client.project}.{DATASET_ID}.enriched_transactions`
         )
       )
-    # Filter only transactions that are predicted as fraud, or keep all to let the app filter? 
+    # Filter only transactions that are predicted as anomalous, or keep all to let the app filter? 
     # For investigation, we list suspicious transactions. 
-    # Let's keep all and order by predicted probability or just filter predicted fraud.
-    # We will keep all so the app can show everything and sort by fraud probability.
+    # Let's keep all and order by predicted probability or just filter predicted anomalies.
+    # We will keep all so the app can show everything and sort by anomaly probability.
     """
 
     print("Running batch inference job...")
@@ -47,7 +47,7 @@ def batch_inference():
     print(f"Table {DATASET_ID}.flagged_transactions successfully created.")
 
 def augment_table_schema():
-    # We want the user to mark the transaction as cleared or fraudulent in the app.
+    # We want the user to mark the transaction as cleared or anomalous in the app.
     # So we add a column `investigation_status` defaulting to 'PENDING'.
     query = f"""
     ALTER TABLE `{client.project}.{DATASET_ID}.flagged_transactions`

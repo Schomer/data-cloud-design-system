@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Layout, Settings2, Component } from 'lucide-react';
-
-import KPICard from './components/KPICard';
-import DataTable from './components/DataTable';
-import DataChart from './components/DataChart';
-import DetailPanel from './components/DetailPanel';
-import GeminiChat from './components/GeminiChat';
-import { EditorProvider } from './context/EditorContext';
+import { Moon, Sun, Layout, Settings2, Component, Home, AppWindow } from 'lucide-react';
+import { useEditor } from './context/EditorContext';
 import EditorSidebar from './components/EditorSidebar';
 import UpdateSkillsButton from './components/UpdateSkillsButton';
 import EditorModeToggle from './components/EditorModeToggle';
+import Typography from './components/Typography';
+import SkillEditorModal from './components/SkillEditorModal';
 
 // New Galleries
+import HomePage from './components/HomePage';
+import HowItWorksPage from './components/HowItWorksPage';
+import AppsPage from './components/AppsPage';
 import TypographyGallery from './components/TypographyGallery';
 import ControlsGallery from './components/ControlsGallery';
+import ThemeGallery from './components/ThemeGallery';
+import { Palette } from 'lucide-react';
 import NavigationGallery from './components/NavigationGallery';
 import FeedbackGallery from './components/FeedbackGallery';
 import TableGallery from './components/TableGallery';
@@ -23,216 +24,188 @@ import ChartGalleryDistributions from './components/ChartGalleryDistributions';
 import ChartGalleryMaps from './components/ChartGalleryMaps';
 import ChartGallerySpecialized from './components/ChartGallerySpecialized';
 import ChartGalleryProportions from './components/ChartGalleryProportions';
-import { ChartColorProvider } from './context/ChartColorContext';
+import GeminiChatGallery from './components/GeminiChatGallery';
+
+import AppInspectorOverlay from './components/AppInspectorOverlay';
+
+// Dynamically load all generated apps and metadata
+const generatedApps = import.meta.glob('./generated_apps/*.jsx', { eager: true });
+const generatedAppMeta = import.meta.glob('./generated_apps/*.json', { eager: true });
+
 
 function App() {
-    // Global sticker sheet controls
-    const [activeSection, setActiveSection] = useState('Core Components');
-    const [darkMode, setDarkMode] = useState(true);
+    // Apply global theme settings (needed for Tailwind dark mode on HTML element)
+    const { theme, setTheme } = useEditor();
+    const isDarkMode = theme === 'dark';
 
     useEffect(() => {
-        if (darkMode) {
+        if (isDarkMode) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
-    }, [darkMode]);
+    }, [isDarkMode]);
 
-    // Mock data
-    const mockTableCols = [
-        { header: 'ID', accessorKey: 'id', cellClassName: 'font-mono text-slate-500' },
-        { header: 'Customer', accessorKey: 'customer' },
-        { header: 'Amount', accessorKey: 'amount', cellClassName: 'font-medium' },
-        {
-            header: 'Status', accessorKey: 'status', render: (row) => (
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${row.status === 'Active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                    'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                    }`}>
-                    {row.status}
-                </span>
-            )
+    // Isolated Render mode for generated apps
+    const urlParams = new URLSearchParams(window.location.search);
+    const appId = urlParams.get('app');
+
+    if (appId) {
+        // Find the matching module from our eager glob
+        const modulePath = Object.keys(generatedApps).find(path => path.includes(`${appId}.jsx`));
+        const metaPath = Object.keys(generatedAppMeta).find(path => path.includes(`${appId}.json`));
+        
+        if (modulePath && generatedApps[modulePath]) {
+            const GeneratedComponent = generatedApps[modulePath].default;
+            const appMetadata = metaPath && generatedAppMeta[metaPath] ? generatedAppMeta[metaPath].default : { id: appId };
+            
+            return (
+                <div className="min-h-screen bg-slate-50 dark:bg-[#121212] font-sans p-8 transition-colors relative">
+                    <GeneratedComponent />
+                    <AppInspectorOverlay appMetadata={appMetadata} />
+                </div>
+            );
+        } else {
+            return (
+                <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold mb-2">App Layout Not Found</h2>
+                        <p className="text-slate-500">The layout "{appId}" could not be found or has been deleted.</p>
+                    </div>
+                </div>
+            );
         }
-    ];
+    }
 
-    const mockTableData = [
-        { id: 'CUST-001', customer: 'Acme Corp', amount: '$1,250.00', status: 'Active' },
-        { id: 'CUST-002', customer: 'Globex Inc', amount: '$3,400.00', status: 'Pending' },
-        { id: 'CUST-003', customer: 'Soylent', amount: '$850.00', status: 'Active' },
-        { id: 'CUST-004', customer: 'Initech', amount: '$4,200.00', status: 'Active' },
-    ];
+    // Global sticker sheet controls
+    const [activeSection, setActiveSection] = useState('Home');
 
-    const mockChartData = [
-        { label: 'Jan', value1: 400, value2: 240 },
-        { label: 'Feb', value1: 300, value2: 139 },
-        { label: 'Mar', value1: 200, value2: 980 },
-        { label: 'Apr', value1: 278, value2: 390 },
-        { label: 'May', value1: 189, value2: 480 },
-        { label: 'Jun', value1: 239, value2: 380 },
-    ];
 
-    const mockChatMessages = [
-        { role: 'user', content: 'What is our churn rate looking like this month?' },
-        { role: 'model', content: 'Based on the latest data, churn rate has decreased from 2.4% last month to 1.8% this month. This is primarily driven by higher retention in the Enterprise segment.' },
-    ];
+    // ... rest of the component remains largely the same, but remove the providers at the bottom
 
     return (
-        <EditorProvider>
-            <ChartColorProvider>
-                <div className="min-h-screen bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex">
-                    {/* Sidebar Controls */}
-                    <div id="main-nav-sidebar" className="w-72 bg-white dark:bg-[#1a1a1a] border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col h-screen sticky top-0 overflow-y-auto">
-                        <div className="flex items-center gap-2 font-semibold text-lg mb-8">
-                            <Component className="text-blue-500" size={24} />
-                            <span>JTC Design System</span>
-                        </div>
-
-                        <div className="flex-1 space-y-8">
-                            {/* Navigation */}
-                            <section>
-                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                    <Layout size={14} /> Libraries
-                                </h3>
-                                <nav className="space-y-1">
-                                    {[
-                                        'Core Components', 'Typography', 'Inputs & Controls', 'Navigation & Overlays', 'Feedback & Status',
-                                        'Tables & Data Grids',
-                                        'Charts: Standard', 'Charts: Time & Trends', 'Charts: Distributions', 'Charts: Maps & Geodata', 'Charts: Specialized', 'Charts: Proportions & Parts'
-                                    ].map((section) => (
-                                        <button
-                                            key={section}
-                                            onClick={() => setActiveSection(section)}
-                                            className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === section
-                                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
-                                                }`}
-                                        >
-                                            {section}
-                                        </button>
-                                    ))}
-                                </nav>
-                            </section>
-
-                            {/* Appearance Controls */}
-                            <section>
-                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                    <Settings2 size={14} /> Appearance
-                                </h3>
-
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm">Theme Mode</span>
-                                        <button
-                                            onClick={() => setDarkMode(!darkMode)}
-                                            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                                        >
-                                            {darkMode ? <Sun size={14} /> : <Moon size={14} />}
-                                        </button>
-                                    </div>
-                                    {/* The component switch */}
-                                    <EditorModeToggle />
-                                </div>
-                            </section>
-
-                            <UpdateSkillsButton />
-                        </div>
-                    </div>
-
-                    {/* Main Canvas */}
-                    <div className="flex-1 p-8 overflow-y-auto w-full">
-                        <div className="max-w-6xl mx-auto">
-
-                            {activeSection === 'Core Components' && (
-                                <>
-                                    <div className="mb-10 pb-6 border-b border-slate-200 dark:border-slate-800">
-                                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">Core Components</h1>
-                                        <p className="text-slate-500 mt-2">The fundamental building blocks assembled for specific data app scenarios.</p>
-                                    </div>
-                                    <div className="flex flex-col gap-12">
-                                        {/* KPI Cards */}
-                                        <section>
-                                            <h2 className="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-300">1. KPI Cards</h2>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                <KPICard title="Revenue" value="$42,390" trend="+12.5%" isPositive={true} />
-                                                <KPICard title="Active Users" value="1,249" trend="-2.1%" isPositive={false} />
-                                                <KPICard title="Server Cost" value="$845" trend="-5.4%" isPositive={true} />
-                                                <KPICard title="Conversion" value="4.8%" trend="+0.6%" isPositive={true} />
-                                            </div>
-                                        </section>
-
-                                        {/* Chart */}
-                                        <section>
-                                            <h2 className="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-300">2. Simple Tailwind Bar Chart</h2>
-                                            <DataChart data={mockChartData} title="Monthly Growth & Revenue" />
-                                        </section>
-
-                                        {/* Tables and Panels Layout */}
-                                        <section>
-                                            <h2 className="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-300">3. Data Table & Detail Panel</h2>
-                                            <div className="flex gap-4 items-start">
-                                                <div className="w-2/3">
-                                                    <DataTable
-                                                        columns={mockTableCols}
-                                                        data={mockTableData}
-                                                        title="Customer Directory"
-                                                    />
-                                                </div>
-                                                <div className="w-1/3">
-                                                    <DetailPanel
-                                                        title="Customer Overview"
-                                                        subtitle="CUST-002"
-                                                        riskScore={0.75}
-                                                        amount={3400.00}
-                                                        details={[
-                                                            { label: "Company Name", value: "Globex Inc" },
-                                                            { label: "Industry", value: "Manufacturing" },
-                                                        ]}
-                                                        customerDetails={[
-                                                            { label: "Account Age", value: "1.2 Years" },
-                                                        ]}
-                                                        actions={[
-                                                            { label: "Pause Account", primary: true, onClick: () => alert("Account paused") },
-                                                            { label: "Message", onClick: () => alert("Messaging customer") }
-                                                        ]}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </section>
-
-                                        {/* Gemini Chat */}
-                                        <section>
-                                            <h2 className="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-300">4. Gemini AI Chat Explorer</h2>
-                                            <div className="max-w-3xl">
-                                                <GeminiChat
-                                                    messages={mockChatMessages}
-                                                    onSendMessage={(msg) => alert(`You asked: ${msg}`)}
-                                                />
-                                            </div>
-                                        </section>
-                                    </div>
-                                </>
-                            )}
-
-                            {activeSection === 'Typography' && <TypographyGallery isDarkMode={darkMode} />}
-                            {activeSection === 'Inputs & Controls' && <ControlsGallery />}
-                            {activeSection === 'Navigation & Overlays' && <NavigationGallery />}
-                            {activeSection === 'Feedback & Status' && <FeedbackGallery />}
-                            {activeSection === 'Tables & Data Grids' && <TableGallery />}
-                            {activeSection === 'Chart Gallery' && <ChartGallery />}
-                            {activeSection === 'Charts: Standard' && <ChartGallery />}
-                            {activeSection === 'Charts: Time & Trends' && <ChartGalleryTime />}
-                            {activeSection === 'Charts: Distributions' && <ChartGalleryDistributions />}
-                            {activeSection === 'Charts: Maps & Geodata' && <ChartGalleryMaps />}
-                            {activeSection === 'Charts: Specialized' && <ChartGallerySpecialized />}
-                            {activeSection === 'Charts: Proportions & Parts' && <ChartGalleryProportions />}
-
-                        </div>
-                    </div>
-
-                    {/* Editor Sidebar */}
-                    <EditorSidebar isDarkMode={darkMode} />
+        <div className="min-h-screen bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
+            
+            {/* Top Header */}
+            <header className="w-full sticky top-0 z-50 h-16 bg-white dark:bg-[#1a1a1a] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shadow-sm">
+                <div className="flex items-center gap-2 font-semibold text-lg">
+                    <Component className="text-blue-500" size={24} />
+                    <span>DAK Hyperskills</span>
+                    {activeSection !== 'Themes Library' && <span className="ml-4 text-xs font-medium px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">Editing Theme</span>}
                 </div>
-            </ChartColorProvider>
-        </EditorProvider>
+                
+                <div className="flex items-center gap-4">
+                    <EditorModeToggle />
+                    
+                    <button
+                        onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
+                        className="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center"
+                        title="Toggle Theme"
+                    >
+                        {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
+                    
+                    <UpdateSkillsButton />
+                </div>
+            </header>
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar Controls */}
+                <div id="main-nav-sidebar" className="w-72 bg-white dark:bg-[#1a1a1a] border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col h-[calc(100vh-64px)] sticky top-16 overflow-y-auto">
+
+                <div className="flex-1 space-y-6">
+                    <nav className="space-y-1">
+                        <button
+                            onClick={() => setActiveSection('Home')}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 ${activeSection === 'Home'
+                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800/50 shadow-sm'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 font-medium border border-transparent'
+                                }`}
+                        >
+                            <Home size={16} className={activeSection === 'Home' ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"} /> App Home
+                        </button>
+
+                        <button
+                            onClick={() => setActiveSection('App Playground')}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 ${activeSection === 'App Playground'
+                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800/50 shadow-sm'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 font-medium border border-transparent'
+                                }`}
+                        >
+                            <AppWindow size={16} className={activeSection === 'App Playground' ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"} /> App Playground
+                        </button>
+                        <button
+                            onClick={() => setActiveSection('Themes Library')}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 ${activeSection === 'Themes Library'
+                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800/50 shadow-sm'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 font-medium border border-transparent'
+                                }`}
+                        >
+                            <Palette size={16} className={activeSection === 'Themes Library' ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"} /> Themes Library
+                        </button>
+
+                    </nav>
+
+                    {/* Navigation */}
+                    <section>
+                        <Typography variant="h6" as="h3" className="mb-2 px-3 flex items-center gap-2 text-slate-500 tracking-wider">
+                            <Layout size={16} className="text-slate-400 dark:text-slate-500" /> LIBRARIES
+                        </Typography>
+                        <nav className="space-y-1">
+                            {[
+                                'Gemini Chat',
+                                'Typography', 'Inputs & Controls', 'Navigation & Overlays', 'Feedback & Status',
+                                'Tables & Data Grids',
+                                'Charts: Standard', 'Charts: Time & Trends', 'Charts: Distributions', 'Charts: Maps & Geodata', 'Charts: Specialized', 'Charts: Proportions & Parts'
+                            ].map((section) => (
+                                <button
+                                    key={section}
+                                    onClick={() => setActiveSection(section)}
+                                    className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === section
+                                        ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+                                        }`}
+                                >
+                                    {section}
+                                </button>
+                            ))}
+                        </nav>
+                    </section>
+
+                </div>
+            </div>
+
+            {/* Main Canvas */}
+            <div className="flex-1 p-8 overflow-y-auto w-full h-[calc(100vh-64px)]">
+                <div className="max-w-6xl mx-auto">
+
+                    {activeSection === 'Themes Library' && <ThemeGallery onEditTheme={() => setActiveSection('Typography')} />}
+                    {activeSection === 'Home' && <HomePage onNavigate={(section) => setActiveSection(section)} />}
+                    {activeSection === 'How It Works' && <HowItWorksPage onBack={() => setActiveSection('Home')} />}
+                    {activeSection === 'App Playground' && <AppsPage />}
+                    {activeSection === 'Gemini Chat' && <GeminiChatGallery />}
+
+                    {activeSection === 'Typography' && <TypographyGallery />}
+                    {activeSection === 'Inputs & Controls' && <ControlsGallery />}
+                    {activeSection === 'Navigation & Overlays' && <NavigationGallery />}
+                    {activeSection === 'Feedback & Status' && <FeedbackGallery />}
+                    {activeSection === 'Tables & Data Grids' && <TableGallery />}
+                    {activeSection === 'Chart Gallery' && <ChartGallery />}
+                    {activeSection === 'Charts: Standard' && <ChartGallery />}
+                    {activeSection === 'Charts: Time & Trends' && <ChartGalleryTime />}
+                    {activeSection === 'Charts: Distributions' && <ChartGalleryDistributions />}
+                    {activeSection === 'Charts: Maps & Geodata' && <ChartGalleryMaps />}
+                    {activeSection === 'Charts: Specialized' && <ChartGallerySpecialized />}
+                    {activeSection === 'Charts: Proportions & Parts' && <ChartGalleryProportions />}
+
+                </div>
+            </div>
+
+            {/* Editor Sidebar */}
+            <EditorSidebar />
+            <SkillEditorModal />
+            </div>
+        </div>
     );
 }
 

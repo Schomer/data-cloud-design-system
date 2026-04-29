@@ -1,0 +1,10 @@
+# DAK Hyperskills Rules
+
+Whenever you are asked to create, modify, or plan a new application or component in this repository, you MUST ALWAYS read and strictly adhere to the following design system definitions:
+
+1. `design/visual_spec.skill.md` - Use this for all design tokens, colors, typography, and spacing.
+2. `app_approach.skill.md`, `orchestrator.skill.md`, and `design/layout.skill.md` - Follow the core architecture, layout rules, and component hierarchy defined here.
+3. `router.md` - Use this to map user intents to the correct page structures.
+4. `ui/` directory - This folder contains all the approved UI components. You must use these pre-defined components instead of writing custom elements from scratch.
+
+Do not write any new code until you have reviewed these files.

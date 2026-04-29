@@ -1,38 +1,87 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
+import Typography from './Typography';
 import KPICard from './KPICard';
 import ChartColorSwatches from './ChartColorSwatches';
 import { useChartColors } from '../context/ChartColorContext';
+import { useEditor } from '../context/EditorContext';
 import EditableWrapper from './EditableWrapper';
+import SkillEditButton from './SkillEditButton';
 
 const getDummyData = () => Array.from({ length: 7 }, () => Math.round(Math.random() * 100));
 
-const RealChartContainer = ({ title, description, options, height = "400px" }) => (
-    <div className="bg-white dark:bg-[#1a1a1a] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col group hover:border-blue-500/50 transition-colors">
-        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#1a1a1a]">
-            <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-                <p className="text-[11px] text-slate-500 mt-0.5">{description}</p>
+const RealChartContainer = ({ title, description, options, height = "500px", skillPath }) => {
+    const { theme, globalSpecs } = useEditor();
+    const chartSpec = globalSpecs?.[theme]?.chart;
+    
+    const titleVariant = chartSpec?.titleTypography || 'h3';
+    const subtitleVariant = chartSpec?.subtitleTypography || 'small';
+    const headerPadding = chartSpec?.headerPaddingY !== undefined ? chartSpec.headerPaddingY : 16;
+    
+    let chartVariant = 'bar';
+    if(skillPath) {
+        const match = skillPath.match(/charts\/(.*?)(_chart)?\.md/);
+        if(match && match[1]) {
+            chartVariant = match[1];
+        }
+    }
+
+    return (
+    <EditableWrapper type="chart" variant={chartVariant} skillPath={skillPath} hideSkillButton={true} className="w-full">
+        <div className="bg-white dark:bg-[#1a1a1a] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col group hover:border-blue-500/50 transition-colors">
+            <div 
+                className="px-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#1a1a1a]"
+                style={{ paddingTop: `${headerPadding}px`, paddingBottom: `${headerPadding}px` }}
+            >
+                <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                        <Typography variant={titleVariant} as="div" className="font-semibold text-slate-900 dark:text-slate-100 m-0">
+                            {title}
+                        </Typography>
+                    </div>
+                    <Typography variant={subtitleVariant} as="div" className="text-slate-500 m-0 leading-tight">
+                        {description}
+                    </Typography>
+                </div>
+                {skillPath && <SkillEditButton skillPath={skillPath} iconOnly={true} />}
+            </div>
+            <div className="p-5 bg-white dark:bg-[#121212]/50 relative" style={{ height: height }}>
+                <div className="absolute inset-0 p-5">
+                    <ReactECharts option={options} style={{ height: '100%', width: '100%' }} opts={{ renderer: 'svg' }} notMerge={true} />
+                </div>
             </div>
         </div>
-        <div className="p-5 flex-1 bg-white dark:bg-[#121212]/50 relative overflow-hidden" style={{ minHeight: height }}>
-            <ReactECharts
-                option={options}
-                style={{ height: '100%', width: '100%' }}
-                opts={{ renderer: 'svg' }}
-            />
-        </div>
-    </div>
-);
+    </EditableWrapper>
+    );
+};
 
 export default function ChartGallery() {
     const { chartColors } = useChartColors();
+    const { theme } = useEditor();
+    const isDarkMode = theme === 'dark';
 
     const baseTheme = {
         color: chartColors,
-        textStyle: { fontFamily: 'Inter, sans-serif' },
-        tooltip: { trigger: 'axis', backgroundColor: 'rgba(255, 255, 255, 0.95)', borderColor: '#e2e8f0', textStyle: { color: '#0f172a' } },
-        grid: { top: 30, right: 20, bottom: 20, left: 20, containLabel: true }
+        textStyle: {
+            fontFamily: 'Inter, sans-serif',
+            color: isDarkMode ? '#cbd5e1' : '#475569'
+        },
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+            borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+            textStyle: { color: isDarkMode ? '#f1f5f9' : '#0f172a' }
+        },
+        grid: { top: 30, right: 20, bottom: 20, left: 20, containLabel: true },
+        xAxis: {
+            axisLine: { lineStyle: { color: isDarkMode ? '#334155' : '#e2e8f0' } },
+            axisLabel: { color: isDarkMode ? '#94a3b8' : '#64748b' }
+        },
+        yAxis: {
+            axisLine: { show: false },
+            axisLabel: { color: isDarkMode ? '#94a3b8' : '#64748b' },
+            splitLine: { lineStyle: { color: isDarkMode ? 'rgba(51, 65, 85, 0.4)' : '#f1f5f9' } }
+        }
     };
 
     // --- Option Generators ---
@@ -157,13 +206,16 @@ export default function ChartGallery() {
     return (
         <div className="space-y-12 pb-24">
             <div className="mb-8 pb-4 border-b border-slate-200 dark:border-slate-800">
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100 mb-2">Standard Charts</h2>
-                <p className="text-slate-500 dark:text-slate-400">The core, essential visualizations for most analytical dashboards and reporting use cases.</p>
+                <div className="flex items-center mb-2">
+                    <h2 className="text-2xl font-semibold tracking-tight m-0">Standard Charts</h2>
+                    <SkillEditButton skillPath="ui/charts/shared_visuals.md" label="Shared Visuals Skill" />
+                </div>
+                <p className="text-slate-500">The core, essential visualizations for most analytical dashboards and reporting use cases.</p>
             </div>
 
-            <EditableWrapper type="chart" className="mb-8">
+            <div className="mb-8">
                 <ChartColorSwatches />
-            </EditableWrapper>
+            </div>
 
             <section>
                 <div className="flex items-center gap-2 mb-6 mt-4">
@@ -182,9 +234,9 @@ export default function ChartGallery() {
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Trends & Time</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <RealChartContainer title="Line Chart" description="Continuous trends over time" options={optLine} />
-                    <RealChartContainer title="Area Chart" description="Volume trends over time" options={optArea} />
-                    <RealChartContainer title="Stacked Area Chart" description="Cumulative volume trends" options={optStackedArea} />
+                    <RealChartContainer title="Line Chart" description="Continuous trends over time" options={optLine} skillPath="ui/charts/line_chart.md" />
+                    <RealChartContainer title="Area Chart" description="Volume trends over time" options={optArea} skillPath="ui/charts/area_chart.md" />
+                    <RealChartContainer title="Stacked Area Chart" description="Cumulative volume trends" options={optStackedArea} skillPath="ui/charts/area_chart.md" />
                 </div>
             </section>
 
@@ -193,10 +245,10 @@ export default function ChartGallery() {
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Comparisons & Amounts</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <RealChartContainer title="Column Chart" description="Vertical comparisons" options={optColumn} />
-                    <RealChartContainer title="Stacked Column Chart" description="Vertical cumulative comparisons" options={optStackedColumn} />
-                    <RealChartContainer title="Bar Chart" description="Horizontal comparisons" options={optBar} />
-                    <RealChartContainer title="Stacked Bar Chart" description="Horizontal cumulative comparisons" options={optStackedBar} />
+                    <RealChartContainer title="Column Chart" description="Vertical comparisons" options={optColumn} skillPath="ui/charts/column_chart.md" />
+                    <RealChartContainer title="Stacked Column Chart" description="Vertical cumulative comparisons" options={optStackedColumn} skillPath="ui/charts/column_chart.md" />
+                    <RealChartContainer title="Bar Chart" description="Horizontal comparisons" options={optBar} skillPath="ui/charts/bar_chart.md" />
+                    <RealChartContainer title="Stacked Bar Chart" description="Horizontal cumulative comparisons" options={optStackedBar} skillPath="ui/charts/bar_chart.md" />
                 </div>
             </section>
 
@@ -205,9 +257,9 @@ export default function ChartGallery() {
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Proportions & Distributions</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <RealChartContainer title="Pie Chart" description="Part-to-whole relationships" options={optPie} />
-                    <RealChartContainer title="Donut Chart" description="Hollow part-to-whole relationships" options={optDonut} />
-                    <RealChartContainer title="Scatter Chart" description="Multi-variable distribution" options={optScatter} />
+                    <RealChartContainer title="Pie Chart" description="Part-to-whole relationships" options={optPie} skillPath="ui/charts/pie_chart.md" />
+                    <RealChartContainer title="Donut Chart" description="Hollow part-to-whole relationships" options={optDonut} skillPath="ui/charts/donut_chart.md" />
+                    <RealChartContainer title="Scatter Chart" description="Multi-variable distribution" options={optScatter} skillPath="ui/charts/scatter_plot.md" />
                 </div>
             </section>
 

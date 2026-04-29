@@ -1,0 +1,47 @@
+# Data Cloud App Playground - Example Prompts
+
+Copy and paste these prompts into the App Playground to test how the AI generates different application archetypes based on your Persona and Goal!
+
+---
+
+## 📊 Business Analyst / Operations Manager (Archetype: Dashboard / Scorecard)
+*These prompts focus on high-level operational metrics, trend tracking, and multi-chart monitoring grids.*
+
+I need an operational dashboard to track our daily active users (DAU) and monthly recurring revenue (MRR). Show me a top row of KPI cards for total users, revenue, churn rate, and active sessions. Below that, include a line chart showing 30-day user growth, and a bar chart showing revenue by region.
+
+Create a supply chain scorecard. I need big numbers at the top for Total Inventory Value, Orders Pending, and Return Rate. Underneath, build a dual-column layout with a line chart tracking delivery times over the last quarter, and a data table listing our top 10 underperforming warehouses.
+
+Build an e-commerce sales monitor. Put a global date range picker at the very top. I need KPI metrics for Gross Sales, Net Conversions, and Cart Abandonment. Include an area chart showing daily gross sales vs net sales, and a small pie chart showing traffic sources.
+
+---
+
+## 🔬 Data Scientist / Researcher (Archetype: Data Explorer / Analytical App)
+*These prompts focus on complex analysis, sidebars with granular filtering, and statistical visualizations.*
+
+I'm analyzing customer churn. Build a data explorer layout with a left sidebar containing complex filtering options for Account Age, Subscription Tier, and Last Login Date. The main canvas should have a dense scatter plot showing Account Age vs Lifetime Value, and a heatmap showing churn correlation across geographical regions.
+
+Create an A/B testing analytical app for our marketing experiments. I need a top-level selection control to toggle between Control and Variant A groups. The main view should feature a diverging bar chart comparing conversion metric lift, and a ridgeline plot showing the distribution of time-on-site for both groups.
+
+Build a financial risk modeling explorer. I need a sidebar to toggle between different risk tiers. The main canvas should have an interactive candlestick chart showing simulated stock behaviors, and a boxplot comparing the variance of returns across our three main portfolio categories.
+
+---
+
+## 📈 Executive / C-Suite (Archetype: Executive Summary / Strategic Overview)
+*These prompts focus on massive, highly readable numbers, clean minimalistic grids, and high-level trends.*
+
+I need a high-level executive summary for Q3 company performance. Give me a clean, simple layout with massive KPI cards for Total Revenue, Profit Margin, and Customer Acquisition Cost. Below that, just show one beautifully simple line chart tracking our growth against our Q3 target, and a small data table of our 3 biggest closing deals.
+
+Build me a strategic overview for my iPad. I want 4 prominent KPI tiles at the top showing global market share, total active campaigns, ad spend, and ROI. Below that, I just want a world map chart visualizing our revenue heat across North America and Europe, and no confusing tables.
+
+Create a minimalist CEO morning brief app. I need a clean grid with three big KPI numbers for Cash on Hand, Burn Rate, and Runway. Underneath, give me a simple timeline visualization showing upcoming major product launches, and a small area chart showing cash flow.
+
+---
+
+## 🛠️ Data Engineer / Data Steward (Archetype: Data Cleaning Utility / Process Monitor)
+*These prompts focus on data grids, logs, process health metrics, and pipeline monitoring.*
+
+Build a data quality monitoring utility for our ETL pipelines. I need a top row of KPIs showing Total Rows Processed, Error Rate, and Null Value Count. The main section should be a large data table displaying recently ingested records with their validation status, and a small gauge chart showing overall database health.
+
+Create a workflow tracker for our API ingestion process. Put a cohort filter at the top. The main canvas needs a Sankey diagram showing the flow of records from raw ingestion to validation, then to our cleaned tables and failure queues. Include a data table at the bottom showing the exact error logs.
+
+I need an anomaly detection monitor. Show me KPI cards for Jobs Running, Jobs Failed, and Latency. The main view should have a large scatter plot mapping query volume vs execution time, highlighting outliers in red, and a sortable data grid beneath it so I can see exactly which queries are timing out.

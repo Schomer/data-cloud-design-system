@@ -1,116 +1,429 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 const EditorContext = createContext();
 
-export function EditorProvider({ children }) {
-    // Store the global specifications for components that we will eventually export.
-    const [globalSpecs, setGlobalSpecs] = useState({
+/**
+ * Deep merge two objects.
+ */
+function deepMerge(target, source) {
+    if (!source) return target;
+    const output = { ...target };
+    if (isObject(target) && isObject(source)) {
+        Object.keys(source).forEach(key => {
+            if (isObject(source[key])) {
+                if (!(key in target)) {
+                    Object.assign(output, { [key]: source[key] });
+                } else {
+                    output[key] = deepMerge(target[key], source[key]);
+                }
+            } else {
+                Object.assign(output, { [key]: source[key] });
+            }
+        });
+    }
+    return output;
+}
+
+function isObject(item) {
+    return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+const initialSpecs = {
+    light: {
         button: {
-            primaryBg: '#059669', // emerald-600 baseline
-            primaryHoverBg: '#047857', // emerald-700
-            primaryText: '#000000',
+            primaryBg: '#2563eb',
+            primaryHoverBg: '#1d4ed8',
+            primaryText: '#ffffff',
             primaryLabel: 'Primary Action',
             secondaryBg: '#ffffff',
-            secondaryHoverBg: '#f8fafc', // slate-50
-            secondaryDarkBg: '#262626', // neutral bg
-            secondaryDarkHoverBg: '#1e293b', // slate-800
-            secondaryText: '#334155', // slate-700
-            secondaryDarkText: '#e2e8f0', // slate-200
-            secondaryBorder: '#e2e8f0', // slate-200
-            secondaryDarkBorder: '#334155', // slate-700
+            secondaryHoverBg: '#f8fafc',
+            secondaryText: '#475569',
+            secondaryBorder: '#e2e8f0',
             secondaryLabel: 'Secondary',
-            destructiveBg: '#e11d48', // rose-600
-            destructiveHoverBg: '#be123c', // rose-700
+            destructiveBg: '#ef4444',
+            destructiveHoverBg: '#dc2626',
             destructiveText: '#ffffff',
             destructiveLabel: 'Destructive',
-            ghostText: '#2563eb', // blue-600
-            ghostDarkText: '#60a5fa', // blue-400
-            ghostHoverBg: '#eff6ff', // blue-50
-            ghostDarkHoverBg: '#1e3a8a', // blue-900 with some opacity later
+            ghostText: '#2563eb',
+            ghostHoverBg: '#eff6ff',
             ghostLabel: 'Ghost Button',
             borderRadius: 8,
             paddingX: 16,
             paddingY: 8,
             fontWeight: '500',
+            typographyVariant: 'p',
         },
         input: {
             bg: '#ffffff',
-            darkBg: '#121212',
-            borderColor: '#e2e8f0', // slate-200
-            darkBorderColor: '#1e293b', // slate-800
+            borderColor: '#e2e8f0',
+            focusRingColor: '#3b82f6',
             borderRadius: 8,
-            paddingX: 12, // px-3
-            paddingY: 8,  // py-2
+            paddingX: 12,
+            paddingY: 8,
             placeholder: 'Enter text...',
+            textColor: '#0f172a',
+            typographyVariant: 'p',
+        },
+        checkbox: {
+            bg: '#3b82f6',
+            borderColor: '#e2e8f0',
+            textColor: '#475569',
+            typographyVariant: 'p',
+        },
+        radio: {
+            bg: '#ffffff',
+            dotColor: '#3b82f6',
+            textColor: '#475569',
+            typographyVariant: 'p',
+        },
+        switch: {
+            bgOn: '#3b82f6',
+            bgOff: '#e2e8f0',
+            circleOn: '#ffffff',
+            circleOff: '#ffffff',
+        },
+        segmented: {
+            bg: '#f1f5f9',
+            selectedBg: '#ffffff',
+            selectedText: '#0f172a',
+            textColor: '#64748b',
+            typographyVariant: 'small',
         },
         card: {
             bg: '#ffffff',
-            darkBg: '#1a1a1a',
-            borderColor: '#e2e8f0', // slate-200
-            darkBorderColor: '#1e293b', // slate-800
-            borderRadius: 12, // xl
-            padding: 20, // p-5
-            titleColor: '#64748b', // slate-500
-            darkTitleColor: '#94a3b8', // slate-400
-            valueColor: '#0f172a', // slate-900
-            darkValueColor: '#3b82f6', // blue-500
+            borderColor: '#e2e8f0',
+            borderRadius: 12,
+            padding: 20,
+            titleColor: '#64748b',
+            valueColor: '#0f172a',
             defaultTitle: 'KPI Metric',
+            titleTypography: 'xs',
+            valueTypography: 'h2',
         },
         nav: {
-            activeText: '#2563eb', // blue-600
-            darkActiveText: '#60a5fa', // blue-400
-            activeBorder: '#3b82f6', // blue-500
-            inactiveText: '#64748b', // slate-500
-            darkInactiveText: '#cbd5e1', // slate-300
-            hoverText: '#334155', // slate-700
-            darkHoverText: '#e2e8f0', // slate-200
+            bg: '#ffffff',
+            borderColor: '#e2e8f0',
+            activeText: '#2563eb',
+            activeBorder: '#3b82f6',
+            inactiveText: '#64748b',
+            hoverText: '#0f172a',
             defaultText: 'Nav Item',
+            typographyVariant: 'small',
+        },
+        wizard: {
+            stepBg: '#ffffff',
+            stepBorder: '#e2e8f0',
+            activeBg: '#ebf5ff',
+            activeBorder: '#3b82f6',
+            activeText: '#1d4ed8',
+            completedBg: '#ecfdf5',
+            completedBorder: '#10b981',
+            completedText: '#047857',
+            inactiveText: '#64748b',
         },
         overlay: {
             bg: '#ffffff',
-            darkBg: '#1a1a1a',
-            borderColor: '#e2e8f0', // slate-200
-            darkBorderColor: '#1e293b', // slate-800
-            borderRadius: 12, // 12px for xl
+            borderColor: '#e2e8f0',
+            textColor: '#64748b',
+            headerTextColor: '#0f172a',
+            footerBg: '#f8fafc',
+            borderRadius: 12,
             title: 'Overlay Modal',
         },
         table: {
             bg: '#ffffff',
-            darkBg: '#1a1a1a',
-            borderColor: '#e2e8f0', // slate-200
-            darkBorderColor: '#1e293b', // slate-800
-            headerText: '#64748b', // slate-500
-            darkHeaderText: '#94a3b8', // slate-400
-            rowText: '#0f172a', // slate-900
-            darkRowText: '#cbd5e1', // slate-300
-            rowBorder: '#f1f5f9', // slate-100
-            darkRowBorder: '#262626', // Custom dark border
-            borderRadius: 12, // xl
-            headerContent: 'Column Header',
+            borderColor: '#e2e8f0',
+            headerText: '#64748b',
+            rowText: '#475569',
+            rowBorder: '#f1f5f9',
+            borderRadius: 12,
+            headerTypography: 'xs',
+            rowTypography: 'p',
+        },
+        filterChip: {
+            bg: '#eff6ff',
+            borderColor: '#bfdbfe',
+            textColor: '#1d4ed8',
+            borderRadius: 9999,
+        },
+        tooltip: {
+            bg: '#0f172a',
+            textColor: '#ffffff',
+            typographyVariant: 'xs',
         },
         typography: {
-            h1: { fontSize: 36, fontWeight: '800', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: '-0.025em', lineHeight: '1', content: 'Display Headline' },
-            h2: { fontSize: 30, fontWeight: '700', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: '-0.025em', lineHeight: '1.25', content: 'Page Title' },
-            h3: { fontSize: 24, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: '-0.025em', lineHeight: '1.375', content: 'Section Header' },
-            h4: { fontSize: 20, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: '-0.025em', lineHeight: '1.375', content: 'Card Title' },
-            h5: { fontSize: 18, fontWeight: '500', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: '-0.025em', lineHeight: '1.375', content: 'Subsection' },
-            h6: { fontSize: 14, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#64748b', darkColor: '#94a3b8', letterSpacing: '0.05em', lineHeight: '1.375', textTransform: 'uppercase', content: 'Subtitle' },
-            bodyBase: { fontSize: 16, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#334155', darkColor: '#cbd5e1', letterSpacing: 'normal', lineHeight: '1.625', content: 'The quick brown fox jumps over the lazy dog. This base text size is used for primary article content, long descriptions, or modal body text. It offers the best readability for long-form reading.' },
-            bodySmall: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#475569', darkColor: '#94a3b8', letterSpacing: 'normal', lineHeight: '1.625', content: 'The quick brown fox jumps over the lazy dog. Small text is commonly used for data table rows, secondary descriptions, or UI element labels where space is tighter.' },
-            bodyXs: { fontSize: 12, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#64748b', darkColor: '#64748b', letterSpacing: 'normal', lineHeight: '1.5', content: 'The quick brown fox jumps over the lazy dog. Extra small text is reserved for metadata, timestamps, chart axis labels, and subtle helper text below inputs.' },
-            mono: { fontSize: 14, fontWeight: '400', fontFamily: 'monospace', color: '#1e293b', darkColor: '#e2e8f0', bg: '#f1f5f9', darkBg: '#1e293b', letterSpacing: 'normal', lineHeight: '1.5', content: 'UUID-8472-A9F3-XYZ' },
-            metric: { fontSize: 36, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#2563eb', darkColor: '#60a5fa', letterSpacing: '-0.05em', lineHeight: '1', content: '$24.5M' },
-            muted: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#94a3b8', darkColor: '#64748b', fontStyle: 'italic', letterSpacing: 'normal', lineHeight: '1.5', content: 'No data available for the selected period.' },
-            kpiTitle: { fontSize: 14, fontWeight: '500', fontFamily: '"Inter", sans-serif', color: '#64748b', darkColor: '#94a3b8', letterSpacing: 'normal', lineHeight: '1.25', content: 'Total Revenue' },
-            kpiValue: { fontSize: 30, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: '-0.025em', lineHeight: '1.25', content: '$124.5k' },
-            buttonText: { fontSize: 14, fontWeight: '500', fontFamily: '"Inter", sans-serif', color: '#ffffff', darkColor: '#ffffff', letterSpacing: 'normal', lineHeight: '1.25', content: 'Primary Action' },
-            navText: { fontSize: 14, fontWeight: '500', fontFamily: '"Inter", sans-serif', color: '#64748b', darkColor: '#94a3b8', letterSpacing: 'normal', lineHeight: '1.25', content: 'Dashboard Home' },
-            tooltipText: { fontSize: 12, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#f8fafc', letterSpacing: 'normal', lineHeight: '1.5', content: 'Last updated 2 hours ago' },
-            tableHeader: { fontSize: 12, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#64748b', darkColor: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: '1', content: 'Transaction Type' },
-            tableRow: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#0f172a', darkColor: '#cbd5e1', letterSpacing: 'normal', lineHeight: '1.25', content: 'Payment sent to vendor' }
+            h1: { fontSize: 48, fontWeight: '700', fontFamily: '"Inter", sans-serif', color: '#0f172a', letterSpacing: '-0.02em', lineHeight: '1.2', content: 'Design System' },
+            h2: { fontSize: 30, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', letterSpacing: '-0.01em', lineHeight: '1.3', content: 'Main Heading' },
+            h3: { fontSize: 24, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', letterSpacing: 'normal', lineHeight: '1.4', content: 'Sub-section' },
+            h4: { fontSize: 18, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', letterSpacing: 'normal', lineHeight: '1.5', content: 'Minor Title' },
+            h5: { fontSize: 16, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', letterSpacing: 'normal', lineHeight: '1.5', content: 'Card Header' },
+            h6: { fontSize: 14, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#0f172a', letterSpacing: 'normal', lineHeight: '1.5', content: 'Utility Title' },
+            p: { fontSize: 16, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#475569', letterSpacing: 'normal', lineHeight: '1.6', content: 'Standard body text for reading descriptions.' },
+            small: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#64748b', letterSpacing: 'normal', lineHeight: '1.5', content: 'Caption or fine print.' },
+            xs: { fontSize: 12, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#64748b', letterSpacing: 'normal', lineHeight: '1.5', content: 'Extra small and utility text.' },
+            mono: { fontSize: 14, fontWeight: '400', fontFamily: 'monospace', color: '#475569', bg: '#f1f5f9', letterSpacing: 'normal', lineHeight: '1.5', content: 'UUID-8472-A9F3-XYZ' },
+            muted: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#94a3b8', fontStyle: 'italic', letterSpacing: 'normal', lineHeight: '1.5', content: 'No data available for the selected period.' }
+        },
+        alert: {
+            infoBg: '#eff6ff',
+            infoBorder: '#bfdbfe',
+            infoIcon: '#60a5fa',
+            infoTitle: '#1e40af',
+            infoText: '#1d4ed8',
+            successBg: '#ecfdf5',
+            successBorder: '#a7f3d0',
+            successIcon: '#34d399',
+            successTitle: '#065f46',
+            successText: '#047857',
+            warningBg: '#fffbeb',
+            warningBorder: '#fde68a',
+            warningIcon: '#fbbf24',
+            warningTitle: '#92400e',
+            warningText: '#b45309',
+            errorBg: '#fff1f2',
+            errorBorder: '#fecdd3',
+            errorIcon: '#fb7185',
+            errorTitle: '#9f1239',
+            errorText: '#be123c',
+            borderRadius: 6,
+        },
+        loader: {
+            spinnerColor: '#2563eb',
+            spinnerSecondaryColor: '#94a3b8',
+            spinnerSuccessColor: '#10b981',
+            progressBg: '#e2e8f0',
+            progressFill: '#2563eb',
+            borderRadius: 4,
+        },
+        chart: {
+            titleTypography: 'h3',
+            subtitleTypography: 'small',
+            headerPaddingY: 16,
         }
+    },
+    dark: {
+        button: {
+            primaryBg: '#2563eb',
+            primaryHoverBg: '#1d4ed8',
+            primaryText: '#ffffff',
+            primaryLabel: 'Primary Action',
+            secondaryBg: '#262626',
+            secondaryHoverBg: '#1e293b',
+            secondaryText: '#e2e8f0',
+            secondaryBorder: '#334155',
+            secondaryLabel: 'Secondary',
+            destructiveBg: '#ef4444',
+            destructiveHoverBg: '#dc2626',
+            destructiveText: '#ffffff',
+            destructiveLabel: 'Destructive',
+            ghostText: '#60a5fa',
+            ghostHoverBg: '#1e3a8a',
+            ghostLabel: 'Ghost Button',
+            borderRadius: 8,
+            paddingX: 16,
+            paddingY: 8,
+            fontWeight: '500',
+            typographyVariant: 'p',
+        },
+        input: {
+            bg: '#121212',
+            borderColor: '#1e293b',
+            focusRingColor: '#3b82f6',
+            borderRadius: 8,
+            paddingX: 12,
+            paddingY: 8,
+            placeholder: 'Enter text...',
+            textColor: '#f8fafc',
+            typographyVariant: 'p',
+        },
+        checkbox: {
+            bg: '#3b82f6',
+            borderColor: '#334155',
+            textColor: '#cbd5e1',
+            typographyVariant: 'p',
+        },
+        radio: {
+            bg: '#121212',
+            dotColor: '#3b82f6',
+            textColor: '#cbd5e1',
+            typographyVariant: 'p',
+        },
+        switch: {
+            bgOn: '#3b82f6',
+            bgOff: '#334155',
+            circleOn: '#ffffff',
+            circleOff: '#cbd5e1',
+        },
+        segmented: {
+            bg: '#121212',
+            selectedBg: '#262626',
+            selectedText: '#60a5fa',
+            textColor: '#94a3b8',
+            typographyVariant: 'small',
+        },
+        card: {
+            bg: '#1a1a1a',
+            borderColor: '#1e293b',
+            borderRadius: 12,
+            padding: 20,
+            titleColor: '#94a3b8',
+            valueColor: '#3b82f6',
+            defaultTitle: 'KPI Metric',
+            titleTypography: 'xs',
+            valueTypography: 'h2',
+        },
+        nav: {
+            bg: '#1a1a1a',
+            borderColor: '#1e293b',
+            activeText: '#60a5fa',
+            activeBorder: '#3b82f6',
+            inactiveText: '#cbd5e1',
+            hoverText: '#e2e8f0',
+            defaultText: 'Nav Item',
+            typographyVariant: 'small',
+        },
+        wizard: {
+            stepBg: '#121212',
+            stepBorder: '#1e293b',
+            activeBg: '#1e3a8a',
+            activeBorder: '#3b82f6',
+            activeText: '#bfdbfe',
+            completedBg: '#064e3b',
+            completedBorder: '#10b981',
+            completedText: '#a7f3d0',
+            inactiveText: '#94a3b8',
+        },
+        overlay: {
+            bg: '#1a1a1a',
+            borderColor: '#1e293b',
+            textColor: '#94a3b8',
+            headerTextColor: '#f8fafc',
+            footerBg: '#121212',
+            borderRadius: 12,
+            title: 'Overlay Modal',
+        },
+        table: {
+            bg: '#1a1a1a',
+            borderColor: '#1e293b',
+            headerText: '#94a3b8',
+            rowText: '#cbd5e1',
+            rowBorder: '#1e293b',
+            borderRadius: 12,
+            headerTypography: 'xs',
+            rowTypography: 'p',
+        },
+        filterChip: {
+            bg: '#1e3a8a',
+            borderColor: '#1e4ed8',
+            textColor: '#f8fafc',
+            borderRadius: 9999,
+        },
+        tooltip: {
+            bg: '#334155',
+            textColor: '#f8fafc',
+            typographyVariant: 'xs',
+        },
+        typography: {
+            h1: { fontSize: 48, fontWeight: '700', fontFamily: '"Inter", sans-serif', color: '#f8fafc', letterSpacing: '-0.02em', lineHeight: '1.2', content: 'Design System' },
+            h2: { fontSize: 30, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#f8fafc', letterSpacing: '-0.01em', lineHeight: '1.3', content: 'Main Heading' },
+            h3: { fontSize: 24, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#f8fafc', letterSpacing: 'normal', lineHeight: '1.4', content: 'Sub-section' },
+            h4: { fontSize: 18, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#f8fafc', letterSpacing: 'normal', lineHeight: '1.5', content: 'Minor Title' },
+            h5: { fontSize: 16, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#f8fafc', letterSpacing: 'normal', lineHeight: '1.5', content: 'Card Header' },
+            h6: { fontSize: 14, fontWeight: '600', fontFamily: '"Inter", sans-serif', color: '#f8fafc', letterSpacing: 'normal', lineHeight: '1.5', content: 'Utility Title' },
+            p: { fontSize: 16, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#cbd5e1', letterSpacing: 'normal', lineHeight: '1.6', content: 'Standard body text for reading descriptions.' },
+            small: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#94a3b8', letterSpacing: 'normal', lineHeight: '1.5', content: 'Caption or fine print.' },
+            xs: { fontSize: 12, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#94a3b8', letterSpacing: 'normal', lineHeight: '1.5', content: 'Extra small and utility text.' },
+            mono: { fontSize: 14, fontWeight: '400', fontFamily: 'monospace', color: '#cbd5e1', bg: '#1e293b', letterSpacing: 'normal', lineHeight: '1.5', content: 'UUID-8472-A9F3-XYZ' },
+            muted: { fontSize: 14, fontWeight: '400', fontFamily: '"Inter", sans-serif', color: '#64748b', fontStyle: 'italic', letterSpacing: 'normal', lineHeight: '1.5', content: 'No data available for the selected period.' }
+        },
+        alert: {
+            infoBg: '#1e3a8a', // blue-900/20 in tailwind roughly, backing it to hex
+            infoBorder: '#1e40af',
+            infoIcon: '#3b82f6',
+            infoTitle: '#93c5fd',
+            infoText: '#60a5fa',
+            successBg: '#064e3b', // emerald-900/20
+            successBorder: '#065f46',
+            successIcon: '#10b981',
+            successTitle: '#6ee7b7',
+            successText: '#34d399',
+            warningBg: '#78350f', // amber-900/20
+            warningBorder: '#92400e',
+            warningIcon: '#f59e0b',
+            warningTitle: '#fcd34d',
+            warningText: '#fbbf24',
+            errorBg: '#881337', // rose-900/20
+            errorBorder: '#9f1239',
+            errorIcon: '#f43f5e',
+            errorTitle: '#fda4af',
+            errorText: '#fb7185',
+            borderRadius: 6,
+        },
+        loader: {
+            spinnerColor: '#3b82f6',
+            spinnerSecondaryColor: '#64748b',
+            spinnerSuccessColor: '#10b981',
+            progressBg: '#334155',
+            progressFill: '#3b82f6',
+            borderRadius: 4,
+        },
+        chart: {
+            titleTypography: 'h3',
+            subtitleTypography: 'small',
+            headerPaddingY: 16,
+        }
+    }
+};
 
-    });
+export function EditorProvider({ children }) {
+    // Store the global specifications for components that we will eventually export.
+        const [globalSpecs, setGlobalSpecs] = useState(initialSpecs);
+    const [theme, setTheme] = useState('dark'); // 'light' or 'dark'
+    const [activeThemeId, setActiveThemeId] = useState('dak_default');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const saveTimeoutRef = useRef(null);
+    const hasInitialLoadedRef = useRef(false);
+
+    // Fetch initial specs and theme
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [specsRes, themeRes] = await Promise.all([
+                    axios.get(`/api/specs?theme_id=${activeThemeId}`),
+                    axios.get('/api/theme')
+                ]);
+                
+                if (specsRes.data && Object.keys(specsRes.data).length > 0) {
+                    setGlobalSpecs(prev => {
+                        let data = specsRes.data;
+                        if (data && !data.light && !data.dark) {
+                            data = { light: data, dark: initialSpecs.dark };
+                        }
+                        return deepMerge(prev, data);
+                    });
+                }
+                
+                if (themeRes.data && themeRes.data.theme) {
+                    setTheme(themeRes.data.theme);
+                }
+            } catch (err) {
+                console.error("Failed to fetch initial data", err);
+            } finally {
+                setIsInitialLoad(false);
+            }
+        };
+        fetchData();
+    }, [activeThemeId]);
+
+    // Save to API when theme changes
+    useEffect(() => {
+        if (isInitialLoad || !hasInitialLoadedRef.current) return;
+        axios.post('/api/theme', { theme }).catch(e => console.error("Failed to save theme", e));
+    }, [theme, isInitialLoad]);
+
+    // Automated saving is removed to prevent cross-contamination on theme load.
+    // It is now handled directly by updateGlobalSpec.
 
     // What component type is currently selected? (e.g., 'button', 'input')
     const [selectedType, setSelectedType] = useState(null);
@@ -118,7 +431,18 @@ export function EditorProvider({ children }) {
     const [selectedVariant, setSelectedVariant] = useState(null);
 
     // Global editor mode: 'edit' or 'preview'
-    const [editorMode, setEditorMode] = useState('edit');
+    const [editorMode, setEditorMode] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('app')) {
+                return 'preview';
+            }
+        }
+        return 'edit';
+    });
+
+    // Skill currently being edited (path to the skill file, null if closed)
+    const [editingSkill, setEditingSkill] = useState(null);
 
     useEffect(() => {
         const handleGlobalClick = (e) => {
@@ -135,43 +459,70 @@ export function EditorProvider({ children }) {
         };
         document.addEventListener('click', handleGlobalClick);
         return () => document.removeEventListener('click', handleGlobalClick);
-    }, []);
+    }, [editorMode]);
 
     const updateGlobalSpec = (type, key, ...args) => {
+        let newState = null;
         if (args.length === 2) {
             const [subKey, value] = args;
-            setGlobalSpecs(prev => ({
-                ...prev,
-                [type]: {
-                    ...prev[type],
-                    [key]: {
-                        ...prev[type][key],
-                        [subKey]: value
+            setGlobalSpecs(prev => {
+                newState = {
+                    ...prev,
+                    [theme]: {
+                        ...prev[theme],
+                        [type]: {
+                            ...prev[theme][type],
+                            [key]: {
+                                ...prev[theme][type][key],
+                                [subKey]: value
+                            }
+                        }
                     }
-                }
-            }));
+                };
+                return newState;
+            });
         } else {
             const [value] = args;
-            setGlobalSpecs(prev => ({
-                ...prev,
-                [type]: {
-                    ...prev[type],
-                    [key]: value
-                }
-            }));
+            setGlobalSpecs(prev => {
+                newState = {
+                    ...prev,
+                    [theme]: {
+                        ...prev[theme],
+                        [type]: {
+                            ...prev[theme][type],
+                            [key]: value
+                        }
+                    }
+                };
+                return newState;
+            });
         }
+        
+        // Trigger save
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+             if (newState) {
+                 axios.post(`/api/specs?theme_id=${activeThemeId}`, newState).catch(e => console.error(e));
+             }
+        }, 1000);
     };
 
     return (
         <EditorContext.Provider value={{
             globalSpecs,
             updateGlobalSpec,
+            activeThemeId,
+            setActiveThemeId,
             selectedType,
             setSelectedType,
             selectedVariant,
             setSelectedVariant,
             editorMode,
-            setEditorMode
+            setEditorMode,
+            editingSkill,
+            setEditingSkill,
+            theme,
+            setTheme
         }}>
             {children}
         </EditorContext.Provider>
