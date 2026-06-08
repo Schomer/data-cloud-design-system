@@ -16,12 +16,12 @@ Use these exact hex codes and measurements for KPI Cards:
 ```json
 {
   "light": {
-    "bg": "#ffffff",
-    "borderColor": "#e2e8f0",
-    "borderRadius": 12,
-    "padding": 20,
-    "titleColor": "#457bb4",
-    "valueColor": "#5f6972",
+    "bg": "#FFFFFF",
+    "borderColor": "#BAE6FD",
+    "borderRadius": 8,
+    "padding": 24,
+    "titleColor": "#0284C7",
+    "valueColor": "#0284C7",
     "defaultTitle": "KPI Metric",
     "titleTypography": "xs",
     "valueTypography": "h2",
@@ -31,12 +31,12 @@ Use these exact hex codes and measurements for KPI Cards:
     "darkValueColor": "#3b82f6"
   },
   "dark": {
-    "bg": "#1a1a1a",
-    "borderColor": "#1e293b",
-    "borderRadius": 12,
-    "padding": 20,
-    "titleColor": "#64748b",
-    "valueColor": "#c2cadb",
+    "bg": "#0C4A6E",
+    "borderColor": "#0369A1",
+    "borderRadius": 8,
+    "padding": 24,
+    "titleColor": "#BAE6FD",
+    "valueColor": "#38BDF8",
     "defaultTitle": "KPI Metric",
     "titleTypography": "xs",
     "valueTypography": "h2",

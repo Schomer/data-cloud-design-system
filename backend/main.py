@@ -119,7 +119,7 @@ def update_skill_content(update: SkillUpdate):
         
     return {"message": "Skill updated"}
 
-def generate_skill_files(specs: dict, chart_colors: list):
+def generate_skill_files(specs: dict, chart_colors: list, theme_id: str = "dak_default"):
     root_dir = Path(__file__).resolve().parent.parent
     export_dir = root_dir / "backend"/ "themes" / theme_id / "generated_skills"
     ui_dir = export_dir / "ui"
@@ -1114,6 +1114,24 @@ def save_specs(specs: dict, theme_id: str = "dak_default"):
         print(f"Failed to auto-generate skills on update: {e}")
     return {"message": "Specs saved successfully"}
 
+
+@app.get("/api/active_theme_id")
+def get_active_theme_id():
+    pref_path = Path(__file__).parent / "active_theme_pref.json"
+    if not pref_path.exists():
+        return {"activeThemeId": "dak_default"}
+    import json
+    with open(pref_path, "r") as f:
+        return json.load(f)
+
+@app.post("/api/active_theme_id")
+def save_active_theme_id(data: dict):
+    pref_path = Path(__file__).parent / "active_theme_pref.json"
+    import json
+    with open(pref_path, "w") as f:
+        json.dump(data, f, indent=2)
+    return {"message": "Active theme ID saved successfully"}
+
 @app.get("/api/theme")
 def get_theme():
     # Keep UI preference separate from Data Theme
@@ -1255,7 +1273,7 @@ def generate_app(request: AppGenerateRequest):
                              "3. COMPONENT UTILIZATION: You must build the DAK Hyperskills components directly in your code using the uploaded skill files as your implementation and design guide. Do not assume any pre-built components are available to import. Use the skill files' schemas, layout patterns, and functionality rules to construct them.\n" \
                              "4. INTERACTION: Components MUST be functional. Tabs must switch content, sidebars must toggle, utility buttons must have hover states. \n" \
                              "5. VISUAL EXCELLENCE: For all UI components, you must style them inline using precise Tailwind arbitrary classes mapped to the exact hex codes from `visual_spec.skill.md`. Do not use generic Tailwind colors. Furthermore, for ANY text (headings, paragraphs, KPI values, table rows, etc.), you MUST explicitly apply the exact `fontSize` (in px), `fontWeight`, and `color` specified in the corresponding `typography` token from `visual_spec.skill.md`. Do not use generic Tailwind text sizes like text-lg or font-bold.\n" \
-                             "6. MOCK DATA: You MUST generate robust, realistic mock data for EVERYTHING so the app functions perfectly. If there are charts, generate arrays with at least 15 data points. If there are tables, you MUST generate at least 200 rows of data. To avoid exceeding token limits, write a small JavaScript generation loop (e.g., `Array.from({ length: 200 }, ...)` ) to build large datasets dynamically rather than hardcoding hundreds of JSON objects.\n" \
+                             "6. MOCK DATA: You MUST generate robust, realistic mock data for EVERYTHING so the app functions perfectly. If there are charts, generate arrays with at least 15 data points. If there are tables, generate about 50 rows of data. CRITICAL: To avoid exceeding token limits, you MUST write a highly compact JavaScript generation loop (e.g., `Array.from({ length: 50 }, ...)`). NEVER hardcode large arrays of JSON objects.\n" \
                              "7. OUTPUT FORMAT: You must output your response in TWO distinct parts.\n" \
                              "   PART 1: A JSON block containing your thought process. It must exactly match this structure:\n" \
                              "   ```json\n" \
@@ -1273,12 +1291,13 @@ def generate_app(request: AppGenerateRequest):
                              "   - Buttons: NEVER add 'Export', 'Download', or 'Share' buttons unless they actually trigger the respective functionality.\n" \
                              "8. PURITY & SCOPE: You are ENCOURAGED to proactively add helpful, functional controls like date pickers and category filters that improve the core data dashboard, but EVERY element must be fully functional. Do NOT add decorative junk like user avatars, dead \"Generate Report\", \"Global View\" or \"Export CSV\" buttons, or unrequested generic \"Key Findings\" sidebars. NEVER add decorative icons next to text labels, filter titles, or headers. Never use a search icon for a sidebar toggle; use a bare, un-styled Hamburger menu with NO background color, and ensure IT WORKS. Sidebars MUST go under top-headers.\n" \
                              "9. NO SYNTAX ERRORS: The React Component you output MUST be completely valid, error-free JSX/JavaScript without any missing brackets, missing closing tags, trailing commas, or syntax errors. Ensure the code compiles cleanly and correctly.\n" \
-                             "10. VISUALIZATIONS & CHARTS: For all charts to be created, you MUST use a standard open-source charting library. We highly recommend using `Recharts`, but you should use whichever standard library the user explicitly asks for in their prompt. NEVER use raw SVG elements (<svg>, <path>, <rect>) to draw your own charts! You MUST strictly apply the colors, grid styles, and themes outlined in the chart skill files to your chosen charting library.\""
+                             "10. VISUALIZATIONS & CHARTS: For standard charts (line, bar, area, pie, etc.), you MUST use a standard charting library like `Recharts`. However, for any geographical maps (World Map, USA Map, Geo Point Map), you MUST NOT use Recharts; instead, you MUST use the native Google Maps Custom Elements (`<gmp-map>` and `<gmp-advanced-marker>`) as specified in the map skill files. NEVER simulate maps using a Recharts ScatterChart or blank grid. Make sure to load the Google Maps script dynamically using a useEffect hook.\n" \
+                             "11. CONCISENESS: Keep your code extremely compact. You are under a strict output token limit. Do not add unnecessary comments, and compress logic where possible.\""
         else:
             yield json.dumps({"type": "info", "message": "Using generic generation without curated skills..."}) + "\n"
             system_prompt += "\n\nCRITICAL INSTRUCTIONS:\n" \
                              "1. ROLE: You are an Expert React Developer building a Data Application for the Data Cloud.\n" \
-                             "2. MOCK DATA: You MUST generate robust, realistic mock data for EVERYTHING so the app functions perfectly. If there are charts, generate arrays with at least 15 data points. If there are tables, you MUST generate at least 200 rows of data. To avoid exceeding token limits, write a small JavaScript generation loop (e.g., `Array.from({ length: 200 }, ...)` ) to build large datasets dynamically rather than hardcoding hundreds of JSON objects.\n" \
+                             "2. MOCK DATA: You MUST generate robust, realistic mock data for EVERYTHING so the app functions perfectly. If there are charts, generate arrays with at least 15 data points. If there are tables, generate about 50 rows of data. CRITICAL: To avoid exceeding token limits, you MUST write a highly compact JavaScript generation loop (e.g., `Array.from({ length: 50 }, ...)`). NEVER hardcode large arrays of JSON objects.\n" \
                              "3. OUTPUT FORMAT: You must output your response in TWO distinct parts.\n" \
                              "   PART 1: A JSON block containing your thought process. It must exactly match this structure:\n" \
                              "   ```json\n" \
@@ -1292,7 +1311,8 @@ def generate_app(request: AppGenerateRequest):
                              "   PART 2: The React Component. Wrap your code in a standard markdown `jsx` code block. Give your `export default function` a highly descriptive name (e.g., `export default function SalesMonitor()`). Do NOT include any explanations outside of these two blocks.\n" \
                              "4. STRICT DEMAND FOR FUNCTIONALITY: You are forbidden from creating UI elements that do not work. Every single button, tab, hamburger menu, overlay, or control MUST have working state logic implemented. If you add it, it must function. Dead tabs and dead toggle buttons are strictly forbidden.\n" \
                              "5. NO SYNTAX ERRORS: The React Component you output MUST be completely valid, error-free JSX/JavaScript without any missing brackets, missing closing tags, trailing commas, or syntax errors. Ensure the code compiles cleanly and correctly.\n" \
-                             "6. VISUALIZATIONS & CHARTS: For all charts to be created, you MUST use a standard open-source charting library like Recharts or whichever the user asked for. NEVER use raw SVG elements (<svg>, <path>, <rect>) to draw your own charts!\""
+                             "6. VISUALIZATIONS & CHARTS: For standard charts, use a library like Recharts. For geographical maps, you MUST use the native Google Maps Custom Elements (`<gmp-map>` and `<gmp-advanced-marker>`) with a dynamic script loader. NEVER simulate maps using Recharts ScatterChart or raw SVGs.\n" \
+                             "7. CONCISENESS: Keep your code extremely compact. You are under a strict output token limit. Do not add unnecessary comments, and compress logic where possible.\""
 
         prompt_to_send = request.prompt
         max_attempts = 2

@@ -21,15 +21,17 @@ Use these exact hex codes and measurements for Data Table:
     "headerText": "#457bba",
     "rowText": "#657281",
     "rowBorder": "#f1f5f9",
-    "borderRadius": 12,
-    "headerTypography": "p",
-    "rowTypography": "p",
+    "borderRadius": 5,
+    "headerTypography": "small",
+    "rowTypography": "xs",
     "darkBg": "#1a1a1a",
     "darkBorderColor": "#1e293b",
     "darkHeaderText": "#94a3b8",
     "darkRowText": "#cbd5e1",
     "darkRowBorder": "#262626",
-    "headerContent": "Column Header"
+    "headerContent": "Column Header",
+    "paddingX": 0,
+    "paddingY": 0
   },
   "dark": {
     "bg": "#1a1a1a",

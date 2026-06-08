@@ -4,6 +4,7 @@ import { useEditor } from './context/EditorContext';
 import EditorSidebar from './components/EditorSidebar';
 import UpdateSkillsButton from './components/UpdateSkillsButton';
 import EditorModeToggle from './components/EditorModeToggle';
+import ThemePicker from './components/ThemePicker';
 import Typography from './components/Typography';
 import SkillEditorModal from './components/SkillEditorModal';
 
@@ -95,6 +96,7 @@ function App() {
                 </div>
                 
                 <div className="flex items-center gap-4">
+                    <ThemePicker />
                     <EditorModeToggle />
                     
                     <button

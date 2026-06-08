@@ -29,10 +29,10 @@ export default function KPICard({
             ${!cardSpec ? 'bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800 rounded-xl p-5' : ''}
             border shadow-sm flex flex-col gap-4 justify-between w-full transition-colors
         `}>
-            <Typography variant={cardSpec?.titleTypography || 'xs'} style={{ color: cardSpec ? cardSpec.titleColor : 'inherit' }} as="div" className={`text-sm font-medium ${!cardSpec ? 'text-slate-500 dark:text-slate-400' : ''}`}>
+            <Typography variant={cardSpec?.titleTypography || 'xs'} style={{ color: cardSpec ? cardSpec.titleColor : 'inherit' }} as="div" className={`${!cardSpec ? 'text-sm font-medium text-slate-500 dark:text-slate-400' : ''}`}>
                 {displayTitle}
             </Typography>
-            <Typography variant={cardSpec?.valueTypography || 'h2'} style={{ color: cardSpec ? cardSpec.valueColor : 'inherit' }} as="div" className={`text-3xl font-semibold tracking-tight ${!cardSpec ? 'text-slate-900 dark:text-[#3b82f6]' : ''}`}>
+            <Typography variant={cardSpec?.valueTypography || 'h2'} style={{ color: cardSpec ? cardSpec.valueColor : 'inherit' }} as="div" className={`${!cardSpec ? 'text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#3b82f6]' : ''}`}>
                 {value}
             </Typography>
             <div className={`text-xs font-semibold px-2 py-0.5 rounded-md w-max flex items-center gap-1 ${isPositive

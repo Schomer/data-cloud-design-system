@@ -17,27 +17,27 @@ Use these exact hex codes and measurements for Filter Controls:
 {
   "input": {
     "light": {
-      "bg": "#ffffff",
-      "borderColor": "#e2e8f0",
+      "bg": "#FFFFFF",
+      "borderColor": "#BBF7D0",
       "focusRingColor": "#3b82f6",
-      "borderRadius": 8,
-      "paddingX": 12,
-      "paddingY": 8,
+      "borderRadius": 12,
+      "paddingX": 16,
+      "paddingY": 12,
       "placeholder": "Enter text...",
-      "textColor": "#0f172a",
+      "textColor": "#14532D",
       "typographyVariant": "p",
       "darkBg": "#121212",
       "darkBorderColor": "#1e293b"
     },
     "dark": {
-      "bg": "#121212",
-      "borderColor": "#1e293b",
+      "bg": "#14532D",
+      "borderColor": "#16A34A",
       "focusRingColor": "#3b82f6",
-      "borderRadius": 8,
-      "paddingX": 12,
-      "paddingY": 8,
+      "borderRadius": 12,
+      "paddingX": 16,
+      "paddingY": 12,
       "placeholder": "Enter text...",
-      "textColor": "#f8fafc",
+      "textColor": "#F0FDF4",
       "typographyVariant": "p",
       "darkBg": "#121212",
       "darkBorderColor": "#1e293b"
@@ -45,16 +45,16 @@ Use these exact hex codes and measurements for Filter Controls:
   },
   "filterChip": {
     "light": {
-      "bg": "#dae4f1",
-      "borderColor": "#cbd7e7",
-      "textColor": "#457bb5",
-      "borderRadius": 9999
+      "bg": "#DCFCE7",
+      "borderColor": "#16A34A",
+      "textColor": "#15803D",
+      "borderRadius": 12
     },
     "dark": {
-      "bg": "#425b9e",
-      "borderColor": "#2d4dae",
-      "textColor": "#f8fafc",
-      "borderRadius": 9999
+      "bg": "#15803D",
+      "borderColor": "#4ADE80",
+      "textColor": "#DCFCE7",
+      "borderRadius": 12
     }
   }
 }

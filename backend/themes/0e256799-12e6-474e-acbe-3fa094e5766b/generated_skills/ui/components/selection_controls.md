@@ -16,21 +16,21 @@ Use these exact hex codes and measurements for Selection Controls:
 ```json
 {
   "borderRadius": {
-    "light": 5,
+    "light": 8,
     "dark": 8
   },
   "switch": {
     "light": {
-      "bgOn": "#598dc5",
-      "bgOff": "#e2e8f0",
-      "circleOn": "#ffffff",
-      "circleOff": "#ffffff"
+      "bgOn": "#0284C7",
+      "bgOff": "#BAE6FD",
+      "circleOn": "#FFFFFF",
+      "circleOff": "#FFFFFF"
     },
     "dark": {
-      "bgOn": "#5aa0d8",
-      "bgOff": "#334155",
-      "circleOn": "#ffffff",
-      "circleOff": "#cbd5e1"
+      "bgOn": "#38BDF8",
+      "bgOff": "#0369A1",
+      "circleOn": "#082F49",
+      "circleOff": "#0C4A6E"
     }
   }
 }

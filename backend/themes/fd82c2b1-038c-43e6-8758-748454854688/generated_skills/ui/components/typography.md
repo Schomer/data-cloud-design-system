@@ -16,74 +16,74 @@ Use these exact hex codes and measurements for Typography System:
 ```json
 {
   "h1": {
-    "fontSize": 36,
-    "fontWeight": "600",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#5c5c5c",
-    "darkColor": "#dbdbdb"
+    "fontSize": 39,
+    "fontWeight": "700",
+    "fontFamily": "'Outfit', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "h2": {
-    "fontSize": 30,
-    "fontWeight": "600",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#5c5c5c",
-    "darkColor": "#dbdbdb"
+    "fontSize": 33,
+    "fontWeight": "700",
+    "fontFamily": "'Outfit', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "h3": {
-    "fontSize": 24,
-    "fontWeight": "600",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#5c5c5c",
-    "darkColor": "#dbdbdb"
+    "fontSize": 26,
+    "fontWeight": "700",
+    "fontFamily": "'Outfit', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "h4": {
-    "fontSize": 20,
-    "fontWeight": "600",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#5c5c5c",
-    "darkColor": "#dbdbdb"
+    "fontSize": 22,
+    "fontWeight": "700",
+    "fontFamily": "'Outfit', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "h5": {
-    "fontSize": 18,
-    "fontWeight": "500",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#5c5c5c",
-    "darkColor": "#dbdbdb"
+    "fontSize": 19,
+    "fontWeight": "700",
+    "fontFamily": "'Outfit', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "h6": {
-    "fontSize": 14,
-    "fontWeight": "600",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#64748b",
-    "darkColor": "#7e8ea5"
+    "fontSize": 17,
+    "fontWeight": "700",
+    "fontFamily": "'Outfit', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "p": {
-    "fontSize": 14,
+    "fontSize": 17,
     "fontWeight": "400",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#475569",
-    "darkColor": "#cbd5e1"
+    "fontFamily": "'Inter', sans-serif",
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "small": {
-    "fontSize": 12,
+    "fontSize": 15,
     "fontWeight": "400",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#64748b",
-    "darkColor": "#94a3b8"
+    "fontFamily": "'Inter', sans-serif",
+    "lightColor": "#EA580C",
+    "darkColor": "#FED7AA"
   },
   "mono": {
-    "fontSize": 14,
+    "fontSize": 15,
     "fontWeight": "400",
     "fontFamily": "monospace",
-    "lightColor": "#1e293b",
-    "darkColor": "#a0a7b0"
+    "lightColor": "#7C2D12",
+    "darkColor": "#FFF7ED"
   },
   "muted": {
-    "fontSize": 14,
+    "fontSize": 15,
     "fontWeight": "400",
-    "fontFamily": "\"Inter\", sans-serif",
-    "lightColor": "#94a3b8",
-    "darkColor": "#94a3b8",
+    "fontFamily": "'Inter', sans-serif",
+    "lightColor": "#EA580C",
+    "darkColor": "#FED7AA",
     "fontStyle": "italic"
   },
   "link": {}

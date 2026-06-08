@@ -169,7 +169,7 @@ export default function DataTable({
             <div className="flex-1 overflow-auto overflow-x-auto relative">
                 <table className="w-full text-left border-collapse min-w-[800px] table-fixed">
                     <thead className={`sticky top-0 z-10 border-b ${tableSpec ? 'bg-[var(--table-bg)] border-[var(--table-row-border)]' : 'bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800'}`}>
-                        <tr className={`text-xs font-medium ${tableSpec ? 'text-[var(--table-header-text)]' : 'text-slate-500 dark:text-slate-400'}`}>
+                        <tr className={`${tableSpec ? 'text-[var(--table-header-text)]' : 'text-xs font-medium text-slate-500 dark:text-slate-400'}`}>
                             {columns.map((col, idx) => (
                                 <th 
                                     key={idx} 
@@ -201,7 +201,7 @@ export default function DataTable({
                             ))}
                         </tr>
                     </thead>
-                    <tbody className={`text-xs divide-y ${tableSpec ? 'divide-[var(--table-row-border)] text-[var(--table-row-text)]' : 'divide-slate-100 dark:divide-slate-800/80'}`}>
+                    <tbody className={`divide-y ${tableSpec ? 'divide-[var(--table-row-border)] text-[var(--table-row-text)]' : 'text-xs divide-slate-100 dark:divide-slate-800/80'}`}>
                         {sortedData.map((row, rowIdx) => {
                             const isSelected = selectedRowId === row.id;
                             const rowClasses = isSelected

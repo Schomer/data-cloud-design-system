@@ -16,23 +16,23 @@ Use these exact hex codes and measurements for Modals & Overlays:
 ```json
 {
   "light": {
-    "bg": "#ffffff",
-    "borderColor": "#e2e8f0",
-    "textColor": "#64748b",
-    "headerTextColor": "#0f172a",
-    "footerBg": "#f8fafc",
-    "borderRadius": 12,
+    "bg": "#FFFFFF",
+    "borderColor": "#D2CEB6",
+    "textColor": "#75715E",
+    "headerTextColor": "#272822",
+    "footerBg": "#F8F8F2",
+    "borderRadius": 4,
     "title": "Overlay Modal",
     "darkBg": "#1a1a1a",
     "darkBorderColor": "#1e293b"
   },
   "dark": {
-    "bg": "#1a1a1a",
-    "borderColor": "#1e293b",
-    "textColor": "#94a3b8",
-    "headerTextColor": "#f8fafc",
-    "footerBg": "#121212",
-    "borderRadius": 12,
+    "bg": "#3E3D32",
+    "borderColor": "#75715E",
+    "textColor": "#E6DB74",
+    "headerTextColor": "#F8F8F2",
+    "footerBg": "#272822",
+    "borderRadius": 4,
     "title": "Overlay Modal",
     "darkBg": "#1a1a1a",
     "darkBorderColor": "#1e293b"

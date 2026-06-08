@@ -16,27 +16,27 @@ Use these exact hex codes and measurements for Date Range:
 ```json
 {
   "light": {
-    "bg": "#ffffff",
-    "borderColor": "#e2e8f0",
+    "bg": "#FFFFFF",
+    "borderColor": "#BAE6FD",
     "focusRingColor": "#3b82f6",
     "borderRadius": 8,
-    "paddingX": 12,
-    "paddingY": 8,
+    "paddingX": 14,
+    "paddingY": 10,
     "placeholder": "Enter text...",
-    "textColor": "#0f172a",
+    "textColor": "#0C4A6E",
     "typographyVariant": "p",
     "darkBg": "#121212",
     "darkBorderColor": "#1e293b"
   },
   "dark": {
-    "bg": "#121212",
-    "borderColor": "#1e293b",
+    "bg": "#0C4A6E",
+    "borderColor": "#0369A1",
     "focusRingColor": "#3b82f6",
     "borderRadius": 8,
-    "paddingX": 12,
-    "paddingY": 8,
+    "paddingX": 14,
+    "paddingY": 10,
     "placeholder": "Enter text...",
-    "textColor": "#f8fafc",
+    "textColor": "#F0F9FF",
     "typographyVariant": "p",
     "darkBg": "#121212",
     "darkBorderColor": "#1e293b"

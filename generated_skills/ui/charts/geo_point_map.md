@@ -2,7 +2,7 @@
 name: geo_point_map
 category: visualizations
 description: Maps individual data points geographically by coordinates.
-intent_keywords: ["geo point", "coordinates", "lat long", "map"]
+intent_keywords: ["geo point", "coordinates", "lat long", "map", "geo point map"]
 schema: latitude: number, longitude: number, value: number
 ---
 
@@ -11,15 +11,76 @@ schema: latitude: number, longitude: number, value: number
 ## Visual Specifications
 See `ui/charts/shared_visuals.md` for shared color, grid, and background attributes. You must map these visual tokens into the configuration object of the charting library you use. Do not use raw SVG data to draw charts.
 
-
 ## Recommended Implementation Pattern
-This component should be rendered using the Cloud Data App Skills guidelines. 
-It inherits global themes from `theme.md`.
+To render a coordinate-based point map, you must use the Google Maps JavaScript API via native Custom Elements (`<gmp-map>`), which is fully supported by React 19.
 
-**Map Layout & Styling Rules**:
-- **Size & Height**: Ensure the map container has an adequate minimum height (e.g., `minHeight: 400px` or `500px`) so the geographic area is fully visible and not squished.
-- **Legend Placement**: Do not allow the legend to obscure the map. Place the legend completely outside the map region (such as below or adjacent to the map) rather than overlaying it on top of the geographical areas. Ensure legends do not have an opaque background that hides data.
-- **Background & Theme Match**: The map background color must strictly match the current active theme (e.g., the `background` property in `shared_visuals.md`). Apply the same color to the map component itself to prevent unsightly color clashes.
+### Step-by-Step React 19 Implementation
+1. **Dynamic Script Loading**: Use a `useEffect` hook to append the official Google Maps script tag dynamically. Retrieve the API key from `localStorage.getItem('google_maps_api_key')` to allow customization.
+2. **Custom Element Rendering**: Render the `<gmp-map>` element, setting its style, zoom, and center. Nest `<gmp-advanced-marker>` elements for each data coordinate.
+
+```jsx
+import React, { useEffect, useState } from 'react';
+
+export default function GeoPointMap({ data }) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const scriptId = 'google-maps-script';
+    let script = document.getElementById(scriptId);
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      const apiKey = localStorage.getItem('google_maps_api_key') || '';
+      const keyParam = apiKey ? `&key=${apiKey}` : '';
+      script.src = `https://maps.googleapis.com/maps/api/js?v=weekly&libraries=marker,maps${keyParam}&internal-usage-attribution-ids=gmp_mcp_codeassist_v0.1_github`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    const checkLoaded = () => {
+      if (window.google && window.google.maps) {
+        setLoaded(true);
+      } else {
+        setTimeout(checkLoaded, 100);
+      }
+    };
+    checkLoaded();
+  }, []);
+
+  if (!loaded) {
+    return (
+      <div className="w-full min-h-[400px] flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 text-sm">
+        Loading Map Coordinates...
+      </div>
+    );
+  }
+
+  // Calculate default center if points exist
+  const firstPoint = data?.[0];
+  const centerLat = firstPoint?.latitude || 37.7749;
+  const centerLng = firstPoint?.longitude || -122.4194;
+
+  return (
+    <div className="w-full h-full min-h-[400px] relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
+      <gmp-map
+        center={`${centerLat},${centerLng}`}
+        zoom="3"
+        map-id="DEMO_MAP_ID"
+        style={{ height: '100%', minHeight: '400px', width: '100%', display: 'block' }}
+      >
+        {data.map((item, idx) => (
+          <gmp-advanced-marker
+            key={idx}
+            position={`${item.latitude},${item.longitude}`}
+            title={`Value: ${item.value}`}
+          />
+        ))}
+      </gmp-map>
+    </div>
+  );
+}
+```
 
 ## Usage Context
-Maps individual data points geographically by coordinates.
+- Maps individual data points geographically by coordinates (latitude/longitude) using dynamic script loading and native Custom Elements.

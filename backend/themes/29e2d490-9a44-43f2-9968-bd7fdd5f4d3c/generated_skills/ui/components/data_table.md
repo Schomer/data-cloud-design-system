@@ -16,12 +16,12 @@ Use these exact hex codes and measurements for Data Table:
 ```json
 {
   "light": {
-    "bg": "#ffffff",
-    "borderColor": "#e2e8f0",
-    "headerText": "#457bba",
-    "rowText": "#657281",
-    "rowBorder": "#f1f5f9",
-    "borderRadius": 12,
+    "bg": "#F0F0F0",
+    "borderColor": "#000000",
+    "headerText": "#333333",
+    "rowText": "#000000",
+    "rowBorder": "#000000",
+    "borderRadius": 0,
     "headerTypography": "p",
     "rowTypography": "p",
     "darkBg": "#1a1a1a",
@@ -32,12 +32,12 @@ Use these exact hex codes and measurements for Data Table:
     "headerContent": "Column Header"
   },
   "dark": {
-    "bg": "#1a1a1a",
-    "borderColor": "#1e293b",
-    "headerText": "#64748b",
-    "rowText": "#0f172a",
-    "rowBorder": "#1e293b",
-    "borderRadius": 12,
+    "bg": "#121212",
+    "borderColor": "#00FF41",
+    "headerText": "#008F11",
+    "rowText": "#00FF41",
+    "rowBorder": "#00FF41",
+    "borderRadius": 0,
     "headerTypography": "xs",
     "rowTypography": "p",
     "darkBg": "#1a1a1a",

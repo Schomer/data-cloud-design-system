@@ -16,27 +16,27 @@ Use these exact hex codes and measurements for Input Fields:
 ```json
 {
   "light": {
-    "bg": "#ffffff",
-    "borderColor": "#e2e8f0",
+    "bg": "#FFFFFF",
+    "borderColor": "#D8DEE9",
     "focusRingColor": "#3b82f6",
-    "borderRadius": 8,
+    "borderRadius": 6,
     "paddingX": 12,
     "paddingY": 8,
     "placeholder": "Enter text...",
-    "textColor": "#0f172a",
+    "textColor": "#2E3440",
     "typographyVariant": "p",
     "darkBg": "#121212",
     "darkBorderColor": "#1e293b"
   },
   "dark": {
-    "bg": "#121212",
-    "borderColor": "#1e293b",
+    "bg": "#3B4252",
+    "borderColor": "#4C566A",
     "focusRingColor": "#3b82f6",
-    "borderRadius": 8,
+    "borderRadius": 6,
     "paddingX": 12,
     "paddingY": 8,
     "placeholder": "Enter text...",
-    "textColor": "#f8fafc",
+    "textColor": "#ECEFF4",
     "typographyVariant": "p",
     "darkBg": "#121212",
     "darkBorderColor": "#1e293b"

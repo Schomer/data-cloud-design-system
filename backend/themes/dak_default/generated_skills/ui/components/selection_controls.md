@@ -16,7 +16,7 @@ Use these exact hex codes and measurements for Selection Controls:
 ```json
 {
   "borderRadius": {
-    "light": 5,
+    "light": 3,
     "dark": 8
   },
   "switch": {

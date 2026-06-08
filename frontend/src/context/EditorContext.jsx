@@ -385,22 +385,28 @@ export function EditorProvider({ children }) {
     const saveTimeoutRef = useRef(null);
     const hasInitialLoadedRef = useRef(false);
 
+
     // Fetch initial specs and theme
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // First get the active theme ID
+                const activeThemeRes = await axios.get('/api/active_theme_id');
+                const initialActiveThemeId = activeThemeRes.data.activeThemeId || 'dak_default';
+                setActiveThemeId(initialActiveThemeId);
+
                 const [specsRes, themeRes] = await Promise.all([
-                    axios.get(`/api/specs?theme_id=${activeThemeId}`),
+                    axios.get(`/api/specs?theme_id=${initialActiveThemeId}`),
                     axios.get('/api/theme')
                 ]);
                 
                 if (specsRes.data && Object.keys(specsRes.data).length > 0) {
-                    setGlobalSpecs(prev => {
-                        let data = specsRes.data;
-                        if (data && !data.light && !data.dark) {
-                            data = { light: data, dark: initialSpecs.dark };
-                        }
-                        return deepMerge(prev, data);
+                    setGlobalSpecs(specsRes.data);
+                } else {
+                    // Reset to defaults if no specs found for this theme
+                    setGlobalSpecs({
+                        ...initialSpecs,
+                        typography: { ...initialSpecs.typography }
                     });
                 }
                 
@@ -411,10 +417,33 @@ export function EditorProvider({ children }) {
                 console.error("Failed to fetch initial data", err);
             } finally {
                 setIsInitialLoad(false);
+                hasInitialLoadedRef.current = true;
             }
         };
         fetchData();
-    }, [activeThemeId]);
+    }, []); // Only run once on mount
+
+    // Fetch specs when activeThemeId changes (after initial load)
+    useEffect(() => {
+        if (isInitialLoad || !hasInitialLoadedRef.current) return;
+        
+        const fetchSpecsForTheme = async () => {
+            try {
+                const specsRes = await axios.get(`/api/specs?theme_id=${activeThemeId}`);
+                if (specsRes.data && Object.keys(specsRes.data).length > 0) {
+                    setGlobalSpecs(specsRes.data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch specs for new theme", err);
+            }
+        };
+        
+        fetchSpecsForTheme();
+        
+        // Also save the active theme ID to backend
+        axios.post('/api/active_theme_id', { activeThemeId }).catch(e => console.error("Failed to save active theme ID", e));
+        
+    }, [activeThemeId, isInitialLoad]);
 
     // Save to API when theme changes
     useEffect(() => {

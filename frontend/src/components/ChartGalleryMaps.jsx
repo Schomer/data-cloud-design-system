@@ -7,6 +7,7 @@ import { useEditor } from '../context/EditorContext';
 import SkillEditButton from './SkillEditButton';
 import WorldMapChart from './WorldMapChart';
 import USAMapChart from './USAMapChart';
+import GoogleMapChart from './GoogleMapChart';
 
 const RealChartContainer = ({ title, description, options, height = "500px", skillPath, children }) => {
     const { theme, globalSpecs } = useEditor();
@@ -154,7 +155,7 @@ export default function ChartGalleryMaps() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <RealChartContainer title="Geo Point Map" description="Data points located on coordinates" height="350px" skillPath="ui/charts/geo_point_map.md">
-                        <ReactECharts option={optPointMapMock} style={{ height: '100%', width: '100%' }} opts={{ renderer: 'svg' }} />
+                        <GoogleMapChart />
                     </RealChartContainer>
                     <RealChartContainer title="Tile Map" description="Equal-sized tiles representing regions" height="350px" skillPath="ui/charts/tile_map.md">
                         <ReactECharts option={optTileMap} style={{ height: '100%', width: '100%' }} opts={{ renderer: 'svg' }} />

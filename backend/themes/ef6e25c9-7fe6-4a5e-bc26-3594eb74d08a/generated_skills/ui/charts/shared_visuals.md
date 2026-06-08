@@ -9,28 +9,28 @@ description: Shared visual attributes for all charts
 ```json
 {
   "palette": [
-    "#62a8ea",
-    "#aaa47c",
-    "#a8d95e",
-    "#40bdd4",
-    "#7375c9",
-    "#ea75b0",
-    "#f59e0b",
-    "#ef4444",
-    "#10b981",
-    "#8b5cf6"
+    "#16A34A",
+    "#15803D",
+    "#CA8A04",
+    "#0D9488",
+    "#4ADE80",
+    "#22C55E",
+    "#10B981",
+    "#84CC16",
+    "#047857",
+    "#064E3B"
   ],
   "light": {
-    "background": "#ffffff",
-    "gridLineColor": "#e2e8f0",
-    "textColor": "#64748b",
+    "background": "#FFFFFF",
+    "gridLineColor": "#BBF7D0",
+    "textColor": "#16A34A",
     "tooltipBg": "#ffffff",
     "tooltipText": "#484747"
   },
   "dark": {
-    "background": "#1a1a1a",
-    "gridLineColor": "#1e293b",
-    "textColor": "#94a3b8",
+    "background": "#14532D",
+    "gridLineColor": "#16A34A",
+    "textColor": "#BBF7D0",
     "tooltipBg": "#334155",
     "tooltipText": "#f8fafc"
   }

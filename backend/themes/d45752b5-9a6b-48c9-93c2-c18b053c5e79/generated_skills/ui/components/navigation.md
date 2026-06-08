@@ -16,12 +16,12 @@ Use these exact hex codes and measurements for Navigation Systems:
 ```json
 {
   "light": {
-    "bg": "#ffffff",
-    "borderColor": "#e2e8f0",
-    "activeText": "#457bb5",
-    "activeBorder": "#8db6e2",
-    "inactiveText": "#64748b",
-    "hoverText": "#334155",
+    "bg": "#FFFFFF",
+    "borderColor": "#D8DEE9",
+    "activeText": "#5E81AC",
+    "activeBorder": "#5E81AC",
+    "inactiveText": "#4C566A",
+    "hoverText": "#2E3440",
     "defaultText": "Nav Item",
     "typographyVariant": "small",
     "darkActiveText": "#60a5fa",
@@ -29,12 +29,12 @@ Use these exact hex codes and measurements for Navigation Systems:
     "darkHoverText": "#e2e8f0"
   },
   "dark": {
-    "bg": "#1a1a1a",
-    "borderColor": "#1e293b",
-    "activeText": "#2563eb",
-    "activeBorder": "#3b82f6",
-    "inactiveText": "#64748b",
-    "hoverText": "#334155",
+    "bg": "#3B4252",
+    "borderColor": "#4C566A",
+    "activeText": "#88C0D0",
+    "activeBorder": "#88C0D0",
+    "inactiveText": "#E5E9F0",
+    "hoverText": "#ECEFF4",
     "defaultText": "Nav Item",
     "typographyVariant": "small",
     "darkActiveText": "#60a5fa",

@@ -16,26 +16,26 @@ Use these exact hex codes and measurements for Wizard Steps:
 ```json
 {
   "light": {
-    "stepBg": "#ffffff",
-    "stepBorder": "#e2e8f0",
-    "activeBg": "#ebf5ff",
-    "activeBorder": "#89acd2",
-    "activeText": "#457bb5",
-    "completedBg": "#ecfdf5",
-    "completedBorder": "#10b981",
+    "stepBg": "#FFFFFF",
+    "stepBorder": "#D8DEE9",
+    "activeBg": "#E5E9F0",
+    "activeBorder": "#5E81AC",
+    "activeText": "#4C566A",
+    "completedBg": "#A3BE8C",
+    "completedBorder": "#A3BE8C",
     "completedText": "#047857",
-    "inactiveText": "#64748b"
+    "inactiveText": "#4C566A"
   },
   "dark": {
-    "stepBg": "#121212",
-    "stepBorder": "#1e293b",
-    "activeBg": "#1e3a8a",
-    "activeBorder": "#3b82f6",
-    "activeText": "#bfdbfe",
-    "completedBg": "#064e3b",
-    "completedBorder": "#10b981",
+    "stepBg": "#3B4252",
+    "stepBorder": "#4C566A",
+    "activeBg": "#434C5E",
+    "activeBorder": "#88C0D0",
+    "activeText": "#ECEFF4",
+    "completedBg": "#A3BE8C",
+    "completedBorder": "#A3BE8C",
     "completedText": "#a7f3d0",
-    "inactiveText": "#94a3b8"
+    "inactiveText": "#E5E9F0"
   }
 }
 ```
