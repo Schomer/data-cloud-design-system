@@ -9,7 +9,7 @@ with sync_playwright() as p:
     page.on("console", lambda msg: page_errors.append(msg.text) if msg.type == "error" else None)
     
     # Go to app that has the missing backtick or a syntax error
-    page.goto("http://127.0.0.1:3001/?app=App_1776749274", wait_until="networkidle", timeout=15000)
+    page.goto("http://127.0.0.1:5900/?app=App_1776749274", wait_until="networkidle", timeout=15000)
     page.wait_for_timeout(2500)
     
     # The overlay exists in shadow root, so we pierce it if possible, or evaluate

@@ -3,19 +3,22 @@ import { Download, Loader2 } from 'lucide-react';
 import { useEditor } from '../context/EditorContext';
 import axios from 'axios';
 import { useChartColors } from '../context/ChartColorContext';
+import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 
 export default function UpdateSkillsButton() {
     const { globalSpecs, activeThemeId } = useEditor();
     const { chartColors } = useChartColors();
+    const { getAuthHeaders } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const handleUpdateSkills = async () => {
         setLoading(true);
         try {
+            const headers = await getAuthHeaders();
             const response = await axios.post('/api/export-skills',
                 { specs: globalSpecs, chartColors },
-                { responseType: 'blob' }
+                { responseType: 'blob', headers }
             );
 
             // Create a download link and trigger it

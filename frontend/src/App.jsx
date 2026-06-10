@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Layout, Settings2, Component, Home, AppWindow } from 'lucide-react';
+import { Moon, Sun, Layout, Settings2, Component, Home, AppWindow, LogIn, LogOut, Shield } from 'lucide-react';
+import { useAuth } from './context/AuthContext';
 import { useEditor } from './context/EditorContext';
 import EditorSidebar from './components/EditorSidebar';
 import UpdateSkillsButton from './components/UpdateSkillsButton';
@@ -38,6 +39,7 @@ function App() {
     // Apply global theme settings (needed for Tailwind dark mode on HTML element)
     const { theme, setTheme } = useEditor();
     const isDarkMode = theme === 'dark';
+    const { user, isAdmin, signIn, signOut } = useAuth();
 
     useEffect(() => {
         if (isDarkMode) {
@@ -92,12 +94,13 @@ function App() {
                 <div className="flex items-center gap-2 font-semibold text-lg">
                     <Component className="text-blue-500" size={24} />
                     <span>DAK Hyperskills</span>
-                    {activeSection !== 'Themes Library' && <span className="ml-4 text-xs font-medium px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">Editing Theme</span>}
+                    {isAdmin && activeSection !== 'Themes Library' && <span className="ml-4 text-xs font-medium px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">Editing Theme</span>}
+                    {isAdmin && <span className="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/50 flex items-center gap-1"><Shield size={10} /> Admin</span>}
                 </div>
                 
                 <div className="flex items-center gap-4">
-                    <ThemePicker />
-                    <EditorModeToggle />
+                    {isAdmin && <ThemePicker />}
+                    {isAdmin && <EditorModeToggle />}
                     
                     <button
                         onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
@@ -107,7 +110,28 @@ function App() {
                         {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
                     </button>
                     
-                    <UpdateSkillsButton />
+                    {isAdmin && <UpdateSkillsButton />}
+
+                    {/* Auth button */}
+                    {user ? (
+                        <button
+                            onClick={signOut}
+                            className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"
+                            title={`Signed in as ${user.email}`}
+                        >
+                            <img src={user.photoURL} alt="" className="w-5 h-5 rounded-full" />
+                            <LogOut size={14} />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={signIn}
+                            className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"
+                            title="Sign in"
+                        >
+                            <LogIn size={14} />
+                            <span className="hidden sm:inline">Sign In</span>
+                        </button>
+                    )}
                 </div>
             </header>
 
@@ -203,9 +227,9 @@ function App() {
                 </div>
             </div>
 
-            {/* Editor Sidebar */}
-            <EditorSidebar />
-            <SkillEditorModal />
+            {/* Editor Sidebar — admin only */}
+            {isAdmin && <EditorSidebar />}
+            {isAdmin && <SkillEditorModal />}
             </div>
         </div>
     );

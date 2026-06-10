@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Copy, Trash, CheckCircle2, PackageSearch, PenTool } from 'lucide-react';
 import { useEditor } from '../context/EditorContext';
+import { useAuth } from '../context/AuthContext';
 
 function ThemeThumbnail({ specs, colors }) {
     if (!specs || !specs.light) return <div className="h-32 bg-slate-100 dark:bg-slate-800 rounded-md"></div>;
@@ -24,6 +25,7 @@ function ThemeThumbnail({ specs, colors }) {
 
 export default function ThemeGallery({ onEditTheme }) {
     const { activeThemeId, setActiveThemeId } = useEditor();
+    const { isAdmin, getAuthHeaders } = useAuth();
     const [themes, setThemes] = useState([]);
     const [themeConfigs, setThemeConfigs] = useState({});
     
@@ -46,14 +48,18 @@ export default function ThemeGallery({ onEditTheme }) {
     useEffect(() => { loadThemes(); }, []);
 
     const handleDuplicate = async (sourceId) => {
+        if (!isAdmin) return;
         const sourceTheme = themes.find(t => t.id === sourceId);
         const newName = `${sourceTheme.name} Copy`;
-        await axios.post('/api/themes', { source_theme_id: sourceId, name: newName });
+        const headers = await getAuthHeaders();
+        await axios.post('/api/themes', { source_theme_id: sourceId, name: newName }, { headers });
         loadThemes();
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`/api/themes/${id}`);
+        if (!isAdmin) return;
+        const headers = await getAuthHeaders();
+        await axios.delete(`/api/themes/${id}`, { headers });
         loadThemes();
     };
 
@@ -91,10 +97,12 @@ export default function ThemeGallery({ onEditTheme }) {
                                     <PenTool size={14} /> Edit Visuals
                                 </button>
                             )}
-                            <button onClick={() => handleDuplicate(t.id)} className="p-1.5 text-slate-400 hover:text-blue-500 rounded hover:bg-blue-50 dark:hover:bg-slate-800" title="Duplicate">
-                                <Copy size={16} />
-                            </button>
-                            {t.id !== 'dak_default' && (
+                            {isAdmin && (
+                                <button onClick={() => handleDuplicate(t.id)} className="p-1.5 text-slate-400 hover:text-blue-500 rounded hover:bg-blue-50 dark:hover:bg-slate-800" title="Duplicate">
+                                    <Copy size={16} />
+                                </button>
+                            )}
+                            {isAdmin && t.id !== 'dak_default' && (
                                 <button onClick={() => handleDelete(t.id)} className="p-1.5 text-slate-400 hover:text-red-500 rounded hover:bg-red-50 dark:hover:bg-slate-800" title="Delete">
                                     <Trash size={16} />
                                 </button>

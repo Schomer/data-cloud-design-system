@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 
 # Copy frontend source
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY frontend/ ./
 RUN npm run build
@@ -22,6 +22,12 @@ COPY backend/ .
 
 # Copy the built Vite static files to the backend's dist directory
 COPY --from=frontend-builder /app/frontend/dist /app/dist
+
+# Copy generated_skills for skill-based app generation
+COPY generated_skills/ /app/../generated_skills/
+
+# Ensure generated_apps dir exists
+RUN mkdir -p /app/../frontend/src/generated_apps
 
 # Expose port 8080 required by Cloud Run
 EXPOSE 8080

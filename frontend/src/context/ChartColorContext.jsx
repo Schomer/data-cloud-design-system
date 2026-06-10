@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useEditor } from './EditorContext';
+import { useAuth } from './AuthContext';
 import { arrayMove } from '@dnd-kit/sortable';
 import axios from 'axios';
 
@@ -33,6 +34,7 @@ const ChartColorContext = createContext();
 
 export function ChartColorProvider({ children }) {
     const { theme, activeThemeId } = useEditor();
+    const { isAdmin, getAuthHeaders } = useAuth();
 
     const [allColors, setAllColors] = useState({
         light: INITIAL_LIGHT_COLORS,
@@ -60,7 +62,10 @@ export function ChartColorProvider({ children }) {
     }, [activeThemeId]);
 
     const saveToServer = (newColors) => {
-        axios.post(`/api/chart_colors?theme_id=${activeThemeId}`, newColors).catch(e => console.error("Failed to save chart colors", e));
+        if (!isAdmin) return;
+        getAuthHeaders().then(headers => {
+            axios.post(`/api/chart_colors?theme_id=${activeThemeId}`, newColors, { headers }).catch(e => console.error("Failed to save chart colors", e));
+        });
     };
 
     const chartColors = allColors[theme] || INITIAL_LIGHT_COLORS;

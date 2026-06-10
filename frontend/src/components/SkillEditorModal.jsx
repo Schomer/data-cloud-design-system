@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { X, Save, AlertCircle, Eye, FileText, Bold, Italic, Link as LinkIcon, Code as CodeIcon, List, Heading1, Heading2 } from 'lucide-react';
 import { useEditor } from '../context/EditorContext';
+import { useAuth } from '../context/AuthContext';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Editor from 'react-simple-code-editor';
@@ -13,6 +14,7 @@ import 'prismjs/themes/prism.css';
 
 export default function SkillEditorModal() {
     const { editingSkill, setEditingSkill, theme } = useEditor();
+    const { getAuthHeaders } = useAuth();
     
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -50,10 +52,11 @@ export default function SkillEditorModal() {
         setIsSaving(true);
         setError(null);
         try {
+            const headers = await getAuthHeaders();
             await axios.put('/api/skills/content', {
                 path: editingSkill,
                 content: content
-            });
+            }, { headers });
             // Close modal on success
             setEditingSkill(null);
         } catch (err) {

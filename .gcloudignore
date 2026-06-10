@@ -1,0 +1,7 @@
+# Ignore node_modules for faster uploads
+frontend/node_modules/
+backend/.venv/
+backend/__pycache__/
+.git/
+*.pyc
+.DS_Store

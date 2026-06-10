@@ -4,8 +4,10 @@ import { Loader2, Plus, ExternalLink, Trash2, LayoutTemplate } from 'lucide-reac
 import Typography from './Typography';
 import Button from './Button';
 import SkillEditButton from './SkillEditButton';
+import { useAuth } from '../context/AuthContext';
 
 export default function AppsPage() {
+    const { isAdmin, getAuthHeaders } = useAuth();
     const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [apps, setApps] = useState([]);
@@ -26,14 +28,15 @@ export default function AppsPage() {
     }, []);
 
     const handleGenerate = async (useSkills = true) => {
-        if (!prompt.trim()) return;
+        if (!prompt.trim() || !isAdmin) return;
         setIsGenerating(useSkills ? 'skilled' : 'nonskilled');
         setStatusMessages([]);
         setStreamedCode("");
         try {
+            const headers = await getAuthHeaders();
             const res = await fetch('/api/apps/generate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...headers },
                 body: JSON.stringify({ prompt, use_skills: useSkills })
             });
             
@@ -87,8 +90,10 @@ export default function AppsPage() {
     };
 
     const handleDelete = async (appId) => {
+        if (!isAdmin) return;
         try {
-            await axios.delete(`/api/apps/${appId}`);
+            const headers = await getAuthHeaders();
+            await axios.delete(`/api/apps/${appId}`, { headers });
             setApps(apps.filter(app => app.id !== appId));
         } catch (err) {
             console.error("Failed to delete app:", err);
@@ -123,32 +128,38 @@ export default function AppsPage() {
                     disabled={!!isGenerating}
                 />
 
-                <div className="flex justify-end gap-3">
-                    <Button
-                        onClick={() => handleGenerate(false)}
-                        disabled={!!isGenerating || !prompt.trim()}
-                        variant="secondary"
-                        className="flex items-center gap-2"
-                    >
-                        {isGenerating === 'nonskilled' ? (
-                            <><Loader2 size={18} className="animate-spin" /> Generating...</>
-                        ) : (
-                            <><Plus size={18} /> Create Nonskilled App</>
-                        )}
-                    </Button>
-                    <Button
-                        onClick={() => handleGenerate(true)}
-                        disabled={!!isGenerating || !prompt.trim()}
-                        variant="primary"
-                        className="flex items-center gap-2"
-                    >
-                        {isGenerating === 'skilled' ? (
-                            <><Loader2 size={18} className="animate-spin" /> Generating App...</>
-                        ) : (
-                            <><Plus size={18} /> Create Skilled App</>
-                        )}
-                    </Button>
-                </div>
+                {isAdmin ? (
+                    <div className="flex justify-end gap-3">
+                        <Button
+                            onClick={() => handleGenerate(false)}
+                            disabled={!!isGenerating || !prompt.trim()}
+                            variant="secondary"
+                            className="flex items-center gap-2"
+                        >
+                            {isGenerating === 'nonskilled' ? (
+                                <><Loader2 size={18} className="animate-spin" /> Generating...</>
+                            ) : (
+                                <><Plus size={18} /> Create Nonskilled App</>
+                            )}
+                        </Button>
+                        <Button
+                            onClick={() => handleGenerate(true)}
+                            disabled={!!isGenerating || !prompt.trim()}
+                            variant="primary"
+                            className="flex items-center gap-2"
+                        >
+                            {isGenerating === 'skilled' ? (
+                                <><Loader2 size={18} className="animate-spin" /> Generating App...</>
+                            ) : (
+                                <><Plus size={18} /> Create Skilled App</>
+                            )}
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="flex justify-end">
+                        <p className="text-sm text-slate-400 italic">Sign in as admin to generate apps</p>
+                    </div>
+                )}
 
                 {(!!isGenerating || statusMessages.length > 0) && (
                     <div className="mt-2 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col gap-2">
@@ -219,16 +230,18 @@ export default function AppsPage() {
                                                 return "Unknown date";
                                             })()}
                                         </p>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDelete(app.id);
-                                            }}
-                                            className="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/30 dark:hover:text-rose-400 rounded-md transition-colors"
-                                            title="Delete layout"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
+                                        {isAdmin && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete(app.id);
+                                                }}
+                                                className="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/30 dark:hover:text-rose-400 rounded-md transition-colors"
+                                                title="Delete layout"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

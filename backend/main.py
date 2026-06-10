@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -15,13 +15,50 @@ import re
 from pathlib import Path
 from fastapi.responses import StreamingResponse
 
+# Firebase Admin for token verification
+try:
+    import firebase_admin
+    from firebase_admin import auth as firebase_auth
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app()
+    FIREBASE_INITIALIZED = True
+except Exception as e:
+    print(f"Warning: Firebase Admin SDK not initialized: {e}")
+    FIREBASE_INITIALIZED = False
+
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "malloy-data")
 DATASET_ID = "ecomm"
 TABLE_ID = "order_items"
 LOCATION = "us"
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "schomer@google.com")
 
-bq_client = bigquery.Client(project=PROJECT_ID)
-gemini_client = gemini.DataChatServiceClient()
+def require_admin(request: Request):
+    """Verify the Firebase ID token and check that the user is the admin."""
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    token = auth_header[7:]
+    if not FIREBASE_INITIALIZED:
+        raise HTTPException(status_code=503, detail="Auth service unavailable")
+    try:
+        decoded = firebase_auth.verify_id_token(token)
+        email = decoded.get("email", "")
+        if email != ADMIN_EMAIL:
+            raise HTTPException(status_code=403, detail="Admin access required")
+    except Exception as e:
+        raise HTTPException(status_code=403, detail=f"Invalid auth token: {e}")
+
+bq_client = None
+try:
+    bq_client = bigquery.Client(project=PROJECT_ID)
+except Exception as e:
+    print(f"Warning: Failed to initialize BigQuery client: {e}")
+
+gemini_client = None
+try:
+    gemini_client = gemini.DataChatServiceClient()
+except Exception as e:
+    print(f"Warning: Failed to initialize Gemini client: {e}")
 
 
 
@@ -102,7 +139,8 @@ def get_skill_content(path: str):
     return {"content": content}
 
 @app.put("/api/skills/content")
-def update_skill_content(update: SkillUpdate):
+def update_skill_content(update: SkillUpdate, request: Request):
+    require_admin(request)
     root_dir = Path(__file__).resolve().parent.parent
     target_path = root_dir / "generated_skills" / update.path
     
@@ -1010,7 +1048,8 @@ def list_themes():
     return themes
 
 @app.post("/api/themes")
-def create_theme(data: dict):
+def create_theme(data: dict, request: Request):
+    require_admin(request)
     import uuid
     import shutil
     new_id = str(uuid.uuid4())
@@ -1040,7 +1079,8 @@ def create_theme(data: dict):
     return meta
 
 @app.put("/api/themes/{theme_id}")
-def update_theme(theme_id: str, data: dict):
+def update_theme(theme_id: str, data: dict, request: Request):
+    require_admin(request)
     theme_dir = get_theme_dir(theme_id)
     meta_path = theme_dir / "metadata.json"
     meta = {}
@@ -1056,7 +1096,8 @@ def update_theme(theme_id: str, data: dict):
     return meta
 
 @app.delete("/api/themes/{theme_id}")
-def delete_theme(theme_id: str):
+def delete_theme(theme_id: str, request: Request):
+    require_admin(request)
     import shutil
     theme_dir = get_theme_dir(theme_id)
     if theme_dir.exists():
@@ -1064,7 +1105,8 @@ def delete_theme(theme_id: str):
     return {"status": "deleted"}
 
 @app.post("/api/export-skills")
-async def export_skills(theme_id: str = "dak_default"):
+async def export_skills(request: Request, theme_id: str = "dak_default"):
+    require_admin(request)
     root_dir = Path(__file__).resolve().parent.parent
     export_dir = root_dir / "backend"/ "themes" / theme_id / "generated_skills"
     
@@ -1094,7 +1136,8 @@ def get_specs(theme_id: str = "dak_default"):
         return json.load(f)
 
 @app.post("/api/specs")
-def save_specs(specs: dict, theme_id: str = "dak_default"):
+def save_specs(specs: dict, request: Request, theme_id: str = "dak_default"):
+    require_admin(request)
     specs_path = get_theme_dir(theme_id) / "specs.json"
     with open(specs_path, "w") as f:
         json.dump(specs, f, indent=2)
@@ -1125,7 +1168,8 @@ def get_active_theme_id():
         return json.load(f)
 
 @app.post("/api/active_theme_id")
-def save_active_theme_id(data: dict):
+def save_active_theme_id(data: dict, request: Request):
+    require_admin(request)
     pref_path = Path(__file__).parent / "active_theme_pref.json"
     import json
     with open(pref_path, "w") as f:
@@ -1137,12 +1181,13 @@ def get_theme():
     # Keep UI preference separate from Data Theme
     theme_path = Path(__file__).parent / "theme_pref.json"
     if not theme_path.exists():
-        return {"theme": "dark"}
+        return {"theme": "light"}
     with open(theme_path, "r") as f:
         return json.load(f)
 
 @app.post("/api/theme")
-def save_theme(data: dict):
+def save_theme(data: dict, request: Request):
+    require_admin(request)
     theme_path = Path(__file__).parent / "theme_pref.json"
     with open(theme_path, "w") as f:
         json.dump(data, f, indent=2)
@@ -1157,7 +1202,8 @@ def get_chart_colors(theme_id: str = "dak_default"):
         return json.load(f)
 
 @app.post("/api/chart_colors")
-def save_chart_colors(data: dict, theme_id: str = "dak_default"):
+def save_chart_colors(data: dict, request: Request, theme_id: str = "dak_default"):
+    require_admin(request)
     colors_path = get_theme_dir(theme_id) / "chart_colors.json"
     with open(colors_path, "w") as f:
         json.dump(data, f, indent=2)
@@ -1181,7 +1227,8 @@ def save_chart_colors(data: dict, theme_id: str = "dak_default"):
     return {"message": "Chart colors saved successfully"}
 
 @app.post("/api/apps/generate")
-def generate_app(request: AppGenerateRequest):
+def generate_app(request_body: AppGenerateRequest, request: Request):
+    require_admin(request)
     root_dir = Path(__file__).resolve().parent.parent
     
     def event_stream():
@@ -1191,10 +1238,10 @@ def generate_app(request: AppGenerateRequest):
         system_prompt = "You are an expert Data Cloud Application Developer.\n\n"
         
         matched_skills = []
-        if request.use_skills:
+        if request_body.use_skills:
             # 1. Read Design Constraints
             yield json.dumps({"type": "info", "message": "Reading visual_spec.skill.md for design tokens..."}) + "\n"
-            theme_path = root_dir / "backend"/ "themes" / request.theme_id / "generated_skills" / "design" / "visual_spec.skill.md"
+            theme_path = root_dir / "backend"/ "themes" / request_body.theme_id / "generated_skills" / "design" / "visual_spec.skill.md"
             if theme_path.exists():
                 with open(theme_path, "r") as f:
                     system_prompt += "### 1. VISUAL DESIGN CONSTRAINTS (design/visual_spec.skill.md)\n"
@@ -1202,7 +1249,7 @@ def generate_app(request: AppGenerateRequest):
 
             # 2. Read App Orchestrator, Approach, and Layout
             for name, path_suffix in [("APP APPROACH", "app_approach.skill.md"), ("ORCHESTRATOR", "orchestrator.skill.md"), ("LAYOUT PATTERNS", "design/layout.skill.md")]:
-                full_path = root_dir / "backend"/ "themes" / request.theme_id / "generated_skills" / path_suffix
+                full_path = root_dir / "backend"/ "themes" / request_body.theme_id / "generated_skills" / path_suffix
                 if full_path.exists():
                     yield json.dumps({"type": "info", "message": f"Assessing {path_suffix}..."}) + "\n"
                     with open(full_path, "r") as f:
@@ -1210,7 +1257,7 @@ def generate_app(request: AppGenerateRequest):
                         system_prompt += f"{f.read()}\n\n"
                     
             # 3. Read Router (Component catalog)
-            router_path = root_dir / "backend"/ "themes" / request.theme_id / "generated_skills" / "router.md"
+            router_path = root_dir / "backend"/ "themes" / request_body.theme_id / "generated_skills" / "router.md"
             router_content = ""
             if router_path.exists():
                 yield json.dumps({"type": "info", "message": "Scanning router.md for available UI components..."}) + "\n"
@@ -1224,7 +1271,7 @@ def generate_app(request: AppGenerateRequest):
             system_prompt += "Based on the user's prompt, the following components and visualizations are highly relevant. Follow their specifications carefully:\n"
             
             # Parse the Router to find matched skills
-            user_prompt_lower = request.prompt.lower()
+            user_prompt_lower = request_body.prompt.lower()
             lines = router_content.split('\n')
             in_table = False
             
@@ -1256,7 +1303,7 @@ def generate_app(request: AppGenerateRequest):
                         is_core = any(core_file in skill_file for core_file in always_include)
                         
                         if match_found or is_core:
-                            skill_path = root_dir / "backend"/ "themes" / request.theme_id / "generated_skills" / skill_file
+                            skill_path = root_dir / "backend"/ "themes" / request_body.theme_id / "generated_skills" / skill_file
                             if skill_path.exists():
                                 matched_skills.append(skill_file)
                                 with open(skill_path, "r") as sf:
@@ -1314,7 +1361,7 @@ def generate_app(request: AppGenerateRequest):
                              "6. VISUALIZATIONS & CHARTS: For standard charts, use a library like Recharts. For geographical maps, you MUST use the native Google Maps Custom Elements (`<gmp-map>` and `<gmp-advanced-marker>`) with a dynamic script loader. NEVER simulate maps using Recharts ScatterChart or raw SVGs.\n" \
                              "7. CONCISENESS: Keep your code extremely compact. You are under a strict output token limit. Do not add unnecessary comments, and compress logic where possible.\""
 
-        prompt_to_send = request.prompt
+        prompt_to_send = request_body.prompt
         max_attempts = 2
         
         for attempt in range(max_attempts):
@@ -1447,7 +1494,7 @@ def generate_app(request: AppGenerateRequest):
         with open(apps_dir / f"{app_id}.jsx", "w", encoding="utf-8") as f:
             f.write(generated_text)
             
-        title = request.prompt[:50] + "..." if len(request.prompt) > 50 else request.prompt
+        title = request_body.prompt[:50] + "..." if len(request_body.prompt) > 50 else request_body.prompt
         match_name = re.search(r"export\s+default\s+(?:function\s+)?([A-Z][A-Za-z0-9_]+)", generated_text)
         if match_name:
             raw_name = match_name.group(1)
@@ -1456,7 +1503,7 @@ def generate_app(request: AppGenerateRequest):
         metadata = {
             "id": app_id,
             "name": title,
-            "prompt": request.prompt,
+            "prompt": request_body.prompt,
             "skills_used": matched_skills,
             "thought_process": thought_process
         }
@@ -1478,7 +1525,7 @@ def generate_app(request: AppGenerateRequest):
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True)
                 page = browser.new_page(viewport={"width": 1400, "height": 900})
-                page.goto(f"http://127.0.0.1:3001/?app={app_id}", wait_until="networkidle", timeout=25000)
+                page.goto(f"http://127.0.0.1:5900/?app={app_id}", wait_until="networkidle", timeout=25000)
                 page.wait_for_timeout(2500) # Give ECharts and Tailwind 2.5s to fully render animations
                 
                 screenshot_path = str(apps_dir / f"{app_id}.png")
@@ -1492,7 +1539,7 @@ def generate_app(request: AppGenerateRequest):
                     
                 qa_prompt = f"""
 You are an expert Data Application QA Tester.
-Analyze the React code that was just generated for this prompt: '{request.prompt}'.
+Analyze the React code that was just generated for this prompt: '{request_body.prompt}'.
 More importantly, LOOK at the screenshot provided, which is exactly how the app rendered in the browser.
 
 Analyze:
@@ -1597,7 +1644,8 @@ def list_apps():
     return {"apps": sorted(apps, key=lambda x: x["id"], reverse=True)}
 
 @app.delete("/api/apps/{app_id}")
-def delete_app(app_id: str):
+def delete_app(app_id: str, request: Request):
+    require_admin(request)
     apps_dir = Path(__file__).parent.parent / "frontend" / "src" / "generated_apps"
     target_file = apps_dir / f"{app_id}.jsx"
     meta_file = apps_dir / f"{app_id}.json"
@@ -1615,7 +1663,8 @@ def delete_app(app_id: str):
     raise HTTPException(status_code=404, detail="App not found")
 
 @app.post("/api/chat")
-def chat(request: ChatRequestModel):
+def chat(chat_request: ChatRequestModel, request: Request):
+    require_admin(request)
     inline_context = {
         "system_instruction": "You are a data assistant. You have access to a BigQuery table with thousands of historical records. You can answer questions about the specific record the user is looking at, OR you can write SQL to query the entire table for aggregate metrics, trends, or other users. Keep your answers concise and text-only. Do not generate charts. Do not suggest actions unless asked.",
         "datasource_references": {
@@ -1630,10 +1679,10 @@ def chat(request: ChatRequestModel):
         "options": {"chart": {}}
     }
     
-    prompt = request.message
+    prompt = chat_request.message
 
     client_history = []
-    for msg in request.history:
+    for msg in chat_request.history:
         if msg.get("role") == "user":
             client_history.append(gemini.Message(user_message=gemini.UserMessage(text=msg.get("content"))))
         elif msg.get("role") == "model":

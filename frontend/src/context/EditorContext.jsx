@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
 
 const EditorContext = createContext();
 
@@ -379,11 +380,12 @@ const initialSpecs = {
 export function EditorProvider({ children }) {
     // Store the global specifications for components that we will eventually export.
         const [globalSpecs, setGlobalSpecs] = useState(initialSpecs);
-    const [theme, setTheme] = useState('dark'); // 'light' or 'dark'
+    const [theme, setTheme] = useState('light'); // 'light' or 'dark'
     const [activeThemeId, setActiveThemeId] = useState('dak_default');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const saveTimeoutRef = useRef(null);
     const hasInitialLoadedRef = useRef(false);
+    const { isAdmin, getAuthHeaders } = useAuth();
 
 
     // Fetch initial specs and theme
@@ -440,16 +442,23 @@ export function EditorProvider({ children }) {
         
         fetchSpecsForTheme();
         
-        // Also save the active theme ID to backend
-        axios.post('/api/active_theme_id', { activeThemeId }).catch(e => console.error("Failed to save active theme ID", e));
-        
-    }, [activeThemeId, isInitialLoad]);
+        // Also save the active theme ID to backend (admin only)
+        if (isAdmin) {
+            getAuthHeaders().then(headers => {
+                axios.post('/api/active_theme_id', { activeThemeId }, { headers }).catch(e => console.error("Failed to save active theme ID", e));
+            });
+        }
 
-    // Save to API when theme changes
+    }, [activeThemeId, isInitialLoad, isAdmin, getAuthHeaders]);
+
+    // Save to API when theme changes (admin only)
     useEffect(() => {
         if (isInitialLoad || !hasInitialLoadedRef.current) return;
-        axios.post('/api/theme', { theme }).catch(e => console.error("Failed to save theme", e));
-    }, [theme, isInitialLoad]);
+        if (!isAdmin) return;
+        getAuthHeaders().then(headers => {
+            axios.post('/api/theme', { theme }, { headers }).catch(e => console.error("Failed to save theme", e));
+        });
+    }, [theme, isInitialLoad, isAdmin, getAuthHeaders]);
 
     // Automated saving is removed to prevent cross-contamination on theme load.
     // It is now handled directly by updateGlobalSpec.
@@ -527,13 +536,17 @@ export function EditorProvider({ children }) {
             });
         }
         
-        // Trigger save
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
-             if (newState) {
-                 axios.post(`/api/specs?theme_id=${activeThemeId}`, newState).catch(e => console.error(e));
-             }
-        }, 1000);
+        // Trigger save (admin only)
+        if (isAdmin) {
+            if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+            saveTimeoutRef.current = setTimeout(() => {
+                 if (newState) {
+                     getAuthHeaders().then(headers => {
+                         axios.post(`/api/specs?theme_id=${activeThemeId}`, newState, { headers }).catch(e => console.error(e));
+                     });
+                 }
+            }, 1000);
+        }
     };
 
     return (
