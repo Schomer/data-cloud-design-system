@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useEditor } from './EditorContext';
 import { useAuth } from './AuthContext';
 import { arrayMove } from '@dnd-kit/sortable';
-import axios from 'axios';
+import * as fs from '../services/firestoreService';
 
 const INITIAL_LIGHT_COLORS = [
     '#2563eb', // blue-600
@@ -34,7 +34,7 @@ const ChartColorContext = createContext();
 
 export function ChartColorProvider({ children }) {
     const { theme, activeThemeId } = useEditor();
-    const { isAdmin, getAuthHeaders } = useAuth();
+    const { isAdmin } = useAuth();
 
     const [allColors, setAllColors] = useState({
         light: INITIAL_LIGHT_COLORS,
@@ -42,15 +42,14 @@ export function ChartColorProvider({ children }) {
     });
 
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    const hasInitialLoadedRef = React.useRef(false);
 
-    // Load from API on mount and when activeThemeId changes
+    // Load from Firestore on mount and when activeThemeId changes
     useEffect(() => {
         const fetchColors = async () => {
             try {
-                const response = await axios.get(`/api/chart_colors?theme_id=${activeThemeId}`);
-                if (response.data && Object.keys(response.data).length > 0) {
-                     setAllColors(response.data);
+                const data = await fs.getChartColors(activeThemeId);
+                if (data && Object.keys(data).length > 0) {
+                     setAllColors(data);
                 }
             } catch (err) {
                 console.error("Failed to fetch chart colors", err);
@@ -61,11 +60,9 @@ export function ChartColorProvider({ children }) {
         fetchColors();
     }, [activeThemeId]);
 
-    const saveToServer = (newColors) => {
+    const saveToFirestore = (newColors) => {
         if (!isAdmin) return;
-        getAuthHeaders().then(headers => {
-            axios.post(`/api/chart_colors?theme_id=${activeThemeId}`, newColors, { headers }).catch(e => console.error("Failed to save chart colors", e));
-        });
+        fs.saveChartColors(activeThemeId, newColors).catch(e => console.error("Failed to save chart colors", e));
     };
 
     const chartColors = allColors[theme] || INITIAL_LIGHT_COLORS;
@@ -74,14 +71,14 @@ export function ChartColorProvider({ children }) {
         const newArray = arrayMove(allColors[theme], oldIndex, newIndex);
         const newState = { ...allColors, [theme]: newArray };
         setAllColors(newState);
-        saveToServer(newState);
+        saveToFirestore(newState);
     };
 
     const updateColor = (index, newColor) => {
         const newArray = allColors[theme].map((c, i) => i === index ? newColor : c);
         const newState = { ...allColors, [theme]: newArray };
         setAllColors(newState);
-        saveToServer(newState);
+        saveToFirestore(newState);
     };
 
     return (

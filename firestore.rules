@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Themes: public read, admin write
+    match /themes/{themeId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email == 'schomer@google.com';
+      
+      match /data/{docId} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.token.email == 'schomer@google.com';
+      }
+    }
+
+    // Config: public read, admin write
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email == 'schomer@google.com';
+    }
+
+    // Apps: public read, admin write
+    match /apps/{appId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email == 'schomer@google.com';
+    }
+
+    // Skills: public read, admin write
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email == 'schomer@google.com';
+    }
+  }
+}

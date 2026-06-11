@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import * as fs from '../services/firestoreService';
 import { useEditor } from '../context/EditorContext';
 import { Palette, ChevronDown, Check } from 'lucide-react';
 
@@ -27,8 +27,8 @@ export default function ThemePicker() {
     const dropdownRef = useRef(null);
 
     useEffect(() => {
-        axios.get('/api/themes')
-            .then(res => setThemes(res.data))
+        fs.getThemes()
+            .then(data => setThemes(data))
             .catch(err => console.error("Failed to load themes", err));
     }, []);
 

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Loader2, Plus, ExternalLink, Trash2, LayoutTemplate } from 'lucide-react';
 import Typography from './Typography';
 import Button from './Button';
 import SkillEditButton from './SkillEditButton';
 import { useAuth } from '../context/AuthContext';
+import { useEditor } from '../context/EditorContext';
+import * as fs from '../services/firestoreService';
+import { streamGeminiResponse } from '../services/geminiService';
 
 export default function AppsPage() {
-    const { isAdmin, getAuthHeaders } = useAuth();
+    const { isAdmin } = useAuth();
+    const { activeThemeId } = useEditor();
     const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [apps, setApps] = useState([]);
@@ -16,8 +19,8 @@ export default function AppsPage() {
 
     const fetchApps = async () => {
         try {
-            const res = await axios.get('/api/apps');
-            setApps(res.data.apps || []);
+            const appsData = await fs.getApps();
+            setApps(appsData);
         } catch (err) {
             console.error(err);
         }
@@ -32,58 +35,183 @@ export default function AppsPage() {
         setIsGenerating(useSkills ? 'skilled' : 'nonskilled');
         setStatusMessages([]);
         setStreamedCode("");
+
         try {
-            const headers = await getAuthHeaders();
-            const res = await fetch('/api/apps/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', ...headers },
-                body: JSON.stringify({ prompt, use_skills: useSkills })
-            });
-            
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = "";
-            let generatedAppId = null;
-            
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n');
-                buffer = lines.pop(); // Keep incomplete line in buffer
-                
-                for (const line of lines) {
-                    if (!line.trim()) continue;
-                    try {
-                        const data = JSON.parse(line);
-                        if (data.type === 'status' || data.type === 'info') {
-                            setStatusMessages(prev => [...prev, data.message]);
-                        } else if (data.type === 'token') {
-                            setStreamedCode(prev => prev + data.message);
-                        } else if (data.type === 'complete') {
-                            generatedAppId = data.app_id;
-                            setStatusMessages(prev => [...prev, "Generation complete!"]);
-                        } else if (data.type === 'error') {
-                            setStatusMessages(prev => [...prev, "Error: " + data.message]);
-                            throw new Error(data.message);
-                        }
-                    } catch (e) {
-                         console.error("Error parsing NDJSON line:", line, e);
+            // Build the system prompt
+            let systemPrompt = "You are an expert Data Cloud Application Developer.\n\n";
+            let matchedSkills = [];
+
+            if (useSkills) {
+                setStatusMessages(prev => [...prev, "Reading skills from Firestore..."]);
+
+                // Load all skills for the active theme
+                const allSkills = await fs.getAllSkills();
+                const skillMap = {};
+                for (const s of allSkills) {
+                    if (s.path && s.content) {
+                        skillMap[s.path] = s.content;
                     }
                 }
+
+                // 1. Visual spec
+                const visualSpec = skillMap['design/visual_spec.skill.md'];
+                if (visualSpec) {
+                    systemPrompt += "### 1. VISUAL DESIGN CONSTRAINTS (design/visual_spec.skill.md)\n" + visualSpec + "\n\n";
+                    setStatusMessages(prev => [...prev, "Loaded visual_spec.skill.md"]);
+                }
+
+                // 2. App approach, orchestrator, layout
+                for (const [name, path] of [
+                    ["APP APPROACH", "app_approach.skill.md"],
+                    ["ORCHESTRATOR", "orchestrator.skill.md"],
+                    ["LAYOUT PATTERNS", "design/layout.skill.md"]
+                ]) {
+                    if (skillMap[path]) {
+                        systemPrompt += `### ${name} (${path})\n${skillMap[path]}\n\n`;
+                        setStatusMessages(prev => [...prev, `Loaded ${path}`]);
+                    }
+                }
+
+                // 3. Router
+                const routerContent = skillMap['router.md'] || '';
+                if (routerContent) {
+                    systemPrompt += "### 3. COMPONENT CATALOG (router.md)\n" + routerContent + "\n\n";
+                    setStatusMessages(prev => [...prev, "Loaded router.md"]);
+                }
+
+                // 4. Selective component loading based on prompt keywords
+                systemPrompt += "### 4. SELECTED COMPONENT SKILLS\n";
+                systemPrompt += "Based on the user's prompt, the following components and visualizations are highly relevant:\n";
+
+                const userPromptLower = prompt.toLowerCase();
+                const lines = routerContent.split('\n');
+                let inTable = false;
+
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith('|---')) { inTable = true; continue; }
+                    if (inTable && trimmed.startsWith('|')) {
+                        const parts = trimmed.split('|').map(p => p.trim());
+                        if (parts.length >= 9) {
+                            const keywordsStr = parts[2];
+                            const skillFile = parts[8].trim();
+                            const keywords = keywordsStr.split('/').map(k => k.trim().toLowerCase());
+                            const skillName = skillFile.split('/').pop().replace('.md', '').replace(/_/g, ' ').toLowerCase();
+                            const allMatchers = [...keywords, skillName];
+
+                            const matchFound = allMatchers.some(kw => {
+                                if (!kw) return false;
+                                const regex = new RegExp('\\b' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
+                                return regex.test(userPromptLower);
+                            });
+
+                            const alwaysInclude = ["button.md", "typography.md", "overlays.md"];
+                            const isCore = alwaysInclude.some(f => skillFile.includes(f));
+
+                            if (matchFound || isCore) {
+                                if (skillMap[skillFile]) {
+                                    matchedSkills.push(skillFile);
+                                    systemPrompt += `\n--- SKILL: ${skillFile} ---\n${skillMap[skillFile]}\n`;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                setStatusMessages(prev => [...prev, `Matched ${matchedSkills.length} skills to your prompt!`]);
+                for (const s of matchedSkills) {
+                    setStatusMessages(prev => [...prev, `Injecting: ${s}`]);
+                }
             }
-            
+
+            // Add critical instructions
+            systemPrompt += "\n\nCRITICAL INSTRUCTIONS:\n" +
+                "1. ROLE: You are an Expert React Developer building a gorgeous Data Application for the Data Cloud Playground.\n" +
+                "2. DESIGN SYSTEM ADHERENCE: Use the color, spacing, corner radius, borders, layout, shadow, typography, and interaction rules from the skills context where applicable.\n" +
+                "3. COMPONENT UTILIZATION: Build DAK Hyperskills components directly in your code using the skill files as your implementation guide. Do not assume pre-built components.\n" +
+                "4. INTERACTION: Components MUST be functional. Tabs must switch, sidebars must toggle, buttons must have hover states.\n" +
+                "5. VISUAL EXCELLENCE: Style inline using precise Tailwind arbitrary classes mapped to exact hex codes from visual_spec.skill.md.\n" +
+                "6. MOCK DATA: Generate robust, realistic mock data using compact loops (e.g., Array.from({ length: 50 }, ...)). NEVER hardcode large arrays.\n" +
+                "7. OUTPUT FORMAT: Output TWO parts:\n" +
+                "   PART 1: A JSON block with your thought process:\n" +
+                "   ```json\n" +
+                "   { \"interpretation\": \"...\", \"skills_utilized\": [...], \"assumed_from_scratch\": [...], \"skill_suggestions\": \"...\" }\n" +
+                "   ```\n" +
+                "   PART 2: The React Component in a ```jsx code block. Give your export default function a descriptive name.\n" +
+                "8. STRICT FUNCTIONALITY: Every UI element MUST work. No dead tabs, no dead toggle buttons.\n" +
+                "9. NO SYNTAX ERRORS: Output must be valid, error-free JSX/JavaScript.\n" +
+                "10. CHARTS: Use Recharts for standard charts. For maps, use Google Maps Custom Elements.\n" +
+                "11. CONCISENESS: Keep code compact — you are under a strict output token limit.\n";
+
+            setStatusMessages(prev => [...prev, "Sending to Gemini..."]);
+
+            // Stream from Gemini
+            let generatedText = "";
+            for await (const token of streamGeminiResponse(systemPrompt, prompt)) {
+                generatedText += token;
+                setStreamedCode(prev => prev + token);
+            }
+
+            setStatusMessages(prev => [...prev, "Generation complete!"]);
+
+            // Extract the JSX code
+            let code = generatedText;
+            // Remove JSON thought block
+            code = code.replace(/```json\s*\n.*?\n```/s, '');
+            // Extract code from code blocks
+            const codeMatches = [...code.matchAll(/```(?:[a-z]+)?\s*\n(.*?)```/gs)];
+            if (codeMatches.length > 0) {
+                // Find the one with React code
+                let bestMatch = codeMatches[codeMatches.length - 1][1];
+                for (const m of [...codeMatches].reverse()) {
+                    if (m[1].includes('import React') || m[1].includes('export default')) {
+                        bestMatch = m[1];
+                        break;
+                    }
+                }
+                code = bestMatch.trim();
+            }
+            // Clean trailing backticks
+            code = code.replace(/```\s*$/, '').trim();
+
+            // Extract thought process
+            let thoughtProcess = {};
+            const jsonMatch = generatedText.match(/```json\s*\n(.*?)\n```/s);
+            if (jsonMatch) {
+                try { thoughtProcess = JSON.parse(jsonMatch[1]); } catch {}
+            }
+
+            // Extract app name
+            const timestamp = Date.now();
+            const appId = `App_${timestamp}`;
+            let title = prompt.length > 50 ? prompt.slice(0, 50) + "..." : prompt;
+            const nameMatch = code.match(/export\s+default\s+(?:function\s+)?([A-Z][A-Za-z0-9_]+)/);
+            if (nameMatch) {
+                title = nameMatch[1].replace(/([A-Z])/g, ' $1').trim();
+            }
+
+            // Save to Firestore
+            const metadata = {
+                id: appId,
+                name: title,
+                prompt: prompt,
+                code: code,
+                skills_used: matchedSkills,
+                thought_process: thoughtProcess,
+                createdAt: new Date().toISOString(),
+            };
+            await fs.saveApp(appId, metadata);
+
+            setStatusMessages(prev => [...prev, `App saved as ${appId}`]);
             setPrompt("");
             await fetchApps();
-            if (generatedAppId) {
-                setTimeout(() => {
-                    window.open(`/?app=${generatedAppId}`, '_blank');
-                }, 1000);
-            }
+            setTimeout(() => {
+                window.open(`/?app=${appId}`, '_blank');
+            }, 1000);
         } catch (err) {
             console.error("Failed to generate app:", err);
-            alert("Failed to generate app. Check console for details.");
+            setStatusMessages(prev => [...prev, `Error: ${err.message}`]);
+            alert("Failed to generate app: " + err.message);
         } finally {
             setIsGenerating(false);
         }
@@ -92,8 +220,7 @@ export default function AppsPage() {
     const handleDelete = async (appId) => {
         if (!isAdmin) return;
         try {
-            const headers = await getAuthHeaders();
-            await axios.delete(`/api/apps/${appId}`, { headers });
+            await fs.deleteApp(appId);
             setApps(apps.filter(app => app.id !== appId));
         } catch (err) {
             console.error("Failed to delete app:", err);
@@ -166,7 +293,7 @@ export default function AppsPage() {
                         {statusMessages.length === 0 && !!isGenerating && (
                             <div className="flex items-center gap-2 text-slate-400">
                                 <Loader2 size={14} className="animate-spin" />
-                                <Typography variant="bodyXs" className="font-mono">Connecting to orchestration server...</Typography>
+                                <Typography variant="bodyXs" className="font-mono">Connecting to Gemini...</Typography>
                             </div>
                         )}
                         {statusMessages.length > 0 && (

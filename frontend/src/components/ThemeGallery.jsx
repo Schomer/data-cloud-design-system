@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Copy, Trash, CheckCircle2, PackageSearch, PenTool } from 'lucide-react';
 import { useEditor } from '../context/EditorContext';
 import { useAuth } from '../context/AuthContext';
+import * as fs from '../services/firestoreService';
 
 function ThemeThumbnail({ specs, colors }) {
     if (!specs || !specs.light) return <div className="h-32 bg-slate-100 dark:bg-slate-800 rounded-md"></div>;
@@ -25,24 +25,28 @@ function ThemeThumbnail({ specs, colors }) {
 
 export default function ThemeGallery({ onEditTheme }) {
     const { activeThemeId, setActiveThemeId } = useEditor();
-    const { isAdmin, getAuthHeaders } = useAuth();
+    const { isAdmin } = useAuth();
     const [themes, setThemes] = useState([]);
     const [themeConfigs, setThemeConfigs] = useState({});
     
-    const loadThemes = () => {
-        axios.get('/api/themes').then(res => {
-            setThemes(res.data);
-            res.data.forEach(t => {
-                axios.get(`/api/specs?theme_id=${t.id}`).then(specRes => {
-                    axios.get(`/api/chart_colors?theme_id=${t.id}`).then(colorRes => {
-                        setThemeConfigs(prev => ({
-                            ...prev,
-                            [t.id]: { specs: specRes.data, colors: colorRes.data }
-                        }));
-                    });
-                });
-            });
-        });
+    const loadThemes = async () => {
+        try {
+            const themesData = await fs.getThemes();
+            setThemes(themesData);
+            // Load specs and colors for each theme
+            for (const t of themesData) {
+                const [specs, colors] = await Promise.all([
+                    fs.getSpecs(t.id),
+                    fs.getChartColors(t.id),
+                ]);
+                setThemeConfigs(prev => ({
+                    ...prev,
+                    [t.id]: { specs, colors }
+                }));
+            }
+        } catch (err) {
+            console.error("Failed to load themes", err);
+        }
     };
 
     useEffect(() => { loadThemes(); }, []);
@@ -51,15 +55,13 @@ export default function ThemeGallery({ onEditTheme }) {
         if (!isAdmin) return;
         const sourceTheme = themes.find(t => t.id === sourceId);
         const newName = `${sourceTheme.name} Copy`;
-        const headers = await getAuthHeaders();
-        await axios.post('/api/themes', { source_theme_id: sourceId, name: newName }, { headers });
+        await fs.createTheme({ sourceThemeId: sourceId, name: newName });
         loadThemes();
     };
 
     const handleDelete = async (id) => {
         if (!isAdmin) return;
-        const headers = await getAuthHeaders();
-        await axios.delete(`/api/themes/${id}`, { headers });
+        await fs.deleteTheme(id);
         loadThemes();
     };
 

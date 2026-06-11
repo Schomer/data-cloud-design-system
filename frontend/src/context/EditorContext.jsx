@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { useAuth } from './AuthContext';
+import * as fs from '../services/firestoreService';
 
 const EditorContext = createContext();
 
@@ -388,22 +388,21 @@ export function EditorProvider({ children }) {
     const { isAdmin, getAuthHeaders } = useAuth();
 
 
-    // Fetch initial specs and theme
+    // Fetch initial specs and theme from Firestore
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // First get the active theme ID
-                const activeThemeRes = await axios.get('/api/active_theme_id');
-                const initialActiveThemeId = activeThemeRes.data.activeThemeId || 'dak_default';
+                const initialActiveThemeId = await fs.getActiveThemeId();
                 setActiveThemeId(initialActiveThemeId);
 
-                const [specsRes, themeRes] = await Promise.all([
-                    axios.get(`/api/specs?theme_id=${initialActiveThemeId}`),
-                    axios.get('/api/theme')
+                const [specsData, uiTheme] = await Promise.all([
+                    fs.getSpecs(initialActiveThemeId),
+                    fs.getUiTheme()
                 ]);
                 
-                if (specsRes.data && Object.keys(specsRes.data).length > 0) {
-                    setGlobalSpecs(specsRes.data);
+                if (specsData && Object.keys(specsData).length > 0) {
+                    setGlobalSpecs(specsData);
                 } else {
                     // Reset to defaults if no specs found for this theme
                     setGlobalSpecs({
@@ -412,8 +411,8 @@ export function EditorProvider({ children }) {
                     });
                 }
                 
-                if (themeRes.data && themeRes.data.theme) {
-                    setTheme(themeRes.data.theme);
+                if (uiTheme) {
+                    setTheme(uiTheme);
                 }
             } catch (err) {
                 console.error("Failed to fetch initial data", err);
@@ -431,9 +430,9 @@ export function EditorProvider({ children }) {
         
         const fetchSpecsForTheme = async () => {
             try {
-                const specsRes = await axios.get(`/api/specs?theme_id=${activeThemeId}`);
-                if (specsRes.data && Object.keys(specsRes.data).length > 0) {
-                    setGlobalSpecs(specsRes.data);
+                const specsData = await fs.getSpecs(activeThemeId);
+                if (specsData && Object.keys(specsData).length > 0) {
+                    setGlobalSpecs(specsData);
                 }
             } catch (err) {
                 console.error("Failed to fetch specs for new theme", err);
@@ -442,23 +441,19 @@ export function EditorProvider({ children }) {
         
         fetchSpecsForTheme();
         
-        // Also save the active theme ID to backend (admin only)
+        // Also save the active theme ID to Firestore (admin only)
         if (isAdmin) {
-            getAuthHeaders().then(headers => {
-                axios.post('/api/active_theme_id', { activeThemeId }, { headers }).catch(e => console.error("Failed to save active theme ID", e));
-            });
+            fs.saveActiveThemeId(activeThemeId).catch(e => console.error("Failed to save active theme ID", e));
         }
 
-    }, [activeThemeId, isInitialLoad, isAdmin, getAuthHeaders]);
+    }, [activeThemeId, isInitialLoad, isAdmin]);
 
-    // Save to API when theme changes (admin only)
+    // Save to Firestore when theme changes (admin only)
     useEffect(() => {
         if (isInitialLoad || !hasInitialLoadedRef.current) return;
         if (!isAdmin) return;
-        getAuthHeaders().then(headers => {
-            axios.post('/api/theme', { theme }, { headers }).catch(e => console.error("Failed to save theme", e));
-        });
-    }, [theme, isInitialLoad, isAdmin, getAuthHeaders]);
+        fs.saveUiTheme(theme).catch(e => console.error("Failed to save theme", e));
+    }, [theme, isInitialLoad, isAdmin]);
 
     // Automated saving is removed to prevent cross-contamination on theme load.
     // It is now handled directly by updateGlobalSpec.
@@ -541,9 +536,7 @@ export function EditorProvider({ children }) {
             if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
             saveTimeoutRef.current = setTimeout(() => {
                  if (newState) {
-                     getAuthHeaders().then(headers => {
-                         axios.post(`/api/specs?theme_id=${activeThemeId}`, newState, { headers }).catch(e => console.error(e));
-                     });
+                     fs.saveSpecs(activeThemeId, newState).catch(e => console.error(e));
                  }
             }, 1000);
         }
