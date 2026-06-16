@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Layout, Settings2, Component, Home, AppWindow, LogIn, LogOut, Shield } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from './context/AuthContext';
 import { useEditor } from './context/EditorContext';
 import EditorSidebar from './components/EditorSidebar';
 import UpdateSkillsButton from './components/UpdateSkillsButton';
 import EditorModeToggle from './components/EditorModeToggle';
 import ThemePicker from './components/ThemePicker';
-import Typography from './components/Typography';
 import SkillEditorModal from './components/SkillEditorModal';
 
-// New Galleries
+// Pages & Galleries
 import HomePage from './components/HomePage';
 import HowItWorksPage from './components/HowItWorksPage';
 import AppsPage from './components/AppsPage';
 import TypographyGallery from './components/TypographyGallery';
 import ControlsGallery from './components/ControlsGallery';
 import ThemeGallery from './components/ThemeGallery';
-import { Palette } from 'lucide-react';
 import NavigationGallery from './components/NavigationGallery';
 import FeedbackGallery from './components/FeedbackGallery';
 import TableGallery from './components/TableGallery';
@@ -27,212 +24,300 @@ import ChartGalleryMaps from './components/ChartGalleryMaps';
 import ChartGallerySpecialized from './components/ChartGallerySpecialized';
 import ChartGalleryProportions from './components/ChartGalleryProportions';
 import GeminiChatGallery from './components/GeminiChatGallery';
-
 import AppInspectorOverlay from './components/AppInspectorOverlay';
 
-// Dynamically load all generated apps and metadata
+// Dynamically load all generated apps
 const generatedApps = import.meta.glob('./generated_apps/*.jsx', { eager: true });
 const generatedAppMeta = import.meta.glob('./generated_apps/*.json', { eager: true });
 
+// ── Google Cloud wordmark SVG (complete — verified from bigquery-aif TopBar.tsx) ──
+function GCWordmark() {
+  return (
+    <svg viewBox="0 19 1060 173" height="18" xmlns="http://www.w3.org/2000/svg" aria-label="Google Cloud" role="img">
+      <path d="M678.011 152.95c-19.009 0-34.86-6.376-47.553-19.129-12.693-12.812-19.039-28.841-19.039-48.089 0-19.307 6.376-35.247 19.128-47.82C643.3 25.337 659.091 19.05 677.921 19.05c6.138 0 12.067.804 17.788 2.413 5.721 1.61 10.905 3.904 15.553 6.883 4.708 2.92 9.624 7.15 14.749 12.693L712.424 53.91c-4.41-4.708-8.194-8.045-11.352-10.011-3.099-1.966-6.555-3.456-10.369-4.47-3.813-1.072-8.044-1.608-12.692-1.608-13.289 0-24.432 4.41-33.43 13.229-8.998 8.76-13.497 20.29-13.497 34.592 0 14.242 4.469 25.892 13.407 34.949 8.939 8.998 20.112 13.497 33.52 13.497 4.707 0 9.236-.655 13.586-1.966s8.313-3.158 11.889-5.542c3.575-2.383 7.448-5.899 11.62-10.547l13.944 13.318c-5.721 6.376-11.114 11.114-16.179 14.212-5.006 3.099-10.428 5.423-16.268 6.972-5.84 1.609-12.037 2.414-18.592 2.414zm60.878-2.95V22h19.486v128h-19.486zm78.104 2.95c-13.884 0-25.355-4.619-34.413-13.855-9.058-9.236-13.586-20.856-13.586-34.86 0-14.183 4.528-25.832 13.586-34.95 9.117-9.117 20.588-13.676 34.413-13.676 13.825 0 25.296 4.589 34.414 13.766 9.117 9.177 13.675 20.797 13.675 34.86 0 14.004-4.528 25.624-13.586 34.86s-20.559 13.855-34.503 13.855zm0-16.983c8.164 0 15.017-2.95 20.559-8.85 5.542-5.959 8.313-13.586 8.313-22.882 0-9.415-2.801-17.043-8.402-22.883-5.542-5.84-12.365-8.76-20.47-8.76-8.163 0-15.016 2.92-20.558 8.76s-8.313 13.468-8.313 22.883c0 9.296 2.741 16.923 8.223 22.882 5.542 5.9 12.425 8.85 20.648 8.85zm91.797 16.983c-10.845 0-19.217-3.129-25.117-9.386-5.899-6.316-8.849-15.225-8.849-26.726V58.559h19.486v55.329c0 7.449 1.698 13.14 5.095 17.073 3.456 3.933 8.372 5.899 14.748 5.899 6.675 0 12.306-2.562 16.894-7.687 4.589-5.184 6.883-11.381 6.883-18.592V58.559h19.486V150h-18.503v-21.721l8.849 8.85h-9.385c-2.563 4.588-6.555 8.372-11.978 11.351-5.422 2.98-11.292 4.47-17.609 4.47zm102.62 0c-12.45 0-22.789-4.499-31.012-13.497-8.164-9.058-12.246-20.768-12.246-35.129 0-14.242 4.141-25.892 12.424-34.95 8.343-9.057 18.771-13.586 31.284-13.586 6.32 0 12.13 1.43 17.43 4.29 5.36 2.801 9.39 6.496 12.07 11.084h.62V22.001h19.31V150h-18.59v-16.179l2.05 3.576h-2.59c-2.86 4.707-7.06 8.491-12.6 11.352-5.54 2.8-11.59 4.201-18.15 4.201zm3.49-16.805c7.81 0 14.36-2.979 19.66-8.938 5.37-6.019 8.05-13.676 8.05-22.972 0-9.296-2.71-16.864-8.13-22.704-5.37-5.84-11.89-8.76-19.58-8.76-7.69 0-14.24 2.92-19.665 8.76-5.363 5.84-8.044 13.438-8.044 22.793 0 9.237 2.652 16.864 7.955 22.883 5.364 5.959 11.944 8.938 19.754 8.938zM528.355 152.631c-13.706 0-25.058-4.41-34.056-13.229-8.938-8.819-13.407-20.439-13.407-34.86 0-14.123 4.32-25.743 12.96-34.86 8.701-9.177 20.052-13.766 34.056-13.766 9.177 0 17.102 2.354 23.777 7.062 6.733 4.707 12.037 12.067 15.91 22.078.358 1.013.685 2.056.983 3.128.298 1.073.566 2.294.805 3.665l-73.296 31.106-5.095-14.749 60.693-25.742-1.699 8.134c-2.264-6.376-5.423-10.995-9.475-13.855-3.992-2.86-8.432-4.29-13.318-4.29-8.343 0-14.987 2.86-19.933 8.58-4.946 5.662-7.419 13.11-7.419 22.347 0 8.7 2.861 16.119 8.581 22.257 5.721 6.137 12.663 9.206 20.827 9.206 4.886 0 9.445-1.221 13.676-3.665 4.231-2.443 7.925-5.869 11.083-10.279l14.481 9.475c-4.052 6.674-9.594 12.067-16.626 16.179-7.031 4.052-14.867 6.078-23.508 6.078zM451.305 149.859v-128h19.486v128h-19.486zM391.506 191.335c-10.249 0-18.711-2.146-25.385-6.436-6.614-4.291-12.127-11.114-16.536-20.469l16.804-7.419c2.801 5.303 6.198 9.445 10.19 12.424 3.993 3.039 8.879 4.559 14.659 4.559 8.82 0 15.523-2.563 20.112-7.687 4.648-5.125 6.972-12.276 6.972-21.453v-8.312h-.626c-1.43 2.145-3.456 4.32-6.078 6.525-2.622 2.145-5.84 3.992-9.654 5.542-3.813 1.489-7.985 2.234-12.513 2.234-8.999 0-16.805-1.996-23.419-5.989-6.615-3.992-11.68-9.534-15.196-16.625-3.516-7.151-5.274-15.345-5.274-24.581 0-9.117 1.758-17.281 5.274-24.492 3.516-7.27 8.522-12.96 15.017-17.072 6.555-4.112 14.182-6.168 22.882-6.168 6.198 0 11.889 1.222 17.073 3.665 5.184 2.443 9.236 5.93 12.156 10.458h.358V58.687h18.592v80.625c0 34.682-15.136 52.023-45.408 52.023zm0-58.19c5.483 0 10.25-1.281 14.302-3.844 4.052-2.562 7.151-6.108 9.296-10.636 2.145-4.589 3.218-9.803 3.218-15.643 0-5.959-1.073-11.173-3.218-15.642-2.145-4.53-5.244-8.015-9.296-10.458-4.052-2.444-8.79-3.665-14.212-3.665-5.304 0-9.982 1.251-14.034 3.754-4.052 2.443-7.21 5.93-9.474 10.458-2.265 4.529-3.397 9.743-3.397 15.643 0 6.197 1.132 11.56 3.397 16.089 2.324 4.529 5.512 7.985 9.564 10.369 4.052 2.383 8.67 3.575 13.854 3.575zM290.233 152.809c-9.177 0-17.43-2.116-24.76-6.347-7.27-4.23-12.96-10.04-17.072-17.43-4.052-7.448-6.078-15.821-6.078-25.117 0-9.534 2.085-17.966 6.257-25.296 4.231-7.389 9.981-13.11 17.251-17.162 7.27-4.052 15.404-6.078 24.402-6.078 9.117 0 17.311 2.056 24.581 6.168 7.33 4.111 13.08 9.862 17.251 17.251 4.172 7.39 6.257 15.762 6.257 25.117 0 9.296-2.056 17.669-6.167 25.117-4.112 7.449-9.833 13.289-17.162 17.52-7.27 4.171-15.523 6.257-24.76 6.257zm0-16.983c5.661 0 10.667-1.401 15.017-4.201 4.409-2.861 7.806-6.704 10.19-11.531 2.443-4.886 3.664-10.279 3.664-16.179 0-5.84-1.221-11.143-3.664-15.91-2.384-4.827-5.781-8.64-10.19-11.442-4.41-2.8-9.415-4.2-15.017-4.2-5.244 0-10.071 1.34-14.48 4.022-4.41 2.681-7.926 6.435-10.548 11.262-2.562 4.767-3.843 10.19-3.843 16.268 0 5.84 1.192 11.203 3.575 16.09 2.443 4.826 5.84 8.67 10.19 11.53 4.41 2.861 9.445 4.291 15.106 4.291zM186.279 152.809c-9.177 0-17.431-2.116-24.76-6.347-7.27-4.23-12.961-10.04-17.073-17.43-4.052-7.448-6.078-15.821-6.078-25.117 0-9.534 2.086-17.966 6.257-25.296 4.231-7.389 9.981-13.11 17.251-17.162 7.27-4.052 15.404-6.078 24.403-6.078 9.117 0 17.31 2.056 24.58 6.168 7.33 4.111 13.08 9.862 17.252 17.251 4.171 7.39 6.257 15.762 6.257 25.117 0 9.296-2.056 17.669-6.168 25.117-4.112 7.449-9.832 13.289-17.162 17.52-7.27 4.171-15.523 6.257-24.759 6.257zm0-16.983c5.661 0 10.666-1.401 15.016-4.201 4.41-2.861 7.807-6.704 10.19-11.531 2.443-4.886 3.665-10.279 3.665-16.179 0-5.84-1.222-11.143-3.665-15.91-2.383-4.827-5.78-8.64-10.19-11.442-4.409-2.8-9.415-4.2-15.016-4.2-5.244 0-10.071 1.34-14.481 4.022-4.409 2.681-7.925 6.435-10.547 11.262-2.563 4.767-3.844 10.19-3.844 16.268 0 5.84 1.192 11.203 3.576 16.09 2.443 4.826 5.839 8.67 10.189 11.53 4.41 2.861 9.446 4.291 15.107 4.291zM66.145 152.809c-12.276-.119-23.478-3.158-33.609-9.117-10.07-6.019-18.026-14.153-23.866-24.402C2.89 109.04 0 97.778 0 85.502c0-12.454 2.89-23.746 8.67-33.876 5.78-10.13 13.736-18.086 23.866-23.866C42.666 21.92 53.93 19 66.324 19c9.653 0 18.502 1.609 26.547 4.827 8.045 3.218 14.898 8.164 20.559 14.838L100.469 52.25c-5.065-5.184-10.28-8.908-15.643-11.173-5.303-2.264-11.381-3.397-18.234-3.397-8.7 0-16.566 1.967-23.598 5.9-7.031 3.933-12.603 9.564-16.715 16.894-4.052 7.27-6.078 15.702-6.078 25.296 0 9.355 2.026 17.728 6.078 25.117 4.052 7.329 9.594 13.05 16.626 17.162 7.031 4.111 14.927 6.167 23.687 6.167 7.806 0 14.778-1.37 20.916-4.111 6.197-2.801 11.203-6.973 15.017-12.514 3.813-5.542 6.108-12.276 6.882-20.201h-43.53V78.888h62.033c.596 3.933.894 7.508.894 10.726 0 12.514-2.592 23.598-7.777 33.251-5.184 9.594-12.543 17.013-22.078 22.257-9.475 5.244-20.41 7.807-32.804 7.687z" fill="#212226"/>
+    </svg>
+  );
+}
+
+// ── Nav item definition ──
+const NAV_ITEMS_TOP = [
+  { id: 'Home',            icon: 'home',           label: 'Home' },
+  { id: 'App Playground',  icon: 'apps',           label: 'App Playground' },
+  { id: 'Themes Library',  icon: 'palette',        label: 'Themes Library' },
+];
+
+const NAV_ITEMS_LIBRARIES = [
+  { id: 'Gemini Chat',                  icon: 'auto_awesome',  label: 'Gemini Chat' },
+  { id: 'Typography',                   icon: 'title',         label: 'Typography' },
+  { id: 'Inputs & Controls',            icon: 'tune',          label: 'Inputs & Controls' },
+  { id: 'Navigation & Overlays',        icon: 'view_sidebar',  label: 'Navigation & Overlays' },
+  { id: 'Feedback & Status',            icon: 'feedback',      label: 'Feedback & Status' },
+  { id: 'Tables & Data Grids',          icon: 'table_chart',   label: 'Tables & Data Grids' },
+  { id: 'Charts: Standard',             icon: 'bar_chart',     label: 'Charts: Standard' },
+  { id: 'Charts: Time & Trends',        icon: 'show_chart',    label: 'Charts: Time & Trends' },
+  { id: 'Charts: Distributions',        icon: 'analytics',     label: 'Charts: Distributions' },
+  { id: 'Charts: Maps & Geodata',       icon: 'map',           label: 'Charts: Maps & Geodata' },
+  { id: 'Charts: Specialized',          icon: 'scatter_plot',  label: 'Charts: Specialized' },
+  { id: 'Charts: Proportions & Parts',  icon: 'donut_large',   label: 'Charts: Proportions' },
+];
 
 function App() {
-    // Apply global theme settings (needed for Tailwind dark mode on HTML element)
-    const { theme, setTheme } = useEditor();
-    const isDarkMode = theme === 'dark';
-    const { user, isAdmin, signIn, signOut } = useAuth();
+  const { theme, setTheme } = useEditor();
+  const isDarkMode = theme === 'dark';
+  const { user, isAdmin, signIn, signOut } = useAuth();
 
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [isDarkMode]);
+  const [collapsed, setCollapsed] = useState(false);
+  const [activeSection, setActiveSection] = useState('Home');
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const [libsOpen, setLibsOpen] = useState(true);
+  const avatarMenuRef = useRef(null);
 
-    // Isolated Render mode for generated apps
-    const urlParams = new URLSearchParams(window.location.search);
-    const appId = urlParams.get('app');
+  // Apply dark mode to <html> for Tailwind-based galleries
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    document.body.style.background = '#F0F5FE';
+  }, [isDarkMode]);
 
-    if (appId) {
-        // Find the matching module from our eager glob
-        const modulePath = Object.keys(generatedApps).find(path => path.includes(`${appId}.jsx`));
-        const metaPath = Object.keys(generatedAppMeta).find(path => path.includes(`${appId}.json`));
-        
-        if (modulePath && generatedApps[modulePath]) {
-            const GeneratedComponent = generatedApps[modulePath].default;
-            const appMetadata = metaPath && generatedAppMeta[metaPath] ? generatedAppMeta[metaPath].default : { id: appId };
-            
-            return (
-                <div className="min-h-screen bg-slate-50 dark:bg-[#121212] font-sans p-8 transition-colors relative">
-                    <GeneratedComponent />
-                    <AppInspectorOverlay appMetadata={appMetadata} />
-                </div>
-            );
-        } else {
-            return (
-                <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans">
-                    <div className="text-center">
-                        <h2 className="text-2xl font-bold mb-2">App Layout Not Found</h2>
-                        <p className="text-slate-500">The layout "{appId}" could not be found or has been deleted.</p>
-                    </div>
-                </div>
-            );
-        }
+  // Close avatar menu on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target)) {
+        setAvatarMenuOpen(false);
+      }
     }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
-    // Global sticker sheet controls
-    const [activeSection, setActiveSection] = useState('Home');
-
-
-    // ... rest of the component remains largely the same, but remove the providers at the bottom
-
-    return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
-            
-            {/* Top Header */}
-            <header className="w-full sticky top-0 z-50 h-16 bg-white dark:bg-[#1a1a1a] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shadow-sm">
-                <div className="flex items-center gap-2 font-semibold text-lg">
-                    <Component className="text-blue-500" size={24} />
-                    <span>DAK Hyperskills</span>
-                    {isAdmin && activeSection !== 'Themes Library' && <span className="ml-4 text-xs font-medium px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">Editing Theme</span>}
-                    {isAdmin && <span className="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/50 flex items-center gap-1"><Shield size={10} /> Admin</span>}
-                </div>
-                
-                <div className="flex items-center gap-4">
-                    {isAdmin && <ThemePicker />}
-                    {isAdmin && <EditorModeToggle />}
-                    
-                    <button
-                        onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
-                        className="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center"
-                        title="Toggle Theme"
-                    >
-                        {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-                    </button>
-                    
-                    {isAdmin && <UpdateSkillsButton />}
-
-                    {/* Auth button */}
-                    {user ? (
-                        <button
-                            onClick={signOut}
-                            className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"
-                            title={`Signed in as ${user.email}`}
-                        >
-                            <img src={user.photoURL} alt="" className="w-5 h-5 rounded-full" />
-                            <LogOut size={14} />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={signIn}
-                            className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"
-                            title="Sign in"
-                        >
-                            <LogIn size={14} />
-                            <span className="hidden sm:inline">Sign In</span>
-                        </button>
-                    )}
-                </div>
-            </header>
-
-            <div className="flex flex-1 overflow-hidden">
-                {/* Sidebar Controls */}
-                <div id="main-nav-sidebar" className="w-72 bg-white dark:bg-[#1a1a1a] border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col h-[calc(100vh-64px)] sticky top-16 overflow-y-auto">
-
-                <div className="flex-1 space-y-6">
-                    <nav className="space-y-1">
-                        <button
-                            onClick={() => setActiveSection('Home')}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 ${activeSection === 'Home'
-                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800/50 shadow-sm'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 font-medium border border-transparent'
-                                }`}
-                        >
-                            <Home size={16} className={activeSection === 'Home' ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"} /> App Home
-                        </button>
-
-                        <button
-                            onClick={() => setActiveSection('App Playground')}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 ${activeSection === 'App Playground'
-                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800/50 shadow-sm'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 font-medium border border-transparent'
-                                }`}
-                        >
-                            <AppWindow size={16} className={activeSection === 'App Playground' ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"} /> App Playground
-                        </button>
-                        <button
-                            onClick={() => setActiveSection('Themes Library')}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 ${activeSection === 'Themes Library'
-                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800/50 shadow-sm'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 font-medium border border-transparent'
-                                }`}
-                        >
-                            <Palette size={16} className={activeSection === 'Themes Library' ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"} /> Themes Library
-                        </button>
-
-                    </nav>
-
-                    {/* Navigation */}
-                    <section>
-                        <Typography variant="h6" as="h3" className="mb-2 px-3 flex items-center gap-2 text-slate-500 tracking-wider">
-                            <Layout size={16} className="text-slate-400 dark:text-slate-500" /> LIBRARIES
-                        </Typography>
-                        <nav className="space-y-1">
-                            {[
-                                'Gemini Chat',
-                                'Typography', 'Inputs & Controls', 'Navigation & Overlays', 'Feedback & Status',
-                                'Tables & Data Grids',
-                                'Charts: Standard', 'Charts: Time & Trends', 'Charts: Distributions', 'Charts: Maps & Geodata', 'Charts: Specialized', 'Charts: Proportions & Parts'
-                            ].map((section) => (
-                                <button
-                                    key={section}
-                                    onClick={() => setActiveSection(section)}
-                                    className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === section
-                                        ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
-                                        }`}
-                                >
-                                    {section}
-                                </button>
-                            ))}
-                        </nav>
-                    </section>
-
-                </div>
-            </div>
-
-            {/* Main Canvas */}
-            <div className="flex-1 p-8 overflow-y-auto w-full h-[calc(100vh-64px)]">
-                <div className="max-w-6xl mx-auto">
-
-                    {activeSection === 'Themes Library' && <ThemeGallery onEditTheme={() => setActiveSection('Typography')} />}
-                    {activeSection === 'Home' && <HomePage onNavigate={(section) => setActiveSection(section)} />}
-                    {activeSection === 'How It Works' && <HowItWorksPage onBack={() => setActiveSection('Home')} />}
-                    {activeSection === 'App Playground' && <AppsPage />}
-                    {activeSection === 'Gemini Chat' && <GeminiChatGallery />}
-
-                    {activeSection === 'Typography' && <TypographyGallery />}
-                    {activeSection === 'Inputs & Controls' && <ControlsGallery />}
-                    {activeSection === 'Navigation & Overlays' && <NavigationGallery />}
-                    {activeSection === 'Feedback & Status' && <FeedbackGallery />}
-                    {activeSection === 'Tables & Data Grids' && <TableGallery />}
-                    {activeSection === 'Chart Gallery' && <ChartGallery />}
-                    {activeSection === 'Charts: Standard' && <ChartGallery />}
-                    {activeSection === 'Charts: Time & Trends' && <ChartGalleryTime />}
-                    {activeSection === 'Charts: Distributions' && <ChartGalleryDistributions />}
-                    {activeSection === 'Charts: Maps & Geodata' && <ChartGalleryMaps />}
-                    {activeSection === 'Charts: Specialized' && <ChartGallerySpecialized />}
-                    {activeSection === 'Charts: Proportions & Parts' && <ChartGalleryProportions />}
-
-                </div>
-            </div>
-
-            {/* Editor Sidebar — admin only */}
-            {isAdmin && <EditorSidebar />}
-            {isAdmin && <SkillEditorModal />}
-            </div>
+  // ── Isolated render mode for generated apps ──
+  const urlParams = new URLSearchParams(window.location.search);
+  const appId = urlParams.get('app');
+  if (appId) {
+    const modulePath = Object.keys(generatedApps).find(p => p.includes(`${appId}.jsx`));
+    const metaPath = Object.keys(generatedAppMeta).find(p => p.includes(`${appId}.json`));
+    if (modulePath && generatedApps[modulePath]) {
+      const GeneratedComponent = generatedApps[modulePath].default;
+      const appMetadata = metaPath && generatedAppMeta[metaPath] ? generatedAppMeta[metaPath].default : { id: appId };
+      return (
+        <div className="min-h-screen bg-slate-50 dark:bg-[#121212] font-sans p-8 transition-colors relative">
+          <GeneratedComponent />
+          <AppInspectorOverlay appMetadata={appMetadata} />
         </div>
+      );
+    }
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50 text-slate-900 font-sans">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-2">App Not Found</h2>
+          <p className="text-slate-500">The layout "{appId}" could not be found.</p>
+        </div>
+      </div>
     );
+  }
+
+  // ── Helper: nav item button ──
+  function NavItem({ item }) {
+    const active = activeSection === item.id;
+    return (
+      <div className="gc-nav-item-row">
+        <button
+          className={`gc-nav-item${active ? ' gc-nav-item--active' : ''}`}
+          onClick={() => setActiveSection(item.id)}
+          title={collapsed ? item.label : undefined}
+        >
+          <span className="material-symbols-outlined">{item.icon}</span>
+          <span className="gc-nav-label">{item.label}</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* ════════════════════════════════════════════
+          TOP BAR
+          ════════════════════════════════════════════ */}
+      <header className="gc-top-bar">
+        <div className="gc-top-bar-start">
+          {/* Hamburger */}
+          <button
+            className="gc-icon-btn"
+            onClick={() => setCollapsed(c => !c)}
+            aria-label="Toggle navigation"
+          >
+            <span className="material-symbols-outlined">menu</span>
+          </button>
+
+          {/* Google Cloud wordmark */}
+          <div className="gc-logo" aria-label="Google Cloud">
+            <GCWordmark />
+          </div>
+        </div>
+
+        <div className="gc-top-bar-end">
+          {/* Dark mode toggle — kept for spec authoring */}
+          <button
+            className="gc-icon-btn"
+            onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
+            title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label="Toggle dark mode"
+          >
+            <span className="material-symbols-outlined">
+              {isDarkMode ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
+
+          {/* Admin tools */}
+          {isAdmin && <ThemePicker />}
+          {isAdmin && <EditorModeToggle />}
+          {isAdmin && <UpdateSkillsButton />}
+
+          {/* Auth */}
+          {user ? (
+            <div className="gc-avatar-wrap" ref={avatarMenuRef}>
+              <button
+                className="gc-avatar-btn"
+                onClick={() => setAvatarMenuOpen(o => !o)}
+                aria-label={`Account: ${user.email}`}
+                aria-expanded={avatarMenuOpen}
+              >
+                <img className="gc-avatar" src={user.photoURL} alt={user.displayName || user.email} referrerPolicy="no-referrer" />
+              </button>
+
+              {avatarMenuOpen && (
+                <div className="gc-avatar-menu" role="menu">
+                  <div className="gc-avatar-menu-info">
+                    <img className="gc-avatar-menu-photo" src={user.photoURL} alt="" referrerPolicy="no-referrer" />
+                    <div>
+                      <div className="gc-avatar-menu-name">{user.displayName || user.email}</div>
+                      <div className="gc-avatar-menu-email">{user.email}</div>
+                      {isAdmin && (
+                        <div style={{ fontSize: 11, color: '#1a73e8', fontWeight: 500, marginTop: 2 }}>Admin</div>
+                      )}
+                    </div>
+                  </div>
+                  <hr className="gc-avatar-menu-divider" />
+                  <button
+                    className="gc-avatar-menu-item"
+                    role="menuitem"
+                    onClick={() => { signOut(); setAvatarMenuOpen(false); }}
+                  >
+                    <span className="material-symbols-outlined">logout</span>
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button className="gc-sign-in-btn" onClick={signIn}>
+              <span className="material-symbols-outlined">account_circle</span>
+              Sign in
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* ════════════════════════════════════════════
+          SHELL (sidebar + content)
+          ════════════════════════════════════════════ */}
+      <div className="gc-shell">
+
+        {/* ── Side nav ── */}
+        <nav
+          className={`gc-side-nav${collapsed ? ' gc-side-nav--collapsed' : ''}`}
+          aria-label="Primary navigation"
+        >
+          <div className="gc-nav-top">
+            {/* Product header */}
+            <div className="gc-nav-header">
+              <span className="material-symbols-outlined gc-nav-header-icon">auto_awesome_mosaic</span>
+              <span className="gc-nav-header-text">Hyperskills</span>
+            </div>
+
+            {/* Top-level nav items */}
+            <div className="gc-nav-section">
+              {NAV_ITEMS_TOP.map(item => <NavItem key={item.id} item={item} />)}
+            </div>
+
+            {/* Libraries group */}
+            <div className="gc-nav-group">
+              <button
+                className="gc-nav-group-header"
+                onClick={() => setLibsOpen(o => !o)}
+              >
+                <span className="gc-nav-group-label">Libraries</span>
+                <span className="material-symbols-outlined gc-nav-group-chevron">
+                  {libsOpen ? 'expand_less' : 'expand_more'}
+                </span>
+              </button>
+              {libsOpen && (
+                <div className="gc-nav-group-items">
+                  {NAV_ITEMS_LIBRARIES.map(item => <NavItem key={item.id} item={item} />)}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom utility */}
+          <div className="gc-nav-bottom">
+            {isAdmin && (
+              <div className="gc-nav-item-row">
+                <button
+                  className="gc-nav-item"
+                  title={collapsed ? 'Admin Settings' : undefined}
+                  style={{ color: '#1a73e8' }}
+                >
+                  <span className="material-symbols-outlined" style={{ color: '#1a73e8' }}>admin_panel_settings</span>
+                  <span className="gc-nav-label">Admin</span>
+                </button>
+              </div>
+            )}
+            <div className="gc-nav-item-row">
+              <button
+                className="gc-nav-item"
+                onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
+                title={collapsed ? (isDarkMode ? 'Light mode' : 'Dark mode') : undefined}
+              >
+                <span className="material-symbols-outlined">
+                  {isDarkMode ? 'light_mode' : 'dark_mode'}
+                </span>
+                <span className="gc-nav-label">{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        {/* ── Main content panel ── */}
+        <main
+          id="content"
+          className={`gc-content${collapsed ? ' gc-content--nav-collapsed' : ''}`}
+        >
+          <div style={{ padding: '32px', flex: 1 }}>
+            {activeSection === 'Home'                         && <HomePage onNavigate={s => setActiveSection(s)} />}
+            {activeSection === 'How It Works'                 && <HowItWorksPage onBack={() => setActiveSection('Home')} />}
+            {activeSection === 'App Playground'               && <AppsPage />}
+            {activeSection === 'Themes Library'               && <ThemeGallery onEditTheme={() => setActiveSection('Typography')} />}
+            {activeSection === 'Gemini Chat'                  && <GeminiChatGallery />}
+            {activeSection === 'Typography'                   && <TypographyGallery />}
+            {activeSection === 'Inputs & Controls'            && <ControlsGallery />}
+            {activeSection === 'Navigation & Overlays'        && <NavigationGallery />}
+            {activeSection === 'Feedback & Status'            && <FeedbackGallery />}
+            {activeSection === 'Tables & Data Grids'          && <TableGallery />}
+            {activeSection === 'Charts: Standard'             && <ChartGallery />}
+            {activeSection === 'Charts: Time & Trends'        && <ChartGalleryTime />}
+            {activeSection === 'Charts: Distributions'        && <ChartGalleryDistributions />}
+            {activeSection === 'Charts: Maps & Geodata'       && <ChartGalleryMaps />}
+            {activeSection === 'Charts: Specialized'          && <ChartGallerySpecialized />}
+            {activeSection === 'Charts: Proportions & Parts'  && <ChartGalleryProportions />}
+          </div>
+        </main>
+      </div>
+
+      {/* Admin overlays — sit above everything */}
+      {isAdmin && <EditorSidebar />}
+      {isAdmin && <SkillEditorModal />}
+    </>
+  );
 }
 
 export default App;

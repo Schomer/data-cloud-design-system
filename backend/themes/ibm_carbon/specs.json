@@ -1,0 +1,275 @@
+{
+  "light": {
+    "button": {
+      "primaryBg": "#0F62FE",
+      "primaryHoverBg": "#0050E6",
+      "primaryText": "#ffffff",
+      "primaryLabel": "Primary Action",
+      "secondaryBg": "#e0e0e0",
+      "secondaryHoverBg": "#ffffff",
+      "secondaryText": "#161616",
+      "secondaryBorder": "#8d8d8d",
+      "secondaryLabel": "Secondary",
+      "destructiveBg": "#DA1E28",
+      "destructiveHoverBg": "#BA1B23",
+      "destructiveText": "#ffffff",
+      "destructiveLabel": "Destructive",
+      "ghostText": "#0F62FE",
+      "ghostHoverBg": "#e0e0e0",
+      "ghostLabel": "Ghost Button",
+      "borderRadius": 0,
+      "paddingX": 12,
+      "paddingY": 6,
+      "fontWeight": "500",
+      "typographyVariant": "small",
+      "fontSize": 14,
+      "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+      "letterSpacing": "normal",
+      "textTransform": "none",
+      "secondaryDarkBg": "#1e1e1e",
+      "secondaryDarkHoverBg": "#2a2a2a",
+      "secondaryDarkText": "#e0e0e0",
+      "secondaryDarkBorder": "#444",
+      "ghostDarkText": "#0F62FE",
+      "ghostDarkHoverBg": "#1e1e1e"
+    },
+    "input": {
+      "bg": "#F4F4F4",
+      "borderColor": "#8D8D8D",
+      "focusRingColor": "#0F62FE",
+      "borderRadius": 0,
+      "paddingX": 10,
+      "paddingY": 5,
+      "placeholder": "Enter text...",
+      "textColor": "#161616",
+      "typographyVariant": "p",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "checkbox": {
+      "bg": "#0F62FE",
+      "borderColor": "#0F62FE",
+      "textColor": "#161616",
+      "typographyVariant": "p"
+    },
+    "radio": {
+      "bg": "#ffffff",
+      "dotColor": "#0F62FE",
+      "textColor": "#525252",
+      "typographyVariant": "p"
+    },
+    "switch": {
+      "bgOn": "#0F62FE",
+      "bgOff": "#d1d5db",
+      "circleOn": "#ffffff",
+      "circleOff": "#ffffff"
+    },
+    "segmented": {
+      "bg": "#e0e0e0",
+      "selectedBg": "#ffffff",
+      "selectedText": "#0F62FE",
+      "textColor": "#525252",
+      "typographyVariant": "small"
+    },
+    "card": {
+      "bg": "#ffffff",
+      "borderColor": "#E0E0E0",
+      "borderRadius": 0,
+      "padding": 20,
+      "titleColor": "#0F62FE",
+      "valueColor": "#161616",
+      "subtitleColor": "#525252",
+      "footerColor": "#525252",
+      "kpiLabelColor": "#525252",
+      "kpiBg": "#ffffff",
+      "kpiBorderColor": "#E0E0E0",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "badge": {
+      "primaryBg": "#D0E2FF",
+      "primaryText": "#0043CE",
+      "successBg": "#DEFBE6",
+      "successText": "#044317",
+      "warningBg": "#FEF9EC",
+      "warningText": "#92400E",
+      "errorBg": "#FEF2F2",
+      "errorText": "#991B1B",
+      "neutralBg": "#e0e0e0",
+      "neutralText": "#525252",
+      "borderRadius": 4
+    },
+    "typography": {
+      "h1": {
+        "fontSize": 32,
+        "fontWeight": "700",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "letterSpacing": "-0.02em",
+        "lineHeight": "1.2",
+        "content": "The quick brown fox"
+      },
+      "h2": {
+        "fontSize": 24,
+        "fontWeight": "600",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "1.3",
+        "content": "Section heading"
+      },
+      "h3": {
+        "fontSize": 20,
+        "fontWeight": "600",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Card title or panel header"
+      },
+      "h4": {
+        "fontSize": 16,
+        "fontWeight": "600",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Subsection heading"
+      },
+      "h5": {
+        "fontSize": 14,
+        "fontWeight": "600",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Small heading"
+      },
+      "h6": {
+        "fontSize": 12,
+        "fontWeight": "600",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#525252",
+        "letterSpacing": "0.05em",
+        "lineHeight": "1.5",
+        "content": "LABEL / EYEBROW"
+      },
+      "p": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "letterSpacing": "normal",
+        "lineHeight": "1.6",
+        "content": "Body text for descriptions, tooltips, and general UI copy."
+      },
+      "small": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#525252",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Smaller body text for secondary information."
+      },
+      "xs": {
+        "fontSize": 11,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#525252",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small utility text."
+      },
+      "mono": {
+        "fontSize": 13,
+        "fontWeight": "400",
+        "fontFamily": "monospace",
+        "color": "#161616",
+        "bg": "#e0e0e0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "console.log(\"Hello\")",
+        "darkColor": "#e0e0e0",
+        "darkBg": "#1a1a1a"
+      },
+      "muted": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#525252",
+        "fontStyle": "italic",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "No data available.",
+        "darkColor": "#555"
+      },
+      "bodyBase": {
+        "fontSize": 16,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "darkColor": "#e0e0e0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. This base text size is used for primary article content."
+      },
+      "bodySmall": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#161616",
+        "darkColor": "#aaa",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. Small body text for data tables and secondary content."
+      },
+      "bodyXs": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#525252",
+        "darkColor": "#666",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small text for metadata, timestamps, and chart axis labels."
+      }
+    },
+    "alert": {
+      "infoBg": "#EDF5FF",
+      "infoBorder": "#4589FF",
+      "infoIcon": "#0F62FE",
+      "infoTitle": "#002D9C",
+      "infoText": "#0043CE",
+      "successBg": "#DEFBE6",
+      "successBorder": "#42BE65",
+      "successIcon": "#24A148",
+      "successTitle": "#044317",
+      "successText": "#198038",
+      "warningBg": "#FDF6DD",
+      "warningBorder": "#F1C21B",
+      "warningIcon": "#F1C21B",
+      "warningTitle": "#3E1A00",
+      "warningText": "#8E6A00",
+      "errorBg": "#FFF1F1",
+      "errorBorder": "#FF8389",
+      "errorIcon": "#DA1E28",
+      "errorTitle": "#750E13",
+      "errorText": "#DA1E28",
+      "borderRadius": 0
+    },
+    "loader": {
+      "spinnerColor": "#0F62FE",
+      "spinnerSecondaryColor": "#525252",
+      "spinnerSuccessColor": "#24A148",
+      "progressBg": "#e0e0e0",
+      "progressFill": "#0F62FE",
+      "borderRadius": 0
+    },
+    "chart": {
+      "titleTypography": "h3",
+      "subtitleTypography": "small",
+      "headerPaddingY": 16
+    }
+  }
+}

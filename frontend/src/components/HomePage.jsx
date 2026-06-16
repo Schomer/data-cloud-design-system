@@ -1,217 +1,234 @@
 import React from 'react';
-import { 
-  Layers, 
-  FileJson, 
-  Component, 
-  Cpu, 
-  Palette, 
-  LayoutTemplate, 
-  ArrowRight, 
-  Zap, 
-  ShieldCheck, 
-  Search,
-  BrainCircuit,
-  Eye
-} from 'lucide-react';
-import Typography from './Typography';
+
+const GC_BLUE = '#1a73e8';
+const TEXT_PRIMARY = '#202124';
+const TEXT_SECONDARY = '#5f6368';
+const BORDER = '#dadce0';
+const SURFACE = '#ffffff';
+const BG_SUBTLE = '#f8f9fa';
+
+// Shared card style — used everywhere so all cards are on-theme
+const cardStyle = {
+  background: SURFACE,
+  border: `1px solid ${BORDER}`,
+  borderRadius: 8,
+  padding: '20px 24px',
+};
+
+const sectionHeaderStyle = {
+  fontSize: 16,
+  fontWeight: 500,
+  color: TEXT_PRIMARY,
+  marginBottom: 4,
+  fontFamily: "'Google Sans', Roboto, sans-serif",
+};
+
+const sectionSubStyle = {
+  fontSize: 13,
+  color: TEXT_SECONDARY,
+  marginBottom: 20,
+  fontFamily: 'Roboto, sans-serif',
+};
+
+// Navigation quick-links at the top — the GC console "What do you want to do?" pattern
+const QUICK_LINKS = [
+  { icon: 'palette',        label: 'Themes Library',              desc: 'Create and manage visual themes' },
+  { icon: 'apps',           label: 'App Playground',              desc: 'Generate apps from a prompt' },
+  { icon: 'bar_chart',      label: 'Charts: Standard',            desc: 'Bar, line, scatter charts' },
+  { icon: 'tune',           label: 'Inputs & Controls',           desc: 'Forms, selects, toggles' },
+  { icon: 'table_chart',    label: 'Tables & Data Grids',         desc: 'Data table patterns' },
+  { icon: 'auto_awesome',   label: 'Gemini Chat',                 desc: 'Chat UI components' },
+];
+
+// System overview rows — plain table-like layout like GC resource lists
+const PLATFORM_LAYERS = [
+  {
+    icon: 'foundation',
+    name: 'Foundation',
+    desc: 'Visual specs, design tokens, color, typography, and spacing rules compiled into Skill Files for LLM consumption.',
+    items: ['Color tokens', 'Typography scale', 'Spacing system', 'Dark mode specs'],
+  },
+  {
+    icon: 'account_tree',
+    name: 'Architecture',
+    desc: 'Router and Orchestrator logic that maps user intent to component skills and injects the right context into each AI prompt.',
+    items: ['Orchestrator', 'Router', 'Prompt injection', 'Skill selection'],
+  },
+  {
+    icon: 'widgets',
+    name: 'Components',
+    desc: 'UI catalog covering forms, tables, buttons, KPI cards, navigation, feedback states, and interactive patterns.',
+    items: ['Forms & inputs', 'Data tables', 'Navigation', 'Feedback & status'],
+  },
+  {
+    icon: 'analytics',
+    name: 'Visualizations',
+    desc: 'ECharts-based chart skills covering standard charts, time series, distributions, maps, and specialized geometries.',
+    items: ['Standard charts', 'Time & trends', 'Maps & geodata', 'Proportions'],
+  },
+];
 
 export default function HomePage({ onNavigate }) {
+  const nav = (section) => onNavigate && onNavigate(section);
+
   return (
-    <div className="space-y-24 pb-20 animate-in fade-in duration-700 slide-in-from-bottom-4">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-12 px-6 rounded-3xl bg-white dark:bg-[#1a1a1a] border border-slate-200 dark:border-slate-800 shadow-xl shadow-blue-500/5">
-        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="relative z-10 text-center space-y-8 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50 text-xs font-bold tracking-wider uppercase">
-            <Zap size={14} /> The Future of Data Apps
-          </div>
-          
-          <div className="space-y-4">
-            <Typography variant="h1" className="text-slate-900 dark:text-slate-50 font-extrabold tracking-tight leading-tight">
-              DAK <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-fuchsia-600">Hyperskills</span>
-            </Typography>
-            <Typography variant="h5" as="p" className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              An intelligent design system that transforms UI specifications into high-performance "Skills"—enabling AI to generate complete, brand-consistent applications in seconds.
-            </Typography>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <button 
-                onClick={() => {
-                  if (onNavigate) {
-                    onNavigate('How It Works');
-                  } else {
-                    document.getElementById('lifecycle-section')?.scrollIntoView({ behavior: 'smooth' })
-                  }
-                }}
-                className="px-6 py-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl font-semibold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg shadow-slate-900/10"
+    <div style={{ maxWidth: 960, display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+      {/* ── Page header ── */}
+      <div>
+        <h1 style={{
+          fontSize: 24, fontWeight: 400, color: TEXT_PRIMARY, margin: '0 0 4px',
+          fontFamily: "'Google Sans', Roboto, sans-serif",
+        }}>
+          Hyperskills Design System
+        </h1>
+        <p style={{ fontSize: 14, color: TEXT_SECONDARY, margin: 0, fontFamily: 'Roboto, sans-serif' }}>
+          A UI specification system that compiles design tokens into Skill Files for AI-powered app generation.
+        </p>
+      </div>
+
+      {/* ── Quick navigation ── */}
+      <section>
+        <div style={sectionHeaderStyle}>Get started</div>
+        <div style={sectionSubStyle}>Navigate directly to a section of the design system.</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, border: `1px solid ${BORDER}`, borderRadius: 8, overflow: 'hidden', background: BORDER }}>
+          {QUICK_LINKS.map(link => (
+            <button
+              key={link.label}
+              onClick={() => nav(link.label)}
+              style={{
+                display: 'flex', alignItems: 'flex-start', gap: 12,
+                padding: '16px 18px', background: SURFACE,
+                border: 'none', cursor: 'pointer', textAlign: 'left',
+                transition: 'background .12s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = BG_SUBTLE}
+              onMouseLeave={e => e.currentTarget.style.background = SURFACE}
             >
-              How it Works <ArrowRight size={18} />
+              <span className="material-symbols-outlined" style={{ fontSize: 20, color: GC_BLUE, flexShrink: 0, marginTop: 1 }}>
+                {link.icon}
+              </span>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: GC_BLUE, fontFamily: "'Google Sans', Roboto, sans-serif", marginBottom: 2 }}>
+                  {link.label}
+                </div>
+                <div style={{ fontSize: 12, color: TEXT_SECONDARY, fontFamily: 'Roboto, sans-serif' }}>
+                  {link.desc}
+                </div>
+              </div>
             </button>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* The Intelligent Lifecycle */}
-      <section id="lifecycle-section" className="space-y-12">
-        <div className="text-center space-y-2">
-            <Typography variant="h3" className="font-bold">The Intelligent Lifecycle</Typography>
-            <Typography variant="p" className="text-slate-500">From design tokens to multimodal validation.</Typography>
-        </div>
-
-        <div className="grid md:grid-cols-4 gap-4 relative">
-          {/* Phase 1 */}
-          <div className="relative group p-6 bg-white dark:bg-[#1e1e1e] border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-blue-500/50 transition-all shadow-sm">
-            <div className="w-12 h-12 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Palette size={24} />
+      {/* ── Platform layers ── */}
+      <section>
+        <div style={sectionHeaderStyle}>Platform overview</div>
+        <div style={sectionSubStyle}>How intelligence is organized across the system.</div>
+        <div style={{ display: 'flex', flexDirection: 'column', border: `1px solid ${BORDER}`, borderRadius: 8, overflow: 'hidden' }}>
+          {PLATFORM_LAYERS.map((layer, i) => (
+            <div
+              key={layer.name}
+              style={{
+                display: 'flex', alignItems: 'flex-start', gap: 16,
+                padding: '18px 24px',
+                borderTop: i > 0 ? `1px solid ${BORDER}` : 'none',
+                background: SURFACE,
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#5f6368', flexShrink: 0, marginTop: 1 }}>
+                {layer.icon}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: TEXT_PRIMARY, fontFamily: "'Google Sans', Roboto, sans-serif", marginBottom: 4 }}>
+                  {layer.name}
+                </div>
+                <div style={{ fontSize: 13, color: TEXT_SECONDARY, fontFamily: 'Roboto, sans-serif', lineHeight: 1.5, marginBottom: 8 }}>
+                  {layer.desc}
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {layer.items.map(item => (
+                    <span key={item} style={{
+                      fontSize: 11, color: '#3c4043',
+                      background: BG_SUBTLE, border: `1px solid ${BORDER}`,
+                      borderRadius: 4, padding: '2px 8px',
+                      fontFamily: 'Roboto, sans-serif',
+                    }}>
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <Typography variant="h6" className="mb-2">1. Skill Authoring</Typography>
-            <Typography variant="sm" className="text-slate-500 dark:text-slate-400 leading-relaxed">
-              Define your brand's soul using visual editors. Specs are compiled into structured <strong>Skill Files</strong> (.md) for LLM consumption.
-            </Typography>
-          </div>
-
-          {/* Phase 2 */}
-          <div className="relative group p-6 bg-white dark:bg-[#1e1e1e] border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-amber-500/50 transition-all shadow-sm">
-            <div className="w-12 h-12 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <BrainCircuit size={24} />
-            </div>
-            <Typography variant="h6" className="mb-2">2. Context Reasoning</Typography>
-            <Typography variant="sm" className="text-slate-500 dark:text-slate-400 leading-relaxed">
-              Our <strong>Router & Orchestrator</strong> selectively injects relevant components and architecture rules into the AI prompt based on user intent.
-            </Typography>
-          </div>
-
-          {/* Phase 3 */}
-          <div className="relative group p-6 bg-white dark:bg-[#1e1e1e] border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-emerald-500/50 transition-all shadow-sm">
-            <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Cpu size={24} />
-            </div>
-            <Typography variant="h6" className="mb-2">3. Generative Build</Typography>
-            <Typography variant="sm" className="text-slate-500 dark:text-slate-400 leading-relaxed">
-              Gemini builds a functional React application, mapping data schemas and visual rules into high-performance JSX with realistic mock data.
-            </Typography>
-          </div>
-
-          {/* Phase 4 */}
-          <div className="relative group p-6 bg-white dark:bg-[#1e1e1e] border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-fuchsia-500/50 transition-all shadow-sm">
-            <div className="w-12 h-12 bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Eye size={24} />
-            </div>
-            <Typography variant="h6" className="mb-2">4. Multimodal QA</Typography>
-            <Typography variant="sm" className="text-slate-500 dark:text-slate-400 leading-relaxed">
-              A headless browser renders the app, allowing <strong>Gemini Vision</strong> to critique alignment, responsiveness, and design adherence.
-            </Typography>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Skill Architecture */}
-      <section className="space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-2">
-                <Typography variant="h3" className="font-bold flex items-center gap-3">
-                  <Layers className="text-blue-500" /> Skill Architecture
-                </Typography>
-                <Typography variant="p" className="text-slate-500">How we organize intelligence across the platform.</Typography>
+      {/* ── The lifecycle ── */}
+      <section>
+        <div style={sectionHeaderStyle}>How it works</div>
+        <div style={sectionSubStyle}>From design tokens to a running application in four steps.</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          {[
+            { step: '1', icon: 'edit_note',       label: 'Skill Authoring',   desc: 'Visual editors compile brand rules into structured Skill Files (.md).' },
+            { step: '2', icon: 'account_tree',    label: 'Context Reasoning', desc: 'The Router injects relevant skills into the AI prompt based on intent.' },
+            { step: '3', icon: 'code',            label: 'Generative Build',  desc: 'Gemini generates React JSX mapped to your data schemas and visual rules.' },
+            { step: '4', icon: 'visibility',      label: 'Multimodal QA',     desc: 'Gemini Vision critiques alignment, responsiveness, and spec adherence.' },
+          ].map(({ step, icon, label, desc }) => (
+            <div key={step} style={cardStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <span style={{
+                  width: 22, height: 22, borderRadius: '50%',
+                  background: '#e8f0fe', color: GC_BLUE,
+                  fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0, fontFamily: 'Roboto, sans-serif',
+                }}>{step}</span>
+                <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#5f6368' }}>{icon}</span>
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: TEXT_PRIMARY, fontFamily: "'Google Sans', Roboto, sans-serif", marginBottom: 6 }}>
+                {label}
+              </div>
+              <div style={{ fontSize: 12, color: TEXT_SECONDARY, fontFamily: 'Roboto, sans-serif', lineHeight: 1.55 }}>
+                {desc}
+              </div>
             </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Foundation */}
-          <div className="p-6 bg-slate-50 dark:bg-[#141414] border border-slate-200 dark:border-slate-800 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-               <Palette size={20} />
-               <Typography variant="h6" className="m-0">Foundation</Typography>
-            </div>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
-                <span><strong>Visual Spec:</strong> Tokens and hex-perfect theme rules.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
-                <span><strong>Layout:</strong> Grid systems and responsive containers.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Architecture */}
-          <div className="p-6 bg-slate-50 dark:bg-[#141414] border border-slate-200 dark:border-slate-800 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
-               <ShieldCheck size={20} />
-               <Typography variant="h6" className="m-0">Architecture</Typography>
-            </div>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-                <span><strong>Orchestrator:</strong> Logic for app assembly.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-                <span><strong>Router:</strong> Maps user intent to component skills.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Components */}
-          <div className="p-6 bg-slate-50 dark:bg-[#141414] border border-slate-200 dark:border-slate-800 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-               <Component size={20} />
-               <Typography variant="h6" className="m-0">Components</Typography>
-            </div>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                <span><strong>UI Catalog:</strong> Forms, Tables, Buttons, and KPI Cards.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                <span><strong>Interaction:</strong> Hover, Active, and Feedback states.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Visualizations */}
-          <div className="p-6 bg-slate-50 dark:bg-[#141414] border border-slate-200 dark:border-slate-800 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-               <LayoutTemplate size={20} />
-               <Typography variant="h6" className="m-0">Visualizations</Typography>
-            </div>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                <span><strong>ECharts Skills:</strong> Complex geometries and trends.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                <span><strong>Maps:</strong> Geo-spatial data and choropleths.</span>
-              </li>
-            </ul>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Footer Callout */}
-      <section className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-12 text-center text-white shadow-2xl">
-          <Typography variant="h2" className="text-white font-bold mb-4">Ready to test the playground?</Typography>
-          <Typography variant="p" className="text-blue-100 max-w-xl mx-auto mb-8">
-            Navigate to the App Playground to experience the full lifecycle. Provide a prompt and watch as the AI reasons through your skills and builds a functional application.
-          </Typography>
-          <button 
-             onClick={() => {
-                // This is a hacky way to trigger a state change in the parent but it works for a demo
-                const sidebar = document.getElementById('main-nav-sidebar');
-                const playgroundBtn = sidebar?.querySelector('button:last-of-type');
-                if (playgroundBtn instanceof HTMLButtonElement) playgroundBtn.click();
-             }}
-             className="px-8 py-4 bg-white text-blue-700 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg"
+      {/* ── App Playground CTA — plain card, no gradient ── */}
+      <section>
+        <div style={{ ...cardStyle, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 24, color: GC_BLUE, flexShrink: 0, marginTop: 2 }}>
+              apps
+            </span>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 500, color: TEXT_PRIMARY, fontFamily: "'Google Sans', Roboto, sans-serif", marginBottom: 4 }}>
+                App Playground
+              </div>
+              <div style={{ fontSize: 13, color: TEXT_SECONDARY, fontFamily: 'Roboto, sans-serif', lineHeight: 1.5 }}>
+                Provide a prompt and watch as the AI reasons through your Skill Files and generates a fully functional React application.
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => nav('App Playground')}
+            style={{
+              flexShrink: 0, height: 36, padding: '0 20px',
+              background: GC_BLUE, color: '#fff',
+              border: 'none', borderRadius: 4, cursor: 'pointer',
+              fontSize: 14, fontWeight: 500, fontFamily: "'Google Sans', Roboto, sans-serif",
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = '#1557b0'}
+            onMouseLeave={e => e.currentTarget.style.background = GC_BLUE}
           >
-            Open App Playground
+            Open playground
           </button>
+        </div>
       </section>
+
     </div>
   );
 }

@@ -1,0 +1,275 @@
+{
+  "light": {
+    "button": {
+      "primaryBg": "#635BFF",
+      "primaryHoverBg": "#4F47E5",
+      "primaryText": "#ffffff",
+      "primaryLabel": "Primary Action",
+      "secondaryBg": "#F6F9FC",
+      "secondaryHoverBg": "#ffffff",
+      "secondaryText": "#635BFF",
+      "secondaryBorder": "#E6EBF1",
+      "secondaryLabel": "Secondary",
+      "destructiveBg": "#DF1B41",
+      "destructiveHoverBg": "#B01232",
+      "destructiveText": "#ffffff",
+      "destructiveLabel": "Destructive",
+      "ghostText": "#635BFF",
+      "ghostHoverBg": "#F6F9FC",
+      "ghostLabel": "Ghost Button",
+      "borderRadius": 8,
+      "paddingX": 12,
+      "paddingY": 6,
+      "fontWeight": "500",
+      "typographyVariant": "small",
+      "fontSize": 14,
+      "fontFamily": "\"Inter\", sans-serif",
+      "letterSpacing": "normal",
+      "textTransform": "none",
+      "secondaryDarkBg": "#1e1e1e",
+      "secondaryDarkHoverBg": "#2a2a2a",
+      "secondaryDarkText": "#e0e0e0",
+      "secondaryDarkBorder": "#444",
+      "ghostDarkText": "#635BFF",
+      "ghostDarkHoverBg": "#1e1e1e"
+    },
+    "input": {
+      "bg": "#ffffff",
+      "borderColor": "#E6EBF1",
+      "focusRingColor": "#635BFF",
+      "borderRadius": 6,
+      "paddingX": 10,
+      "paddingY": 5,
+      "placeholder": "Enter text...",
+      "textColor": "#1A1F36",
+      "typographyVariant": "p",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "checkbox": {
+      "bg": "#635BFF",
+      "borderColor": "#635BFF",
+      "textColor": "#1A1F36",
+      "typographyVariant": "p"
+    },
+    "radio": {
+      "bg": "#ffffff",
+      "dotColor": "#635BFF",
+      "textColor": "#697386",
+      "typographyVariant": "p"
+    },
+    "switch": {
+      "bgOn": "#635BFF",
+      "bgOff": "#d1d5db",
+      "circleOn": "#ffffff",
+      "circleOff": "#ffffff"
+    },
+    "segmented": {
+      "bg": "#F6F9FC",
+      "selectedBg": "#ffffff",
+      "selectedText": "#635BFF",
+      "textColor": "#697386",
+      "typographyVariant": "small"
+    },
+    "card": {
+      "bg": "#ffffff",
+      "borderColor": "#E6EBF1",
+      "borderRadius": 8,
+      "padding": 20,
+      "titleColor": "#635BFF",
+      "valueColor": "#1A1F36",
+      "subtitleColor": "#697386",
+      "footerColor": "#697386",
+      "kpiLabelColor": "#697386",
+      "kpiBg": "#ffffff",
+      "kpiBorderColor": "#E6EBF1",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "badge": {
+      "primaryBg": "#EEF0FF",
+      "primaryText": "#635BFF",
+      "successBg": "#CBFFCD",
+      "successText": "#0A4D0A",
+      "warningBg": "#FEF9EC",
+      "warningText": "#92400E",
+      "errorBg": "#FEF2F2",
+      "errorText": "#991B1B",
+      "neutralBg": "#F6F9FC",
+      "neutralText": "#697386",
+      "borderRadius": 8
+    },
+    "typography": {
+      "h1": {
+        "fontSize": 32,
+        "fontWeight": "700",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "letterSpacing": "-0.02em",
+        "lineHeight": "1.2",
+        "content": "The quick brown fox"
+      },
+      "h2": {
+        "fontSize": 24,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "1.3",
+        "content": "Section heading"
+      },
+      "h3": {
+        "fontSize": 20,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Card title or panel header"
+      },
+      "h4": {
+        "fontSize": 16,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Subsection heading"
+      },
+      "h5": {
+        "fontSize": 14,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Small heading"
+      },
+      "h6": {
+        "fontSize": 12,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#697386",
+        "letterSpacing": "0.05em",
+        "lineHeight": "1.5",
+        "content": "LABEL / EYEBROW"
+      },
+      "p": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "letterSpacing": "normal",
+        "lineHeight": "1.6",
+        "content": "Body text for descriptions, tooltips, and general UI copy."
+      },
+      "small": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#697386",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Smaller body text for secondary information."
+      },
+      "xs": {
+        "fontSize": 11,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#697386",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small utility text."
+      },
+      "mono": {
+        "fontSize": 13,
+        "fontWeight": "400",
+        "fontFamily": "monospace",
+        "color": "#1A1F36",
+        "bg": "#F6F9FC",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "console.log(\"Hello\")",
+        "darkColor": "#e0e0e0",
+        "darkBg": "#1a1a1a"
+      },
+      "muted": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#697386",
+        "fontStyle": "italic",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "No data available.",
+        "darkColor": "#555"
+      },
+      "bodyBase": {
+        "fontSize": 16,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "darkColor": "#e0e0e0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. This base text size is used for primary article content."
+      },
+      "bodySmall": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#1A1F36",
+        "darkColor": "#aaa",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. Small body text for data tables and secondary content."
+      },
+      "bodyXs": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", sans-serif",
+        "color": "#697386",
+        "darkColor": "#666",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small text for metadata, timestamps, and chart axis labels."
+      }
+    },
+    "alert": {
+      "infoBg": "#F5F8FF",
+      "infoBorder": "#D0D9FF",
+      "infoIcon": "#635BFF",
+      "infoTitle": "#1A1F36",
+      "infoText": "#3D4EAC",
+      "successBg": "#EBFFF0",
+      "successBorder": "#B0F5C0",
+      "successIcon": "#1A9E3F",
+      "successTitle": "#0A4D1A",
+      "successText": "#1A9E3F",
+      "warningBg": "#FFF8E6",
+      "warningBorder": "#FFD980",
+      "warningIcon": "#D97706",
+      "warningTitle": "#7C3E00",
+      "warningText": "#D97706",
+      "errorBg": "#FFF0F3",
+      "errorBorder": "#FFB3C1",
+      "errorIcon": "#DF1B41",
+      "errorTitle": "#7C0A1A",
+      "errorText": "#DF1B41",
+      "borderRadius": 8
+    },
+    "loader": {
+      "spinnerColor": "#635BFF",
+      "spinnerSecondaryColor": "#697386",
+      "spinnerSuccessColor": "#1A9E3F",
+      "progressBg": "#F6F9FC",
+      "progressFill": "#635BFF",
+      "borderRadius": 8
+    },
+    "chart": {
+      "titleTypography": "h3",
+      "subtitleTypography": "small",
+      "headerPaddingY": 16
+    }
+  }
+}

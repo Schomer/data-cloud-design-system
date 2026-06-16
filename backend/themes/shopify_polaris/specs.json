@@ -1,0 +1,275 @@
+{
+  "light": {
+    "button": {
+      "primaryBg": "#008060",
+      "primaryHoverBg": "#00674E",
+      "primaryText": "#ffffff",
+      "primaryLabel": "Primary Action",
+      "secondaryBg": "#F6F6F7",
+      "secondaryHoverBg": "#ffffff",
+      "secondaryText": "#008060",
+      "secondaryBorder": "#C9CCCF",
+      "secondaryLabel": "Secondary",
+      "destructiveBg": "#D82C0D",
+      "destructiveHoverBg": "#BC2200",
+      "destructiveText": "#ffffff",
+      "destructiveLabel": "Destructive",
+      "ghostText": "#008060",
+      "ghostHoverBg": "#F6F6F7",
+      "ghostLabel": "Ghost Button",
+      "borderRadius": 12,
+      "paddingX": 12,
+      "paddingY": 6,
+      "fontWeight": "500",
+      "typographyVariant": "small",
+      "fontSize": 14,
+      "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "letterSpacing": "normal",
+      "textTransform": "none",
+      "secondaryDarkBg": "#1e1e1e",
+      "secondaryDarkHoverBg": "#2a2a2a",
+      "secondaryDarkText": "#e0e0e0",
+      "secondaryDarkBorder": "#444",
+      "ghostDarkText": "#008060",
+      "ghostDarkHoverBg": "#1e1e1e"
+    },
+    "input": {
+      "bg": "#ffffff",
+      "borderColor": "#8C9196",
+      "focusRingColor": "#458FFF",
+      "borderRadius": 8,
+      "paddingX": 10,
+      "paddingY": 5,
+      "placeholder": "Enter text...",
+      "textColor": "#202223",
+      "typographyVariant": "p",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "checkbox": {
+      "bg": "#008060",
+      "borderColor": "#008060",
+      "textColor": "#202223",
+      "typographyVariant": "p"
+    },
+    "radio": {
+      "bg": "#ffffff",
+      "dotColor": "#008060",
+      "textColor": "#6D7175",
+      "typographyVariant": "p"
+    },
+    "switch": {
+      "bgOn": "#008060",
+      "bgOff": "#d1d5db",
+      "circleOn": "#ffffff",
+      "circleOff": "#ffffff"
+    },
+    "segmented": {
+      "bg": "#F6F6F7",
+      "selectedBg": "#ffffff",
+      "selectedText": "#008060",
+      "textColor": "#6D7175",
+      "typographyVariant": "small"
+    },
+    "card": {
+      "bg": "#ffffff",
+      "borderColor": "#E1E3E5",
+      "borderRadius": 12,
+      "padding": 20,
+      "titleColor": "#008060",
+      "valueColor": "#202223",
+      "subtitleColor": "#6D7175",
+      "footerColor": "#6D7175",
+      "kpiLabelColor": "#6D7175",
+      "kpiBg": "#ffffff",
+      "kpiBorderColor": "#E1E3E5",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "badge": {
+      "primaryBg": "#AEE9D1",
+      "primaryText": "#00474F",
+      "successBg": "#AEE9D1",
+      "successText": "#00474F",
+      "warningBg": "#FEF9EC",
+      "warningText": "#92400E",
+      "errorBg": "#FEF2F2",
+      "errorText": "#991B1B",
+      "neutralBg": "#F6F6F7",
+      "neutralText": "#6D7175",
+      "borderRadius": 12
+    },
+    "typography": {
+      "h1": {
+        "fontSize": 32,
+        "fontWeight": "700",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "letterSpacing": "-0.02em",
+        "lineHeight": "1.2",
+        "content": "The quick brown fox"
+      },
+      "h2": {
+        "fontSize": 24,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "1.3",
+        "content": "Section heading"
+      },
+      "h3": {
+        "fontSize": 20,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Card title or panel header"
+      },
+      "h4": {
+        "fontSize": 16,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Subsection heading"
+      },
+      "h5": {
+        "fontSize": 14,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Small heading"
+      },
+      "h6": {
+        "fontSize": 12,
+        "fontWeight": "600",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#6D7175",
+        "letterSpacing": "0.05em",
+        "lineHeight": "1.5",
+        "content": "LABEL / EYEBROW"
+      },
+      "p": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "letterSpacing": "normal",
+        "lineHeight": "1.6",
+        "content": "Body text for descriptions, tooltips, and general UI copy."
+      },
+      "small": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#6D7175",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Smaller body text for secondary information."
+      },
+      "xs": {
+        "fontSize": 11,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#6D7175",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small utility text."
+      },
+      "mono": {
+        "fontSize": 13,
+        "fontWeight": "400",
+        "fontFamily": "monospace",
+        "color": "#202223",
+        "bg": "#F6F6F7",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "console.log(\"Hello\")",
+        "darkColor": "#e0e0e0",
+        "darkBg": "#1a1a1a"
+      },
+      "muted": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#6D7175",
+        "fontStyle": "italic",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "No data available.",
+        "darkColor": "#555"
+      },
+      "bodyBase": {
+        "fontSize": 16,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "darkColor": "#e0e0e0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. This base text size is used for primary article content."
+      },
+      "bodySmall": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#202223",
+        "darkColor": "#aaa",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. Small body text for data tables and secondary content."
+      },
+      "bodyXs": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+        "color": "#6D7175",
+        "darkColor": "#666",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small text for metadata, timestamps, and chart axis labels."
+      }
+    },
+    "alert": {
+      "infoBg": "#EBF9FC",
+      "infoBorder": "#98C6CD",
+      "infoIcon": "#006A8A",
+      "infoTitle": "#003D52",
+      "infoText": "#006A8A",
+      "successBg": "#F1F8F5",
+      "successBorder": "#95C9B4",
+      "successIcon": "#008060",
+      "successTitle": "#00474F",
+      "successText": "#008060",
+      "warningBg": "#FFF5EA",
+      "warningBorder": "#F4C983",
+      "warningIcon": "#B98900",
+      "warningTitle": "#594430",
+      "warningText": "#B98900",
+      "errorBg": "#FFF4F4",
+      "errorBorder": "#FFA8A0",
+      "errorIcon": "#D82C0D",
+      "errorTitle": "#7A1500",
+      "errorText": "#D82C0D",
+      "borderRadius": 12
+    },
+    "loader": {
+      "spinnerColor": "#008060",
+      "spinnerSecondaryColor": "#6D7175",
+      "spinnerSuccessColor": "#008060",
+      "progressBg": "#F6F6F7",
+      "progressFill": "#008060",
+      "borderRadius": 12
+    },
+    "chart": {
+      "titleTypography": "h3",
+      "subtitleTypography": "small",
+      "headerPaddingY": 16
+    }
+  }
+}

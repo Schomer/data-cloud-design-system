@@ -1,0 +1,275 @@
+{
+  "light": {
+    "button": {
+      "primaryBg": "#1677FF",
+      "primaryHoverBg": "#0958D9",
+      "primaryText": "#ffffff",
+      "primaryLabel": "Primary Action",
+      "secondaryBg": "#ffffff",
+      "secondaryHoverBg": "#ffffff",
+      "secondaryText": "#1677FF",
+      "secondaryBorder": "#1677FF",
+      "secondaryLabel": "Secondary",
+      "destructiveBg": "#FF4D4F",
+      "destructiveHoverBg": "#D9363E",
+      "destructiveText": "#ffffff",
+      "destructiveLabel": "Destructive",
+      "ghostText": "#1677FF",
+      "ghostHoverBg": "#ffffff",
+      "ghostLabel": "Ghost Button",
+      "borderRadius": 8,
+      "paddingX": 12,
+      "paddingY": 6,
+      "fontWeight": "500",
+      "typographyVariant": "small",
+      "fontSize": 14,
+      "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "letterSpacing": "normal",
+      "textTransform": "none",
+      "secondaryDarkBg": "#1e1e1e",
+      "secondaryDarkHoverBg": "#2a2a2a",
+      "secondaryDarkText": "#e0e0e0",
+      "secondaryDarkBorder": "#444",
+      "ghostDarkText": "#1677FF",
+      "ghostDarkHoverBg": "#1e1e1e"
+    },
+    "input": {
+      "bg": "#ffffff",
+      "borderColor": "#D9D9D9",
+      "focusRingColor": "#1677FF",
+      "borderRadius": 6,
+      "paddingX": 10,
+      "paddingY": 5,
+      "placeholder": "Enter text...",
+      "textColor": "#000000D9",
+      "typographyVariant": "p",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "checkbox": {
+      "bg": "#1677FF",
+      "borderColor": "#1677FF",
+      "textColor": "#000000D9",
+      "typographyVariant": "p"
+    },
+    "radio": {
+      "bg": "#ffffff",
+      "dotColor": "#1677FF",
+      "textColor": "#00000073",
+      "typographyVariant": "p"
+    },
+    "switch": {
+      "bgOn": "#1677FF",
+      "bgOff": "#d1d5db",
+      "circleOn": "#ffffff",
+      "circleOff": "#ffffff"
+    },
+    "segmented": {
+      "bg": "#ffffff",
+      "selectedBg": "#ffffff",
+      "selectedText": "#1677FF",
+      "textColor": "#00000073",
+      "typographyVariant": "small"
+    },
+    "card": {
+      "bg": "#ffffff",
+      "borderColor": "#F0F0F0",
+      "borderRadius": 8,
+      "padding": 20,
+      "titleColor": "#1677FF",
+      "valueColor": "#000000D9",
+      "subtitleColor": "#00000073",
+      "footerColor": "#00000073",
+      "kpiLabelColor": "#00000073",
+      "kpiBg": "#ffffff",
+      "kpiBorderColor": "#F0F0F0",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "badge": {
+      "primaryBg": "#E6F4FF",
+      "primaryText": "#1677FF",
+      "successBg": "#F6FFED",
+      "successText": "#389E0D",
+      "warningBg": "#FEF9EC",
+      "warningText": "#92400E",
+      "errorBg": "#FEF2F2",
+      "errorText": "#991B1B",
+      "neutralBg": "#ffffff",
+      "neutralText": "#00000073",
+      "borderRadius": 8
+    },
+    "typography": {
+      "h1": {
+        "fontSize": 32,
+        "fontWeight": "700",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000E0",
+        "letterSpacing": "-0.02em",
+        "lineHeight": "1.2",
+        "content": "The quick brown fox"
+      },
+      "h2": {
+        "fontSize": 24,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000E0",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "1.3",
+        "content": "Section heading"
+      },
+      "h3": {
+        "fontSize": 20,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000E0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Card title or panel header"
+      },
+      "h4": {
+        "fontSize": 16,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000E0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Subsection heading"
+      },
+      "h5": {
+        "fontSize": 14,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000E0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Small heading"
+      },
+      "h6": {
+        "fontSize": 12,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#00000073",
+        "letterSpacing": "0.05em",
+        "lineHeight": "1.5",
+        "content": "LABEL / EYEBROW"
+      },
+      "p": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000D9",
+        "letterSpacing": "normal",
+        "lineHeight": "1.6",
+        "content": "Body text for descriptions, tooltips, and general UI copy."
+      },
+      "small": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#00000073",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Smaller body text for secondary information."
+      },
+      "xs": {
+        "fontSize": 11,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#00000073",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small utility text."
+      },
+      "mono": {
+        "fontSize": 13,
+        "fontWeight": "400",
+        "fontFamily": "monospace",
+        "color": "#000000D9",
+        "bg": "#ffffff",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "console.log(\"Hello\")",
+        "darkColor": "#e0e0e0",
+        "darkBg": "#1a1a1a"
+      },
+      "muted": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#00000073",
+        "fontStyle": "italic",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "No data available.",
+        "darkColor": "#555"
+      },
+      "bodyBase": {
+        "fontSize": 16,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000D9",
+        "darkColor": "#e0e0e0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. This base text size is used for primary article content."
+      },
+      "bodySmall": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#000000D9",
+        "darkColor": "#aaa",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. Small body text for data tables and secondary content."
+      },
+      "bodyXs": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "color": "#00000073",
+        "darkColor": "#666",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small text for metadata, timestamps, and chart axis labels."
+      }
+    },
+    "alert": {
+      "infoBg": "#E6F4FF",
+      "infoBorder": "#91CAFF",
+      "infoIcon": "#1677FF",
+      "infoTitle": "#003EB3",
+      "infoText": "#1677FF",
+      "successBg": "#F6FFED",
+      "successBorder": "#B7EB8F",
+      "successIcon": "#52C41A",
+      "successTitle": "#135200",
+      "successText": "#389E0D",
+      "warningBg": "#FFFBE6",
+      "warningBorder": "#FFE58F",
+      "warningIcon": "#FAAD14",
+      "warningTitle": "#613400",
+      "warningText": "#D48806",
+      "errorBg": "#FFF2F0",
+      "errorBorder": "#FFCCC7",
+      "errorIcon": "#FF4D4F",
+      "errorTitle": "#820014",
+      "errorText": "#CF1322",
+      "borderRadius": 8
+    },
+    "loader": {
+      "spinnerColor": "#1677FF",
+      "spinnerSecondaryColor": "#00000073",
+      "spinnerSuccessColor": "#52C41A",
+      "progressBg": "#ffffff",
+      "progressFill": "#1677FF",
+      "borderRadius": 8
+    },
+    "chart": {
+      "titleTypography": "h3",
+      "subtitleTypography": "small",
+      "headerPaddingY": 16
+    }
+  }
+}

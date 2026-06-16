@@ -1,0 +1,275 @@
+{
+  "light": {
+    "button": {
+      "primaryBg": "#0C66E4",
+      "primaryHoverBg": "#0055CC",
+      "primaryText": "#ffffff",
+      "primaryLabel": "Primary Action",
+      "secondaryBg": "#F1F2F4",
+      "secondaryHoverBg": "#ffffff",
+      "secondaryText": "#0C66E4",
+      "secondaryBorder": "#C1C7D0",
+      "secondaryLabel": "Secondary",
+      "destructiveBg": "#CA3521",
+      "destructiveHoverBg": "#AE2A19",
+      "destructiveText": "#ffffff",
+      "destructiveLabel": "Destructive",
+      "ghostText": "#0C66E4",
+      "ghostHoverBg": "#F1F2F4",
+      "ghostLabel": "Ghost Button",
+      "borderRadius": 4,
+      "paddingX": 12,
+      "paddingY": 6,
+      "fontWeight": "500",
+      "typographyVariant": "small",
+      "fontSize": 14,
+      "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+      "letterSpacing": "normal",
+      "textTransform": "none",
+      "secondaryDarkBg": "#1e1e1e",
+      "secondaryDarkHoverBg": "#2a2a2a",
+      "secondaryDarkText": "#e0e0e0",
+      "secondaryDarkBorder": "#444",
+      "ghostDarkText": "#0C66E4",
+      "ghostDarkHoverBg": "#1e1e1e"
+    },
+    "input": {
+      "bg": "#F7F8F9",
+      "borderColor": "#DFE1E6",
+      "focusRingColor": "#0C66E4",
+      "borderRadius": 4,
+      "paddingX": 10,
+      "paddingY": 5,
+      "placeholder": "Enter text...",
+      "textColor": "#172B4D",
+      "typographyVariant": "p",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "checkbox": {
+      "bg": "#0C66E4",
+      "borderColor": "#0C66E4",
+      "textColor": "#172B4D",
+      "typographyVariant": "p"
+    },
+    "radio": {
+      "bg": "#ffffff",
+      "dotColor": "#0C66E4",
+      "textColor": "#626F86",
+      "typographyVariant": "p"
+    },
+    "switch": {
+      "bgOn": "#0C66E4",
+      "bgOff": "#d1d5db",
+      "circleOn": "#ffffff",
+      "circleOff": "#ffffff"
+    },
+    "segmented": {
+      "bg": "#F1F2F4",
+      "selectedBg": "#ffffff",
+      "selectedText": "#0C66E4",
+      "textColor": "#626F86",
+      "typographyVariant": "small"
+    },
+    "card": {
+      "bg": "#ffffff",
+      "borderColor": "#DFE1E6",
+      "borderRadius": 4,
+      "padding": 20,
+      "titleColor": "#0C66E4",
+      "valueColor": "#172B4D",
+      "subtitleColor": "#626F86",
+      "footerColor": "#626F86",
+      "kpiLabelColor": "#626F86",
+      "kpiBg": "#ffffff",
+      "kpiBorderColor": "#DFE1E6",
+      "darkBg": "#1a1a1a",
+      "darkBorderColor": "#333"
+    },
+    "badge": {
+      "primaryBg": "#E9F2FF",
+      "primaryText": "#0055CC",
+      "successBg": "#DCFFF1",
+      "successText": "#216E4E",
+      "warningBg": "#FEF9EC",
+      "warningText": "#92400E",
+      "errorBg": "#FEF2F2",
+      "errorText": "#991B1B",
+      "neutralBg": "#F1F2F4",
+      "neutralText": "#626F86",
+      "borderRadius": 4
+    },
+    "typography": {
+      "h1": {
+        "fontSize": 32,
+        "fontWeight": "700",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "letterSpacing": "-0.02em",
+        "lineHeight": "1.2",
+        "content": "The quick brown fox"
+      },
+      "h2": {
+        "fontSize": 24,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "1.3",
+        "content": "Section heading"
+      },
+      "h3": {
+        "fontSize": 20,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Card title or panel header"
+      },
+      "h4": {
+        "fontSize": 16,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "letterSpacing": "normal",
+        "lineHeight": "1.4",
+        "content": "Subsection heading"
+      },
+      "h5": {
+        "fontSize": 14,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Small heading"
+      },
+      "h6": {
+        "fontSize": 12,
+        "fontWeight": "600",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#626F86",
+        "letterSpacing": "0.05em",
+        "lineHeight": "1.5",
+        "content": "LABEL / EYEBROW"
+      },
+      "p": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "letterSpacing": "normal",
+        "lineHeight": "1.6",
+        "content": "Body text for descriptions, tooltips, and general UI copy."
+      },
+      "small": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#626F86",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Smaller body text for secondary information."
+      },
+      "xs": {
+        "fontSize": 11,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#626F86",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small utility text."
+      },
+      "mono": {
+        "fontSize": 13,
+        "fontWeight": "400",
+        "fontFamily": "monospace",
+        "color": "#172B4D",
+        "bg": "#F1F2F4",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "console.log(\"Hello\")",
+        "darkColor": "#e0e0e0",
+        "darkBg": "#1a1a1a"
+      },
+      "muted": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#626F86",
+        "fontStyle": "italic",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "No data available.",
+        "darkColor": "#555"
+      },
+      "bodyBase": {
+        "fontSize": 16,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "darkColor": "#e0e0e0",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. This base text size is used for primary article content."
+      },
+      "bodySmall": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#172B4D",
+        "darkColor": "#aaa",
+        "letterSpacing": "normal",
+        "lineHeight": "1.625",
+        "content": "The quick brown fox jumps over the lazy dog. Small body text for data tables and secondary content."
+      },
+      "bodyXs": {
+        "fontSize": 12,
+        "fontWeight": "400",
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif",
+        "color": "#626F86",
+        "darkColor": "#666",
+        "letterSpacing": "normal",
+        "lineHeight": "1.5",
+        "content": "Extra small text for metadata, timestamps, and chart axis labels."
+      }
+    },
+    "alert": {
+      "infoBg": "#E9F2FF",
+      "infoBorder": "#85B8FF",
+      "infoIcon": "#0C66E4",
+      "infoTitle": "#0055CC",
+      "infoText": "#0055CC",
+      "successBg": "#DCFFF1",
+      "successBorder": "#7EE2B8",
+      "successIcon": "#1F845A",
+      "successTitle": "#216E4E",
+      "successText": "#216E4E",
+      "warningBg": "#FFF7D6",
+      "warningBorder": "#F8E6A0",
+      "warningIcon": "#CF9F02",
+      "warningTitle": "#7F5F01",
+      "warningText": "#946F00",
+      "errorBg": "#FFECEB",
+      "errorBorder": "#FD9891",
+      "errorIcon": "#CA3521",
+      "errorTitle": "#AE2A19",
+      "errorText": "#AE2A19",
+      "borderRadius": 4
+    },
+    "loader": {
+      "spinnerColor": "#0C66E4",
+      "spinnerSecondaryColor": "#626F86",
+      "spinnerSuccessColor": "#1F845A",
+      "progressBg": "#F1F2F4",
+      "progressFill": "#0C66E4",
+      "borderRadius": 4
+    },
+    "chart": {
+      "titleTypography": "h3",
+      "subtitleTypography": "small",
+      "headerPaddingY": 16
+    }
+  }
+}
