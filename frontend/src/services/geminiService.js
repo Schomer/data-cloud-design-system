@@ -5,7 +5,7 @@
 import { app } from '../firebase';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 
-const MODEL_NAME = 'gemini-2.5-flash';
+const MODEL_NAME = 'gemini-3.5-flash';
 
 // Initialize Firebase AI Logic with Gemini Developer API backend
 const ai = getAI(app, { backend: new GoogleAIBackend() });
