@@ -1,14 +1,14 @@
 // DAK Hyperskills — Gemini Service
-// Uses Firebase AI Logic (Vertex AI backend) — uses Cloud billing.
+// Uses Firebase AI Logic (Gemini Developer API).
 // No separate OAuth tokens needed, just the Firebase app config.
 
 import { app } from '../firebase';
-import { getAI, getGenerativeModel, VertexAIBackend } from 'firebase/ai';
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 
 const MODEL_NAME = 'gemini-3.5-flash';
 
-// Initialize Firebase AI Logic with Vertex AI backend (uses Cloud billing)
-const ai = getAI(app, { backend: new VertexAIBackend() });
+// Initialize Firebase AI Logic with Gemini Developer API backend
+const ai = getAI(app, { backend: new GoogleAIBackend() });
 
 // ============================================================
 // Streaming response generator
