@@ -123,6 +123,11 @@ export async function saveApp(appId, metadata) {
   await setDoc(doc(db, 'apps', appId), metadata);
 }
 
+export async function getApp(appId) {
+  const snap = await getDoc(doc(db, 'apps', appId));
+  return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+}
+
 export async function deleteApp(appId) {
   await deleteDoc(doc(db, 'apps', appId));
 }

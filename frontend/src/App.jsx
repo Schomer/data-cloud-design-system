@@ -26,9 +26,129 @@ import ChartGalleryProportions from './components/ChartGalleryProportions';
 import GeminiChatGallery from './components/GeminiChatGallery';
 import AppInspectorOverlay from './components/AppInspectorOverlay';
 
+// Sandbox dynamic imports
+import * as LucideReact from 'lucide-react';
+import * as Recharts from 'recharts';
+import * as ECharts from 'echarts';
+import ReactECharts from 'echarts-for-react';
+import * as firestoreService from './services/firestoreService';
+import { Loader2 } from 'lucide-react';
+
 // Dynamically load all generated apps
 const generatedApps = import.meta.glob('./generated_apps/*.jsx', { eager: true });
 const generatedAppMeta = import.meta.glob('./generated_apps/*.json', { eager: true });
+
+// Dynamic App Compiler and Runner (for hosted environment fallback)
+function DynamicAppRenderer({ appId }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [component, setComponent] = useState(null);
+  const [metadata, setMetadata] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    const loadAndCompile = async () => {
+      try {
+        setLoading(true);
+        // 1. Fetch metadata and code from firestore
+        const data = await firestoreService.getApp(appId);
+        if (!data) {
+          throw new Error(`App layout "${appId}" not found in database.`);
+        }
+        if (!active) return;
+        setMetadata(data);
+
+        // 2. Load Babel Standalone from CDN dynamically
+        if (!window.Babel) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/@babel/standalone@7.24.0/babel.min.js';
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Failed to load Babel compiler from CDN.'));
+            document.head.appendChild(script);
+          });
+        }
+        if (!active) return;
+
+        // 3. Transpile JSX using Babel CommonJS format
+        const result = window.Babel.transform(data.code, {
+          presets: ['react', ['env', { modules: 'commonjs' }]],
+        });
+        const transpiledCode = result.code;
+
+        // 4. Create evaluation scope with mapped module exports
+        const exports = {};
+        const require = (name) => {
+          if (name === 'react') return React;
+          if (name === 'lucide-react') return LucideReact;
+          if (name === 'recharts') return Recharts;
+          if (name === 'echarts') return ECharts;
+          if (name === 'echarts-for-react') return { default: ReactECharts };
+          throw new Error(`Imported library "${name}" is not supported in hosted sandbox.`);
+        };
+
+        const fn = new Function('require', 'exports', 'React', transpiledCode);
+        fn(require, exports, React);
+
+        const EvalComponent = exports.default || exports;
+        if (typeof EvalComponent !== 'function') {
+          throw new Error('Component did not export a default React component.');
+        }
+
+        if (active) {
+          setComponent(() => EvalComponent);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (active) {
+          console.error('[DynamicAppRenderer] Error:', err);
+          setError(err.message);
+          setLoading(false);
+        }
+      }
+    };
+
+    loadAndCompile();
+    return () => {
+      active = false;
+    };
+  }, [appId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-500 mb-4" />
+        <p className="text-slate-500 dark:text-slate-400">Loading custom dynamic layout from Firestore...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50 dark:bg-[#121212] text-slate-900 dark:text-slate-100 font-sans">
+        <div className="text-center bg-white dark:bg-[#1a1a1a] p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-lg max-w-md">
+          <h2 className="text-2xl font-bold text-red-500 mb-2">Failed to load app</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.href = '/'}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-medium"
+          >
+            Go back Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const GeneratedComponent = component;
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-[#121212] font-sans p-8 transition-colors relative">
+      <GeneratedComponent />
+      <AppInspectorOverlay appMetadata={metadata} />
+    </div>
+  );
+}
 
 // ── Google Cloud wordmark SVG (complete — verified from bigquery-aif TopBar.tsx) ──
 function GCWordmark() {
@@ -115,14 +235,8 @@ function App() {
         </div>
       );
     }
-    return (
-      <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50 text-slate-900 font-sans">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">App Not Found</h2>
-          <p className="text-slate-500">The layout "{appId}" could not be found.</p>
-        </div>
-      </div>
-    );
+    // Fallback: Render dynamically if not bundled (crucial for hosted site)
+    return <DynamicAppRenderer appId={appId} />;
   }
 
   // ── Helper: nav item button ──

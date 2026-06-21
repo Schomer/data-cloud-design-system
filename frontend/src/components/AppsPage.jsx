@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Plus, ExternalLink, Trash2, LayoutTemplate } from 'lucide-react';
+import axios from 'axios';
 import Typography from './Typography';
 import Button from './Button';
 import SkillEditButton from './SkillEditButton';
@@ -9,7 +10,7 @@ import * as fs from '../services/firestoreService';
 import { streamGeminiResponse } from '../services/geminiService';
 
 export default function AppsPage() {
-    const { isAdmin } = useAuth();
+    const { isAdmin, getAuthHeaders } = useAuth();
     const { activeThemeId } = useEditor();
     const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
@@ -21,8 +22,22 @@ export default function AppsPage() {
         try {
             const appsData = await fs.getApps();
             setApps(appsData);
+
+            // Sync missing files to local disk (only on localhost)
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost && appsData.length > 0) {
+                const headers = await getAuthHeaders();
+                const checkRes = await axios.post('/api/apps/check_local', { ids: appsData.map(a => a.id) }, { headers });
+                const missingIds = checkRes.data.missingIds || [];
+                for (const missingId of missingIds) {
+                    const appMeta = appsData.find(a => a.id === missingId);
+                    if (appMeta) {
+                        await axios.post('/api/apps/write_local', appMeta, { headers });
+                    }
+                }
+            }
         } catch (err) {
-            console.error(err);
+            console.error("Failed to fetch and sync apps:", err);
         }
     };
 
@@ -202,6 +217,13 @@ export default function AppsPage() {
             };
             await fs.saveApp(appId, metadata);
 
+            // Write locally to disk (only on localhost)
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost) {
+                const headers = await getAuthHeaders();
+                await axios.post('/api/apps/write_local', metadata, { headers });
+            }
+
             setStatusMessages(prev => [...prev, `App saved as ${appId}`]);
             setPrompt("");
             await fetchApps();
@@ -221,6 +243,14 @@ export default function AppsPage() {
         if (!isAdmin) return;
         try {
             await fs.deleteApp(appId);
+
+            // Delete locally (only on localhost)
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost) {
+                const headers = await getAuthHeaders();
+                await axios.delete(`/api/apps/${appId}`, { headers });
+            }
+
             setApps(apps.filter(app => app.id !== appId));
         } catch (err) {
             console.error("Failed to delete app:", err);

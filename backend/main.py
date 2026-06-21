@@ -20,7 +20,8 @@ try:
     import firebase_admin
     from firebase_admin import auth as firebase_auth
     if not firebase_admin._apps:
-        firebase_admin.initialize_app()
+        project_id = os.environ.get("GOOGLE_CLOUD_PROJECT", "malloy-data")
+        firebase_admin.initialize_app(options={'projectId': project_id})
     FIREBASE_INITIALIZED = True
 except Exception as e:
     print(f"Warning: Firebase Admin SDK not initialized: {e}")
@@ -1708,6 +1709,58 @@ def chat(chat_request: ChatRequestModel, request: Request):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class CheckLocalRequest(BaseModel):
+    ids: list[str]
+
+class AppLocalWriteRequest(BaseModel):
+    id: str
+    name: str
+    prompt: str
+    code: str
+    skills_used: list[str] = []
+    thought_process: dict = {}
+
+@app.post("/api/apps/check_local")
+def check_local_apps(request_body: CheckLocalRequest, request: Request):
+    require_admin(request)
+    root_dir = Path(__file__).resolve().parent.parent
+    apps_dir = root_dir / "frontend" / "src" / "generated_apps"
+    
+    missing_ids = []
+    for app_id in request_body.ids:
+        jsx_path = apps_dir / f"{app_id}.jsx"
+        json_path = apps_dir / f"{app_id}.json"
+        if not jsx_path.exists() or not json_path.exists():
+            missing_ids.append(app_id)
+            
+    return {"missingIds": missing_ids}
+
+@app.post("/api/apps/write_local")
+def write_local_app(request_body: AppLocalWriteRequest, request: Request):
+    require_admin(request)
+    root_dir = Path(__file__).resolve().parent.parent
+    apps_dir = root_dir / "frontend" / "src" / "generated_apps"
+    apps_dir.mkdir(parents=True, exist_ok=True)
+    
+    app_id = request_body.id
+    
+    # Write JSX file
+    with open(apps_dir / f"{app_id}.jsx", "w", encoding="utf-8") as f:
+        f.write(request_body.code)
+        
+    # Write JSON metadata
+    metadata = {
+        "id": app_id,
+        "name": request_body.name,
+        "prompt": request_body.prompt,
+        "skills_used": request_body.skills_used,
+        "thought_process": request_body.thought_process
+    }
+    with open(apps_dir / f"{app_id}.json", "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=2)
+        
+    return {"message": "Success", "id": app_id}
 
 # Serve the static React build
 app.mount("/", StaticFiles(directory="dist", html=True), name="frontend")
